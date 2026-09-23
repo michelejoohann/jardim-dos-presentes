@@ -79,7 +79,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
             <h2>Que gesto especial!</h2>
             <p>
               {intent === 'received'
-                ? 'Você marcou este desejo como realizado.'
+                ? 'Você marcou este presente como realizado.'
                 : 'Sua intenção de presentear foi registrada com carinho.'}
             </p>
             <p className="modal-success-sub">
@@ -95,7 +95,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
           <>
             <div className="modal-header">
               <span className="section-kicker">Gesto de Afeto</span>
-              <h2>Presentear este desejo</h2>
+              <h2>Presentear este item</h2>
             </div>
 
             <div className="modal-product-summary">
@@ -141,7 +141,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                     />
                     <div>
                       <strong>🌸 Já comprei</strong>
-                      <span>Marca o desejo como florescido / adquirido.</span>
+                      <span>Marca o presente como florescido / adquirido.</span>
                     </div>
                   </label>
                 </div>

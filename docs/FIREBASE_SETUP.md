@@ -1,4 +1,4 @@
-# Configuração do Firebase — Jardim de Desejos v2
+# Configuração do Firebase — Jardim dos Presentes v2
 
 ## 1. Publicar regras do Firestore
 

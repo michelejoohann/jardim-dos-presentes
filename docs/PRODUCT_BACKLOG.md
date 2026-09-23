@@ -1,8 +1,8 @@
-# Product Backlog — Jardim de Desejos v2.0
+# Product Backlog — Jardim dos Presentes v2.0
 
 ## Visão do produto
 
-Transformar o Jardim de Desejos em uma aplicação web profissional, responsiva e segura, com catálogo dinâmico, reservas em tempo real e painel administrativo para gestão de produtos, imagens e status.
+Transformar o Jardim dos Presentes em uma aplicação web profissional, responsiva e segura, com catálogo dinâmico, reservas em tempo real e painel administrativo para gestão de produtos, imagens e status.
 
 ## Perfis de usuário
 

@@ -149,7 +149,7 @@ export default function ProductCard({
             )}
 
             {isComplete ? (
-              <span className="gift-tag done" title="Este desejo já foi realizado">
+              <span className="gift-tag done" title="Este presente já foi realizado">
                 🌸 Floresceu
               </span>
             ) : isReserved && !isMyReservation ? (

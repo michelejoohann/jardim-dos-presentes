@@ -1,8 +1,8 @@
-# Arquitetura — Jardim de Desejos de Michèlé Joohann
+# Arquitetura — Jardim dos Presentes de Michèlé Joohann
 
 ## 1. Visão Geral do Sistema
 
-O **Jardim de Desejos** é uma aplicação web moderna, responsiva e afetiva que transforma uma lista de desejos em uma experiência visual rica. Construída sobre **React 19**, **Vite 7** e **Firebase 12**, a aplicação oferece consulta em tempo real aos desejos, filtros por ambientes e canteiros, busca textual e um painel de migração/administração integrado.
+O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e afetiva que transforma uma lista de desejos em uma experiência visual rica. Construída sobre **React 19**, **Vite 7** e **Firebase 12**, a aplicação oferece consulta em tempo real aos desejos, filtros por ambientes e canteiros, busca textual e um painel de migração/administração integrado.
 
 ---
 
@@ -68,7 +68,7 @@ sequenceDiagram
     participant Firestore as 🔥 Cloud Firestore (products)
     participant Fallback as 📦 Catálogo Local (Fallback)
 
-    Visitante->>App: Acessa o Jardim de Desejos
+    Visitante->>App: Acessa o Jardim dos Presentes
     App->>Auth: signInAnonymously() se não autenticado
     Auth-->>App: Sessão de visitante garantida
 

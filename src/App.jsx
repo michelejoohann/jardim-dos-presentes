@@ -164,8 +164,8 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="hero">
-        <p className="eyebrow">Jardim de Desejos · versão 2.4</p>
-        <h1>O Jardim de Desejos de Michèlé Joohann</h1>
+        <p className="eyebrow">Jardim dos Presentes · versão 2.4</p>
+        <h1>O Jardim dos Presentes de Michèlé Joohann</h1>
         <p>Sonhos cultivados com carinho, significado e história.</p>
       </header>
 
@@ -225,7 +225,7 @@ export default function App() {
           ))}
         </section>
 
-        {!loading && visibleProducts.length === 0 && <p className="empty-state">Nenhum desejo encontrado com esses filtros.</p>}
+        {!loading && visibleProducts.length === 0 && <p className="empty-state">Nenhum presente encontrado com esses filtros.</p>}
 
         {giftingProduct && (
           <GiftModal

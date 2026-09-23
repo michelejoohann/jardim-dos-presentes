@@ -1,4 +1,4 @@
-# 🌿 Jardim de Desejos de Michèlé Joohann
+# 🌿 Jardim dos Presentes de Michèlé Joohann
 
 > **Desejar. Cultivar. Conquistar. Florescer.** ✨  
 > Um espaço digital e afetivo para transformar desejos em sementes: registrar sonhos, acompanhar o que já foi conquistado e dar significado a cada realização.
@@ -7,7 +7,7 @@
 
 ## 🏛️ Arquitetura do Sistema
 
-O **Jardim de Desejos** foi construído com arquitetura baseada em **React 19**, **Vite 7** e **Firebase 12**, entregue via **GitHub Pages** através de integração contínua (GitHub Actions).
+O **Jardim dos Presentes** foi construído com arquitetura baseada em **React 19**, **Vite 7** e **Firebase 12**, entregue via **GitHub Pages** através de integração contínua (GitHub Actions).
 
 ```mermaid
 graph TB
@@ -204,4 +204,4 @@ npm run preview
 
 ## 🌸 Filosofia
 
-O **Jardim de Desejos** não é uma simples lista de compras. É um registro sensível de aspirações, histórias e sonhos — permitindo cultivar a gratidão e celebrar cada pequena ou grande conquista.
+O **Jardim dos Presentes** não é uma simples lista de compras. É um registro sensível de aspirações, histórias e sonhos — permitindo cultivar a gratidão e celebrar cada pequena ou grande conquista.
