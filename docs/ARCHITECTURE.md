@@ -128,7 +128,7 @@ JardimDosDesejos/
 ├── firestore.rules               # Regras de segurança do Cloud Firestore
 ├── index.html                    # Template HTML com meta tags SEO e viewport
 ├── package.json                  # Dependências (React 19, Vite 7, Firebase 12)
-├── vite.config.js                # Configuração do Vite com base /jardim-de-desejos/
+├── vite.config.js                # Configuração do Vite com base /jardim-dos-presentes/
 └── README.md                     # Documentação central do projeto
 ```
 

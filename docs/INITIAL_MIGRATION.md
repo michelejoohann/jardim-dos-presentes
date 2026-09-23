@@ -19,7 +19,7 @@ A lista de migração (`src/services/productMigration.js`) consolida:
 ## 🚀 Procedimento de Migração
 
 1. Abra a aplicação com o parâmetro de administração na URL: `?admin=true`
-   - Exemplo no GitHub Pages: `https://michelejoohann.github.io/jardim-de-desejos/?admin=true`
+   - Exemplo no GitHub Pages: `https://michelejoohann.github.io/jardim-dos-presentes/?admin=true`
    - Exemplo em ambiente local: `http://localhost:5173/?admin=true`
 2. No painel **Importação inicial do catálogo** que agora estará visível, preencha o e-mail e a senha da administradora.
 3. Clique em **Entrar como administradora**.

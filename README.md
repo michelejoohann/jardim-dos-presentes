@@ -133,7 +133,7 @@ JardimDosDesejos/
 ├── firestore.rules               # Regras de segurança atômicas do Firestore
 ├── index.html                    # Entrada HTML principal com metadados SEO
 ├── package.json                  # Manifesto do projeto e dependências
-├── vite.config.js                # Configuração do Vite com base /jardim-de-desejos/
+├── vite.config.js                # Configuração do Vite com base /jardim-dos-presentes/
 └── README.md                     # Este documento
 ```
 
@@ -188,7 +188,7 @@ npm install
 ```bash
 npm run dev
 ```
-O servidor local iniciará em `http://localhost:5173/jardim-de-desejos/`.
+O servidor local iniciará em `http://localhost:5173/jardim-dos-presentes/`.
 
 ### 3. Gerar build de produção
 ```bash
