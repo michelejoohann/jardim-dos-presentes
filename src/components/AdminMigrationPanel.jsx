@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase/config.js';
 import { migrateCatalogToFirestore } from '../services/productMigration.js';
+import { publishStagedProductsToFirestore } from '../services/stagedMigration.js';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
@@ -66,6 +67,25 @@ export default function AdminMigrationPanel({ user, firestoreCount, onClose, pro
       setMessage(`${total} produtos foram gravados ou atualizados no Firestore.`);
     } catch (err) {
       setError(err?.message || 'A migração não pôde ser concluída.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handlePublishStaged() {
+    const confirmed = window.confirm(
+      `Publicar todos os novos produtos do staging diretamente no Firestore?\n\nSerão gravados 71 itens com dados completos, prioridades e imagens.`
+    );
+    if (!confirmed) return;
+
+    setBusy(true);
+    setMessage('');
+    setError('');
+    try {
+      const total = await publishStagedProductsToFirestore();
+      setMessage(`🎉 Sucesso! ${total} produtos novos foram gravados diretamente na coleção products do Firestore!`);
+    } catch (err) {
+      setError(err?.message || 'A publicação dos produtos não pôde ser concluída.');
     } finally {
       setBusy(false);
     }
@@ -136,7 +156,16 @@ export default function AdminMigrationPanel({ user, firestoreCount, onClose, pro
         <p>O banco possui atualmente <strong>{firestoreCount}</strong> produtos cadastrados.</p>
       </div>
       <div className="admin-actions">
-        <button type="button" onClick={handleMigration} disabled={busy}>{busy ? 'Sincronizando…' : 'Sincronizar catálogo'}</button>
+        <button
+          type="button"
+          onClick={handlePublishStaged}
+          disabled={busy}
+          style={{ background: '#b45309', borderColor: '#b45309' }}
+          title="Grava todos os 71 novos produtos preparados diretamente na coleção products do Firestore"
+        >
+          {busy ? 'Publicando…' : '🚀 Publicar Novos Produtos no Firestore (71 itens)'}
+        </button>
+        <button type="button" onClick={handleMigration} disabled={busy}>{busy ? 'Sincronizando…' : 'Sincronizar catálogo legado'}</button>
         <button type="button" className="secondary-button" onClick={() => signOut(auth)} disabled={busy}>Sair</button>
         {onClose && (
           <button type="button" className="secondary-button" onClick={onClose} disabled={busy}>Ocultar</button>

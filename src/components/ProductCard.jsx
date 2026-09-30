@@ -29,7 +29,10 @@ export default function ProductCard({
       ? 'status-reserved'
       : 'status-available';
 
-  const imageUrl = product.imageUrl || product.image;
+  const rawImageUrl = product.imageUrl || product.image;
+  const imageUrl = rawImageUrl?.startsWith('/') && !rawImageUrl.startsWith(import.meta.env.BASE_URL)
+    ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImageUrl}`
+    : rawImageUrl;
   const [imageFailed, setImageFailed] = useState(false);
   const meanings = Array.isArray(product.meanings) ? product.meanings : [];
   const sizes = Array.isArray(product.sizes) ? product.sizes : [];
@@ -80,8 +83,14 @@ export default function ProductCard({
           <p className="product-meta"><strong>Tamanho desejado:</strong> {sizes.join(', ')}</p>
         )}
 
-        {product.priority && (
-          <p className="product-meta"><strong>Prioridade:</strong> {product.priority}</p>
+        {(product.priority || product.prioridade) && (
+          <p className="product-meta">
+            <strong>Prioridade:</strong>{' '}
+            <span className={`priority-badge priority-${String(product.priority || product.prioridade).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`}>
+              {String(product.priority || product.prioridade).toLowerCase().includes('alta') || String(product.priority || product.prioridade).toLowerCase().includes('essencial') ? '⭐ ' : ''}
+              {product.priority || product.prioridade}
+            </span>
+          </p>
         )}
 
         {product.purchaseDecision && (

@@ -54,7 +54,8 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [subcategory, setSubcategory] = useState('all');
-  const [sort, setSort] = useState('priceAsc');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [sort, setSort] = useState('priority');
   const [publicReservations, setPublicReservations] = useState({});
   const [giftingProduct, setGiftingProduct] = useState(null);
   const [showAdminPanel, setShowAdminPanel] = useState(() => {
@@ -143,18 +144,56 @@ export default function App() {
   const visibleProducts = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR');
     const filtered = sourceProducts.filter(product => {
-      if (product.published === false) return false;
+      if (product.published === false || product.visible === false) return false;
       const matchesCategory = category === 'all' || product.category === category;
       const matchesSubcategory = subcategory === 'all' || product.subcategory === subcategory;
+      const matchesPriority = priorityFilter === 'all' || (() => {
+        const p = String(product.priority || product.prioridade || '').trim().toLowerCase();
+        if (priorityFilter === 'alta') return p === 'alta' || p === 'essencial' || p === 'obra fundamental';
+        if (priorityFilter === 'media') return p === 'media' || p === 'média';
+        if (priorityFilter === 'baixa') return p === 'baixa';
+        return true;
+      })();
       const searchable = `${product.name} ${product.collection || ''} ${product.description || ''} ${product.dream || ''} ${product.story || ''}`.toLocaleLowerCase('pt-BR');
-      return matchesCategory && matchesSubcategory && searchable.includes(term);
+      return matchesCategory && matchesSubcategory && matchesPriority && searchable.includes(term);
     });
+
+    const priorityWeights = {
+      alta: 3,
+      essencial: 3,
+      'obra fundamental': 3,
+      media: 2,
+      média: 2,
+      baixa: 1
+    };
+
+    if (sort === 'priority') {
+      return [...filtered].sort((a, b) => {
+        const valA = String(a.priority || a.prioridade || '').trim().toLowerCase();
+        const valB = String(b.priority || b.prioridade || '').trim().toLowerCase();
+        const weightA = priorityWeights[valA] || 0;
+        const weightB = priorityWeights[valB] || 0;
+        if (weightB !== weightA) return weightB - weightA;
+        return a.name.localeCompare(b.name, 'pt-BR');
+      });
+    }
+
+    if (sort === 'priorityAsc') {
+      return [...filtered].sort((a, b) => {
+        const valA = String(a.priority || a.prioridade || '').trim().toLowerCase();
+        const valB = String(b.priority || b.prioridade || '').trim().toLowerCase();
+        const weightA = priorityWeights[valA] || 0;
+        const weightB = priorityWeights[valB] || 0;
+        if (weightA !== weightB) return weightA - weightB;
+        return a.name.localeCompare(b.name, 'pt-BR');
+      });
+    }
 
     if (sort === 'priceAsc') return [...filtered].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
     if (sort === 'priceDesc') return [...filtered].sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
     if (sort === 'nameAsc') return [...filtered].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
     return filtered;
-  }, [sourceProducts, search, category, subcategory, sort]);
+  }, [sourceProducts, search, category, subcategory, priorityFilter, sort]);
 
   function handleCategoryChange(event) {
     setCategory(event.target.value);
@@ -200,12 +239,46 @@ export default function App() {
             ))}
           </select>
           <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Ordenar presentes">
-            <option value="default">Ordem original</option>
+            <option value="priority">⭐ Maior prioridade primeiro</option>
+            <option value="priorityAsc">Menor prioridade primeiro</option>
             <option value="priceAsc">Menor valor ao maior</option>
             <option value="priceDesc">Maior valor ao menor</option>
             <option value="nameAsc">Nome de A a Z</option>
+            <option value="default">Ordem original do catálogo</option>
           </select>
         </section>
+
+        <div className="priority-filter-bar" aria-label="Filtrar por prioridade">
+          <span className="priority-filter-label">Prioridade:</span>
+          <button
+            type="button"
+            className={`priority-filter-btn ${priorityFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setPriorityFilter('all')}
+          >
+            Todas
+          </button>
+          <button
+            type="button"
+            className={`priority-filter-btn priority-alta ${priorityFilter === 'alta' ? 'active' : ''}`}
+            onClick={() => setPriorityFilter('alta')}
+          >
+            ⭐ Alta prioridade
+          </button>
+          <button
+            type="button"
+            className={`priority-filter-btn priority-media ${priorityFilter === 'media' ? 'active' : ''}`}
+            onClick={() => setPriorityFilter('media')}
+          >
+            Média
+          </button>
+          <button
+            type="button"
+            className={`priority-filter-btn priority-baixa ${priorityFilter === 'baixa' ? 'active' : ''}`}
+            onClick={() => setPriorityFilter('baixa')}
+          >
+            Baixa
+          </button>
+        </div>
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}
         {firestoreStatus === 'empty' && <p className="notice warning">O Firestore está conectado, mas ainda não possui produtos. O catálogo local está visível como fallback até a importação.</p>}

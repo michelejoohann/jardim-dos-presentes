@@ -102,7 +102,7 @@ sequenceDiagram
 ## 🗂️ Estrutura do Projeto
 
 ```text
-JardimDosDesejos/
+JardimDosPresentes/
 ├── .github/
 │   └── workflows/
 │       └── deploy-pages.yml      # CI/CD: build Vite e deploy automático no GitHub Pages
@@ -110,14 +110,15 @@ JardimDosDesejos/
 │   ├── ARCHITECTURE.md           # Desenho detalhado da arquitetura e fluxos
 │   ├── FIREBASE_SETUP.md         # Instruções de configuração do Firebase Console
 │   ├── INITIAL_MIGRATION.md      # Procedimento de migração e consolidação de dados
-│   └── PRODUCT_BACKLOG.md        # Histórico de requisitos e backlog
+│   ├── PRODUCT_BACKLOG.md        # Histórico de requisitos e backlog
+│   └── STAGING_LIST.md           # Lista de espera e staging de produtos para o Firebase
 ├── public/
 │   ├── favicon.svg               # Favicon do Jardim
 │   └── images/                   # Imagens e referências visuais
 ├── src/
 │   ├── components/
 │   │   ├── AdminMigrationPanel.jsx # Painel administrativo (login e importação em lote)
-│   │   └── ProductCard.jsx       # Card de produto com status, história, sonho e links
+│   │   └── ProductCard.jsx       # Card de produto com status, prioridade, história e links
 │   ├── data/
 │   │   ├── catalog.js            # Catálogo base histórico
 │   │   ├── officialCatalog.js    # Catálogo consolidado oficial (84 produtos com overrides)
@@ -125,10 +126,11 @@ JardimDosDesejos/
 │   ├── firebase/
 │   │   └── config.js             # Inicialização do SDK Firebase (Auth, Firestore, Storage)
 │   ├── services/
-│   │   └── productMigration.js   # Serviço de migração idempotente (lotes com writeBatch)
+│   │   ├── productMigration.js   # Serviço de migração idempotente (lotes com writeBatch)
+│   │   └── reservationService.js # Serviço de reservas públicas e privadas no Firestore
 │   ├── styles/
-│   │   └── global.css            # Estilos globais, tokens de cores e responsividade
-│   ├── App.jsx                   # Componente raiz: autenticação, queries e filtros
+│   │   └── global.css            # Estilos globais, design system, badges e responsividade
+│   ├── App.jsx                   # Componente raiz: autenticação, queries, ordenação e filtros
 │   └── main.jsx                  # Ponto de montagem da aplicação React 19
 ├── firestore.rules               # Regras de segurança atômicas do Firestore
 ├── index.html                    # Entrada HTML principal com metadados SEO
@@ -142,6 +144,11 @@ JardimDosDesejos/
 ## 🧚 Funcionalidades
 
 - 🌱 **Catálogo Afetivo**: Organização por ambientes (categorias) e canteiros (subcategorias).
+- ⭐ **Ordem e Filtro por Prioridade**:
+  - Ordenação por *"⭐ Maior prioridade primeiro"* ou *"Menor prioridade primeiro"*.
+  - Barra de filtros rápidos por pílulas (*Todas*, *⭐ Alta prioridade*, *Média*, *Baixa*).
+  - Badges visuais destacados em cada card de produto indicando o nível de prioridade.
+- 👁️ **Controle de Visibilidade**: Produtos com `visible: false` ficam preservados no Firebase, mas são automaticamente ocultados para os visitantes.
 - 🔍 **Busca Completa**: Pesquisa textual instantânea por nome, coleção, história, sonho e descrição.
 - 💰 **Valores & Referências**: Informações de preços, condições e lojas de origem.
 - 📖 **História & Significado**: Cada presente carrega o registro do sonho e da memória associada.
@@ -159,8 +166,9 @@ Com a arquitetura consolidada, a gestão dos produtos pode ser feita diretamente
 
 | Ação | Como fazer no Firebase Console | Comportamento no Site |
 |---|---|---|
+| **Definir Prioridade** | Adicione ou edite o campo `priority` (ou `prioridade`) com `"alta"`, `"media"` ou `"baixa"`. | O card exibe a tag correspondente (`⭐ Alta`, `Média`, `Baixa`) e alimenta a ordenação e os filtros do site. |
+| **Controlar Visibilidade** | Defina o campo `visible` (booleano) como `false` para ocultar ou `true` para exibir. | O produto fica guardado no Firebase, mas não é renderizado para os visitantes. |
 | **Excluir um produto** | Clique no documento do produto na coleção `products` e selecione **Excluir documento**. | O produto **some imediatamente** da tela em tempo real para todos os usuários. |
-| **Ocultar temporariamente (Soft Delete)** | Edite o campo `published` para `false` no documento. | O produto fica guardado no banco mas não é renderizado na grade pública. |
 | **Editar preço ou foto** | Atualize o campo `price`, `priceLabel` ou `imageUrl` no documento. | O card atualiza instantaneamente no site sem recarregar a página. |
 | **Marcar como Realizado** | Altere o campo `status` para `"received"` ou iguale `quantityReceived` ao `quantityDesired`. | O card exibe o selo **"Floresceu 🌸"** / **"Realizado"**. |
 | **Adicionar novo desejo** | Crie um novo documento na coleção `products` com um `id` descritivo (ex: `luminaria-vintage`). | O novo desejo aparece instantaneamente na grade e nos filtros. |
