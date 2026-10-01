@@ -20,7 +20,6 @@ const categoryLabels = {
   pets: '🐾 Pets',
 };
 
-
 function labelFromValue(value) {
   return value
     .split('-')
@@ -42,8 +41,6 @@ function isTikTokSource(product) {
 
   return source.includes('tiktok');
 }
-
-
 
 export default function App() {
   const [firestoreProducts, setFirestoreProducts] = useState([]);

@@ -43,6 +43,3 @@ export async function migrateCatalogToFirestore() {
 
   return migratedCount;
 }
-
-// Backwards compatibility alias
-export const migrateLegacyProducts = migrateCatalogToFirestore;

@@ -58,7 +58,10 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
     }
   }
 
-  const imageUrl = product.imageUrl || product.image;
+  const rawImageUrl = product.imageUrl || product.image;
+  const imageUrl = rawImageUrl?.startsWith('/') && !rawImageUrl.startsWith(import.meta.env.BASE_URL)
+    ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImageUrl}`
+    : rawImageUrl;
 
   return (
     <div className="modal-backdrop" onClick={busy ? undefined : onClose} role="dialog" aria-modal="true">
