@@ -73,74 +73,79 @@ export default function ProductCard({
           </section>
         )}
 
-        {meanings.length > 0 && (
-          <div className="meaning-tags" aria-label="Significados">
-            {meanings.map(meaning => <span key={meaning}>{meaning}</span>)}
-          </div>
-        )}
+        <details className="product-details">
+          <summary>Ver detalhes do presente</summary>
 
-        {sizes.length > 0 && (
-          <p className="product-meta"><strong>Tamanho desejado:</strong> {sizes.join(', ')}</p>
-        )}
-
-        {(product.priority || product.prioridade) && (
-          <p className="product-meta">
-            <strong>Prioridade:</strong>{' '}
-            <span className={`priority-badge priority-${String(product.priority || product.prioridade).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`}>
-              {String(product.priority || product.prioridade).toLowerCase().includes('alta') || String(product.priority || product.prioridade).toLowerCase().includes('essencial') ? '⭐ ' : ''}
-              {product.priority || product.prioridade}
-            </span>
-          </p>
-        )}
-
-        {product.purchaseDecision && (
-          <p className="product-meta"><strong>Decisão de compra:</strong> {product.purchaseDecision}</p>
-        )}
-
-        {product.unitPrice != null && product.totalPrice != null && (
-          <p className="product-meta">
-            <strong>Valores:</strong> {quantityDesired} × {product.unitPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} = {product.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-          </p>
-        )}
-
-        {notes.length > 0 && (
-          <details className="story-details">
-            <summary>📝 Observações importantes</summary>
-            <ul>
-              {notes.map(note => <li key={note}>{note}</li>)}
-            </ul>
-          </details>
-        )}
-
-        {quantityDesired > 1 && (
-          <div className="quantity-progress" aria-label={`${quantityReceived} de ${quantityDesired} recebidos`}>
-            <div className="quantity-progress__text">
-              <strong>🌱 {quantityReceived} de {quantityDesired} recebidos</strong>
-              <span>{isComplete ? 'Este sonho floresceu 🌸' : `Ainda podem florescer ${Math.max(quantityDesired - quantityReceived, 0)}`}</span>
+          {meanings.length > 0 && (
+            <div className="meaning-tags" aria-label="Significados">
+              {meanings.map(meaning => <span key={meaning}>{meaning}</span>)}
             </div>
-            <progress value={Math.min(quantityReceived, quantityDesired)} max={quantityDesired} />
-          </div>
-        )}
+          )}
 
-        {product.story && (
-          <details className="story-details">
-            <summary>📖 A história</summary>
-            <blockquote>{product.story}</blockquote>
-          </details>
-        )}
+          {sizes.length > 0 && (
+            <p className="product-meta"><strong>Tamanho desejado:</strong> {sizes.join(', ')}</p>
+          )}
 
-        {isMyReservation && (
-          <div className="reservation-notice">
-            <span>✨ Você marcou este presente ({effectiveStatus === 'received' ? 'Já comprei' : 'Vou comprar'})</span>
-            <button
-              type="button"
-              className="text-link-button"
-              onClick={() => onCancelReservation(product.id)}
-            >
-              Desfazer marcação
-            </button>
-          </div>
-        )}
+          {(product.priority || product.prioridade) && (
+            <p className="product-meta">
+              <strong>Prioridade:</strong>{' '}
+              <span className={`priority-badge priority-${String(product.priority || product.prioridade).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`}>
+                {String(product.priority || product.prioridade).toLowerCase().includes('alta') || String(product.priority || product.prioridade).toLowerCase().includes('essencial') ? '⭐ ' : ''}
+                {product.priority || product.prioridade}
+              </span>
+            </p>
+          )}
+
+          {product.purchaseDecision && (
+            <p className="product-meta"><strong>Decisão de compra:</strong> {product.purchaseDecision}</p>
+          )}
+
+          {product.unitPrice != null && product.totalPrice != null && (
+            <p className="product-meta">
+              <strong>Valores:</strong> {quantityDesired} × {product.unitPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} = {product.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </p>
+          )}
+
+          {notes.length > 0 && (
+            <details className="story-details">
+              <summary>📝 Observações importantes</summary>
+              <ul>
+                {notes.map(note => <li key={note}>{note}</li>)}
+              </ul>
+            </details>
+          )}
+
+          {quantityDesired > 1 && (
+            <div className="quantity-progress" aria-label={`${quantityReceived} de ${quantityDesired} recebidos`}>
+              <div className="quantity-progress__text">
+                <strong>🌱 {quantityReceived} de {quantityDesired} recebidos</strong>
+                <span>{isComplete ? 'Este sonho floresceu 🌸' : `Ainda podem florescer ${Math.max(quantityDesired - quantityReceived, 0)}`}</span>
+              </div>
+              <progress value={Math.min(quantityReceived, quantityDesired)} max={quantityDesired} />
+            </div>
+          )}
+
+          {product.story && (
+            <details className="story-details">
+              <summary>📖 A história</summary>
+              <blockquote>{product.story}</blockquote>
+            </details>
+          )}
+
+          {isMyReservation && (
+            <div className="reservation-notice">
+              <span>✨ Você marcou este presente ({effectiveStatus === 'received' ? 'Já comprei' : 'Vou comprar'})</span>
+              <button
+                type="button"
+                className="text-link-button"
+                onClick={() => onCancelReservation(product.id)}
+              >
+                Desfazer marcação
+              </button>
+            </div>
+          )}
+
+        </details>
 
         <div className="product-footer">
           <strong>{product.priceLabel || 'Consultar valor na loja'}</strong>
