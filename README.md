@@ -21,8 +21,7 @@ graph TB
             AdminPanel["AdminMigrationPanel (Login & Importação)"]
         end
         subgraph CoreApp ["Aplicação React 19 + Vite"]
-            App["App.jsx (Estado, Filtros & Sincronização)"]
-            FallbackData["Catálogo Local de Contingência (officialCatalog + gocaseProducts)"]
+            App["App.jsx (Estado, Filtros & Sincronização em Tempo Real)"]
         end
     end
 
@@ -117,21 +116,18 @@ JardimDosPresentes/
 │   └── images/                   # Imagens e referências visuais
 ├── src/
 │   ├── components/
-│   │   ├── AdminMigrationPanel.jsx # Painel administrativo (login e importação em lote)
-│   │   └── ProductCard.jsx       # Card de produto com status, prioridade, história e links
-│   ├── data/
-│   │   ├── catalog.js            # Catálogo base histórico
-│   │   ├── officialCatalog.js    # Catálogo consolidado oficial (84 produtos com overrides)
-│   │   └── gocaseProducts.js     # Coleção Gocase (2 produtos)
+│   │   ├── AdminMigrationPanel.jsx # Painel administrativo (login, mensagens e publicação)
+│   │   ├── GiftModal.jsx           # Modal para registrar presente ou compra
+│   │   └── ProductCard.jsx         # Card de produto com status, prioridade, história e links
 │   ├── firebase/
-│   │   └── config.js             # Inicialização do SDK Firebase (Auth, Firestore, Storage)
+│   │   └── config.js               # Inicialização do SDK Firebase (Auth, Firestore, Storage)
 │   ├── services/
-│   │   ├── productMigration.js   # Serviço de migração idempotente (lotes com writeBatch)
-│   │   └── reservationService.js # Serviço de reservas públicas e privadas no Firestore
+│   │   ├── reservationService.js   # Serviço de reservas públicas e privadas no Firestore
+│   │   └── stagedMigration.js      # Serviço de publicação em lote para novos produtos
 │   ├── styles/
-│   │   └── global.css            # Estilos globais, design system, badges e responsividade
-│   ├── App.jsx                   # Componente raiz: autenticação, queries, ordenação e filtros
-│   └── main.jsx                  # Ponto de montagem da aplicação React 19
+│   │   └── global.css              # Estilos globais, design system, badges e responsividade
+│   ├── App.jsx                     # Componente raiz: 100% Firestore, queries, ordenação e filtros
+│   └── main.jsx                    # Ponto de montagem da aplicação React 19
 ├── firestore.rules               # Regras de segurança atômicas do Firestore
 ├── index.html                    # Entrada HTML principal com metadados SEO
 ├── package.json                  # Manifesto do projeto e dependências

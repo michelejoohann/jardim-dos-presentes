@@ -20,8 +20,7 @@ graph TB
             AdminPanel["Painel Administrativo (AdminMigrationPanel)"]
         end
         subgraph CoreApp ["Aplicação React 19 + Vite"]
-            App["App.jsx (State, Auth, Listeners & Filtros)"]
-            FallbackData["Catálogo Local de Contingência (officialCatalog + gocaseProducts)"]
+            App["App.jsx (State, Auth, Listeners & Filtros em Tempo Real)"]
         end
     end
 
@@ -75,13 +74,11 @@ sequenceDiagram
     App->>Firestore: onSnapshot(query(collection('products'), orderBy('name')))
     Firestore-->>App: Emite Snapshot em tempo real
 
-    alt Firestore Conectado e Populado (status: ready)
+    alt Firestore Conectado (status: ready)
         App->>App: Define sourceProducts = firestoreProducts
-        Note over App: Firestore é a FONTE ÚNICA.<br/>Itens deletados somem na hora!
+        Note over App: Firestore é a FONTE ÚNICA de produtos.<br/>Itens deletados somem instantaneamente!
     else Firestore Vazio ou Indisponível (empty / unavailable)
-        App->>Fallback: Lê officialGardenProducts + gocaseProducts
-        App->>App: Define sourceProducts = dadosLocais
-        Note over App: Fallback temporário até migração ou reconexão
+        App->>App: Exibe aviso amigável de estado vazio ou indisponível
     end
 
     App-->>Visitante: Exibe grade com contadores e filtros ativos
@@ -111,20 +108,18 @@ JardimDosDesejos/
 │   └── images/                   # Imagens estáticas públicas
 ├── src/
 │   ├── components/
-│   │   ├── AdminMigrationPanel.jsx # Painel administrativo e migração (acesso sob demanda via ?admin=true)
-│   │   └── ProductCard.jsx       # Card de produto com badge, história e sonho
-│   ├── data/
-│   │   ├── catalog.js            # Catálogo histórico base de produtos
-│   │   ├── officialCatalog.js    # Catálogo oficial consolidado (84 produtos com overrides)
-│   │   └── gocaseProducts.js     # Coleção específica Gocase (2 produtos)
+│   │   ├── AdminMigrationPanel.jsx # Painel administrativo (login, mensagens e publicação de staging)
+│   │   ├── GiftModal.jsx           # Modal para registrar intenção de compra ou presente
+│   │   └── ProductCard.jsx         # Card de produto com badge, história, prioridade e sonho
 │   ├── firebase/
-│   │   └── config.js             # Inicialização do SDK do Firebase (Auth, DB, Storage)
+│   │   └── config.js               # Inicialização do SDK do Firebase (Auth, DB, Storage)
 │   ├── services/
-│   │   └── productMigration.js   # Serviço de migração idempotente em lotes (writeBatch)
+│   │   ├── reservationService.js   # Serviço de reservas públicas e privadas no Firestore
+│   │   └── stagedMigration.js      # Serviço de publicação em lote para novos produtos
 │   ├── styles/
-│   │   └── global.css            # Folha de estilos global com design tokens e responsividade
-│   ├── App.jsx                   # Componente raiz: estado, autenticação e reatividade
-│   └── main.jsx                  # Ponto de entrada React 19
+│   │   └── global.css              # Folha de estilos global com design tokens e responsividade
+│   ├── App.jsx                     # Componente raiz: 100% Firestore, queries, ordenação e filtros
+│   └── main.jsx                    # Ponto de entrada React 19
 ├── firestore.rules               # Regras de segurança do Cloud Firestore
 ├── index.html                    # Template HTML com meta tags SEO e viewport
 ├── package.json                  # Dependências (React 19, Vite 7, Firebase 12)

@@ -24,15 +24,14 @@ Em **Authentication → Configurações → Domínios autorizados**, confirme qu
 - `michelejoohann.github.io`
 - `localhost`
 
-## 4. Fonte de dados e Catálogo de Segurança
+## 4. Fonte de dados 100% em Nuvem
 
-- **Firestore como Fonte da Verdade**: Quando o banco está conectado e possui dados (`ready`), os produtos exibidos na tela vêm **exclusivamente do Firestore** em tempo real via `onSnapshot`.
-- **Exclusões e Edições Imediatas**: Itens deletados ou modificados no Firebase Console refletem instantaneamente no site para todos os visitantes.
-- **Fallback Local**: Caso o Firestore esteja vazio ou inacessível, o aplicativo utiliza o catálogo consolidado em `src/data/officialCatalog.js` e `src/data/gocaseProducts.js` como contingência temporária.
+- **Firestore como Fonte Única da Verdade**: Todos os produtos exibidos na tela vêm **exclusivamente do Firestore** em tempo real via `onSnapshot`. Nenhum produto fica embutido no código-fonte.
+- **Exclusões e Edições Imediatas**: Itens criados, deletados ou modificados no Firebase Console refletem instantaneamente no site para todos os visitantes.
 
-## 5. Migração dos produtos
+## 5. Gerenciamento dos produtos
 
-Pelo painel administrativo integrado na aplicação, a administradora autenticada pode executar a migração que popula ou atualiza a coleção `products` em lote (usando `writeBatch` com IDs estáveis e `merge: true`).
+O catálogo agora reside inteiramente no Firestore (coleção `products`). Novos itens e lotes adicionais podem ser publicados diretamente através do painel administrativo integrado ou do Console do Firebase.
 
 ## 6. Segurança da configuração Web
 

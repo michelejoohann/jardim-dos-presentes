@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase/config.js';
-import { migrateCatalogToFirestore } from '../services/productMigration.js';
 import { publishStagedProductsToFirestore } from '../services/stagedMigration.js';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
 
@@ -48,25 +47,6 @@ export default function AdminMigrationPanel({ user, firestoreCount, onClose, pro
       setMessage('Acesso administrativo confirmado.');
     } catch (err) {
       setError(err?.message || 'Não foi possível entrar no painel.');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleMigration() {
-    const confirmed = window.confirm(
-      `Importar os produtos atuais para o Firestore?\n\nO processo usa os IDs existentes e pode ser executado novamente sem duplicar documentos.`
-    );
-    if (!confirmed) return;
-
-    setBusy(true);
-    setMessage('');
-    setError('');
-    try {
-      const total = await migrateCatalogToFirestore();
-      setMessage(`${total} produtos foram gravados ou atualizados no Firestore.`);
-    } catch (err) {
-      setError(err?.message || 'A migração não pôde ser concluída.');
     } finally {
       setBusy(false);
     }
@@ -165,7 +145,6 @@ export default function AdminMigrationPanel({ user, firestoreCount, onClose, pro
         >
           {busy ? 'Publicando…' : '🚀 Publicar Novos Produtos no Firestore (71 itens)'}
         </button>
-        <button type="button" onClick={handleMigration} disabled={busy}>{busy ? 'Sincronizando…' : 'Sincronizar catálogo legado'}</button>
         <button type="button" className="secondary-button" onClick={() => signOut(auth)} disabled={busy}>Sair</button>
         {onClose && (
           <button type="button" className="secondary-button" onClick={onClose} disabled={busy}>Ocultar</button>

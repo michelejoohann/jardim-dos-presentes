@@ -5,8 +5,6 @@ import { auth, db } from './firebase/config.js';
 import ProductCard from './components/ProductCard.jsx';
 import AdminMigrationPanel from './components/AdminMigrationPanel.jsx';
 import GiftModal from './components/GiftModal.jsx';
-import { officialGardenProducts } from './data/officialCatalog.js';
-import { gocaseProducts } from './data/gocaseProducts.js';
 import { cancelReservation, subscribeToPublicReservations } from './services/reservationService.js';
 
 const categoryLabels = {
@@ -86,7 +84,7 @@ export default function App() {
       () => {
         if (!active) return;
         setFirestoreStatus('unavailable');
-        setError('Não foi possível consultar o Firestore. O catálogo local está sendo exibido como fallback.');
+        setError('Não foi possível carregar os presentes do Firestore no momento.');
         setLoading(false);
       }
     );
@@ -117,14 +115,9 @@ export default function App() {
   }
 
   const sourceProducts = useMemo(() => {
-    // Firestore is the sole source of truth when connected and populated.
-    // Local catalog is used only as fallback if Firestore is empty or unavailable.
-    const rawProducts = firestoreStatus === 'ready'
-      ? firestoreProducts
-      : [...officialGardenProducts, ...gocaseProducts];
-
-    return rawProducts.filter(product => !isTikTokSource(product));
-  }, [firestoreStatus, firestoreProducts]);
+    // Firestore é a fonte única da verdade para os presentes
+    return firestoreProducts.filter(product => !isTikTokSource(product));
+  }, [firestoreProducts]);
 
   const availableCategories = useMemo(
     () => [...new Set(sourceProducts.map(product => product.category).filter(Boolean))].sort(),
@@ -278,8 +271,8 @@ export default function App() {
         </div>
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}
-        {firestoreStatus === 'empty' && <p className="notice warning">O Firestore está conectado, mas ainda não possui produtos. O catálogo local está visível como fallback até a importação.</p>}
-        {firestoreStatus === 'unavailable' && <p className="notice error" role="alert">O Firestore está indisponível no momento. O catálogo local continua visível como fallback.</p>}
+        {firestoreStatus === 'empty' && !loading && <p className="notice warning">Nenhum presente cadastrado no Firestore.</p>}
+        {firestoreStatus === 'unavailable' && <p className="notice error" role="alert">O catálogo de presentes está indisponível no momento. Por favor, tente recarregar a página.</p>}
         {error && firestoreStatus !== 'unavailable' && <p className="notice error" role="alert">{error}</p>}
 
         <section className="product-grid" aria-live="polite">
