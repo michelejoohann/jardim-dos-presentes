@@ -1,110 +1,153 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 950" width="100%" height="100%" fill="none">
   <defs>
-    <linearGradient id="wildGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#b89352" stop-opacity="0.75" />
-      <stop offset="50%" stop-color="#cfab69" stop-opacity="0.6" />
-      <stop offset="100%" stop-color="#9e7938" stop-opacity="0.45" />
+    <!-- Gradientes de Ouro Antigo e Paleta Botânica -->
+    <linearGradient id="ivyGoldLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b89352" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#cfab69" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#8c6c33" stop-opacity="0.5" />
     </linearGradient>
-    <linearGradient id="petalTint" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f5e8cc" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#d4af6a" stop-opacity="0.08" />
+    
+    <!-- Tinta Dourada da Marcela do Campo (Achyrocline satureioides) -->
+    <radialGradient id="marcelaFloretLeft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fae89d" stop-opacity="0.85" />
+      <stop offset="60%" stop-color="#e2ba55" stop-opacity="0.65" />
+      <stop offset="100%" stop-color="#b68930" stop-opacity="0.4" />
+    </radialGradient>
+
+    <!-- Preenchimento das Folhas de Hera (Hedera helix) em Tom Sálvia / Musgo Suave -->
+    <linearGradient id="ivyLeafTintLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e3edd5" stop-opacity="0.32" />
+      <stop offset="50%" stop-color="#b8cfab" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#88a87b" stop-opacity="0.1" />
     </linearGradient>
-    <linearGradient id="leafTint" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#d9e6d5" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="#8fa88a" stop-opacity="0.08" />
+
+    <!-- Folhinhas Lineares Finas da Marcela -->
+    <linearGradient id="marcelaLeafTintLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff2e1" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#c6d4ba" stop-opacity="0.15" />
     </linearGradient>
   </defs>
 
-  <g stroke="url(#wildGold)" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Haste Principal Orgânica Curvada -->
-    <path d="M -15 920 C 50 820, 95 700, 75 580 C 55 450, 115 320, 80 180 C 65 110, 30 50, -5 5" stroke-width="2.2" />
-    <path d="M -10 925 C 55 825, 100 705, 80 585 C 60 455, 120 325, 85 185 C 70 115, 35 55, 0 10" stroke-width="0.8" stroke-dasharray="6 5" opacity="0.65" />
+  <g stroke="url(#ivyGoldLeft)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- ====================================================================
+         CAULE PRINCIPAL DE HERA (Hedera Helix) — Trepadeira Sinuosa Orgânica
+         ==================================================================== -->
+    <path d="M -15 940 C 45 830, 85 710, 68 590 C 50 460, 105 330, 72 190 C 55 120, 25 60, -5 10" stroke-width="2.2" />
+    <path d="M -10 945 C 50 835, 90 715, 73 595 C 55 465, 110 335, 77 195 C 60 125, 30 65, 0 15" stroke-width="0.8" stroke-dasharray="5 5" opacity="0.6" />
 
-    <!-- 🌸 Flor Silvestre 1: Margarida do Campo / Chamomile no topo (y=160) -->
-    <g transform="translate(140, 160)">
-      <!-- Haste de suporte -->
-      <path d="M -60 20 C -30 25, -10 15, 0 0" stroke-width="1.5" />
-      <!-- Pétalas de Margarida Silvestre -->
-      <path d="M 0 0 C -8 -30, 8 -30, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C 15 -25, 28 -15, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C 30 -8, 30 8, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C 25 15, 15 28, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C 8 30, -8 30, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C -15 25, -28 15, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C -30 8, -30 -8, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <path d="M 0 0 C -25 -15, -15 -28, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
-      <!-- Miolo da Margarida -->
-      <circle cx="0" cy="0" r="7.5" fill="#e8cf92" fill-opacity="0.4" stroke-width="1.2" />
-      <circle cx="0" cy="0" r="3.5" fill="#c59f5a" fill-opacity="0.5" stroke-width="0.8" />
+    <!-- Gavinhas Enroladas de Hera no Topo -->
+    <path d="M 72 190 C 85 160, 115 150, 125 165 C 135 180, 118 195, 105 185 C 98 178, 108 170, 115 174" stroke-width="1.1" />
+
+    <!-- 🍃 FOLHA DE HERA 1 (Hedera helix: 3 lóbulos pontiagudos clássicos) no topo (y=120) -->
+    <g transform="translate(60, 120)">
+      <path d="M 0 0 C 15 -18, 38 -22, 50 -10 C 65 -20, 82 -10, 85 10 C 95 28, 75 42, 60 40 C 45 52, 25 45, 15 32 C 0 25, -10 10, 0 0 Z" fill="url(#ivyLeafTintLeft)" stroke-width="1.3" />
+      <!-- Nervuras características da folha de hera -->
+      <path d="M 5 5 Q 45 15, 82 10" stroke-width="0.8" opacity="0.75" />
+      <path d="M 30 12 Q 42 -10, 48 -10" stroke-width="0.6" opacity="0.65" />
+      <path d="M 40 14 Q 55 35, 60 38" stroke-width="0.6" opacity="0.65" />
+      <path d="M 18 8 Q 18 25, 16 30" stroke-width="0.6" opacity="0.65" />
     </g>
 
-    <!-- Botão de flor silvestre jovem -->
-    <g transform="translate(195, 110)">
-      <path d="M -55 50 C -30 30, -10 10, 0 0" stroke-width="1.2" />
-      <path d="M 0 0 C -8 -16, 8 -16, 0 0" fill="url(#petalTint)" stroke-width="1" />
-      <path d="M -4 2 C -10 -8, -2 -14, 0 0" stroke-width="0.8" />
-      <path d="M 4 2 C 10 -8, 2 -14, 0 0" stroke-width="0.8" />
-      <path d="M -5 6 C -8 10, -3 14, 0 6 C 3 14, 8 10, 5 6" fill="url(#leafTint)" stroke-width="0.8" />
+    <!-- 🌼 RAMO DE MARCELA DO CAMPO 1 (Achyrocline satureioides) no topo (y=190) -->
+    <g transform="translate(80, 190)">
+      <path d="M 0 0 C 40 -15, 85 -5, 130 15" stroke-width="1.4" />
+      <!-- Folhinhas lineares estreitas da macela -->
+      <path d="M 35 -4 C 45 -18, 65 -15, 68 -3 C 55 0, 42 2, 35 -4 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.9" />
+      <path d="M 75 3 C 88 -10, 108 -6, 110 5 C 98 8, 85 9, 75 3 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.9" />
+      <!-- Cacho de Capítulos de Marcela Dourada (pequenos botões arredondados em umbelas) -->
+      <g transform="translate(130, 15)">
+        <circle cx="0" cy="0" r="7.5" fill="url(#marcelaFloretLeft)" stroke-width="1.1" />
+        <circle cx="9" cy="-6" r="6.5" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="14" cy="4" r="7" fill="url(#marcelaFloretLeft)" stroke-width="1.1" />
+        <circle cx="2" cy="9" r="6" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="-7" cy="4" r="5.5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="6" cy="2" r="5" fill="#f8e58a" stroke-width="0.8" />
+        <!-- Detalhes das brácteas florais da Marcela -->
+        <circle cx="0" cy="0" r="2.5" fill="#c4973b" stroke-width="0.5" />
+        <circle cx="9" cy="-6" r="2" fill="#c4973b" stroke-width="0.5" />
+        <circle cx="14" cy="4" r="2.2" fill="#c4973b" stroke-width="0.5" />
+      </g>
     </g>
 
-    <!-- Raminho com Folhas Serrilhadas Silvestres (y=280) -->
-    <path d="M 95 310 C 150 280, 205 285, 260 310" stroke-width="1.6" />
-    <!-- Folha Silvestre 1 -->
-    <path d="M 180 292 C 190 260, 225 255, 245 280 C 220 295, 195 295, 180 292 Z" fill="url(#leafTint)" stroke-width="1.1" />
-    <path d="M 180 292 L 240 280" stroke-width="0.7" />
-    <path d="M 200 288 Q 208 275, 218 274" stroke-width="0.6" />
-    <path d="M 215 285 Q 225 292, 235 290" stroke-width="0.6" />
-    <!-- Folha Silvestre 2 -->
-    <path d="M 220 298 C 245 275, 280 280, 295 305 C 265 320, 240 315, 220 298 Z" fill="url(#leafTint)" stroke-width="1.1" />
-    <path d="M 220 298 L 290 305" stroke-width="0.7" />
-
-    <!-- 🌸 Flor Silvestre 2: Rosa Silvestre / Silene Aberta no meio (y=450) -->
-    <g transform="translate(170, 440)">
-      <path d="M -90 10 C -50 20, -20 15, 0 0" stroke-width="1.6" />
-      <!-- 5 Pétalas Delicadas Coroadas -->
-      <path d="M 0 0 C -20 -35, -40 -15, -30 15 C -20 40, 0 30, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
-      <path d="M 0 0 C -12 -45, 22 -45, 30 -15 C 38 12, 18 30, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
-      <path d="M 0 0 C 25 -30, 52 -8, 42 22 C 32 50, 5 40, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
-      <path d="M 0 0 C 32 15, 28 50, -5 45 C -35 40, -22 15, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
-      <path d="M 0 0 C -32 22, -50 5, -35 -22 C -22 -40, -5 -20, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
-      <!-- Detalhes Centrais / Pistilo Silvestre -->
-      <circle cx="0" cy="3" r="7" fill="#dfbe76" fill-opacity="0.45" stroke-width="1.1" />
-      <path d="M -3 1 L -7 -3 M 0 -1 L 0 -7 M 3 1 L 7 -3 M 4 5 L 8 6 M -4 5 L -8 7" stroke-width="0.8" />
+    <!-- 🍃 FOLHA DE HERA 2 (Hedera helix: 5 lóbulos maduros) (y=290) -->
+    <g transform="translate(85, 290)">
+      <path d="M 0 0 C 20 -25, 50 -30, 68 -15 C 88 -28, 115 -15, 120 12 C 132 35, 105 55, 88 52 C 72 68, 42 62, 28 45 C 5 38, -12 18, 0 0 Z" fill="url(#ivyLeafTintLeft)" stroke-width="1.4" />
+      <!-- Nervuras palmadas da folha de hera -->
+      <path d="M 5 5 Q 60 18, 116 12" stroke-width="0.9" opacity="0.8" />
+      <path d="M 40 14 Q 58 -18, 66 -15" stroke-width="0.7" opacity="0.7" />
+      <path d="M 55 17 Q 78 48, 86 50" stroke-width="0.7" opacity="0.7" />
+      <path d="M 25 10 Q 30 35, 28 43" stroke-width="0.6" opacity="0.6" />
+      <path d="M 20 6 Q 22 -15, 30 -20" stroke-width="0.6" opacity="0.6" />
     </g>
 
-    <!-- Gavinha Espiral Delicada de Vinha Silvestre -->
-    <path d="M 230 460 C 265 480, 290 470, 295 450 C 300 430, 280 425, 275 438 C 270 450, 285 455, 290 450" stroke-width="1" />
+    <!-- Gavinha Espiral de Hera entre ramos -->
+    <path d="M 75 380 C 110 395, 140 375, 145 350 C 150 325, 125 320, 118 335 C 112 350, 130 355, 136 348" stroke-width="1" />
 
-    <!-- 🌸 Flor Silvestre 3: Flores Mínimas / Miosótis ou Campânulas (y=620) -->
-    <g transform="translate(150, 620)">
-      <path d="M -75 -15 C -40 -10, -10 5, 0 0" stroke-width="1.5" />
-      <!-- Pequena Florzinha 1 -->
-      <circle cx="20" cy="-15" r="5" fill="url(#petalTint)" stroke-width="1" />
-      <circle cx="32" cy="-22" r="4.5" fill="url(#petalTint)" stroke-width="0.9" />
-      <circle cx="42" cy="-14" r="5" fill="url(#petalTint)" stroke-width="1" />
-      <circle cx="36" cy="-2" r="4.5" fill="url(#petalTint)" stroke-width="0.9" />
-      <circle cx="23" cy="-4" r="5" fill="url(#petalTint)" stroke-width="1" />
-      <circle cx="31" cy="-11" r="3" fill="#cfab69" stroke-width="0.7" />
+    <!-- 🌼 RAMO DE MARCELA DO CAMPO 2 (Florescendo ao Centro) (y=450) -->
+    <g transform="translate(68, 450)">
+      <path d="M 0 0 C 45 15, 95 5, 145 -10" stroke-width="1.5" />
+      <path d="M 85 5 C 110 25, 150 35, 185 20" stroke-width="1.2" />
+      <!-- Folhinhas estreitas de macela -->
+      <path d="M 40 8 C 55 20, 75 16, 76 6 C 62 4, 48 3, 40 8 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.9" />
+      <path d="M 100 12 C 115 2, 132 5, 135 15 C 122 17, 108 17, 100 12 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.9" />
 
-      <!-- Folhas de suporte arredondadas -->
-      <path d="M -10 5 C 10 25, 45 25, 55 5 C 35 -5, 10 0, -10 5 Z" fill="url(#leafTint)" stroke-width="1.1" />
-      <path d="M -10 5 L 50 6" stroke-width="0.7" />
+      <!-- Cacho de Marcela 1 -->
+      <g transform="translate(145, -10)">
+        <circle cx="0" cy="0" r="7" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="8" cy="-5" r="6" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="12" cy="4" r="6.5" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="2" cy="8" r="5.5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="-6" cy="3" r="5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="5" cy="1" r="4.2" fill="#f8e58a" stroke-width="0.7" />
+      </g>
+
+      <!-- Cacho de Marcela 2 menor -->
+      <g transform="translate(185, 20)">
+        <circle cx="0" cy="0" r="6" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="7" cy="-4" r="5.5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="9" cy="4" r="5.5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="2" cy="6" r="4.8" fill="url(#marcelaFloretLeft)" stroke-width="0.8" />
+        <circle cx="4" cy="1" r="3.5" fill="#f8e58a" stroke-width="0.6" />
+      </g>
     </g>
 
-    <!-- Ramo Inferior com Folhas de Amora Silvestre e Bagas (y=780) -->
-    <path d="M 65 740 C 120 730, 180 755, 230 805" stroke-width="1.8" />
-    <path d="M 230 805 C 260 775, 300 785, 320 825 C 280 835, 250 825, 230 805 Z" fill="url(#leafTint)" stroke-width="1.2" />
-    <path d="M 230 805 L 315 823" stroke-width="0.8" />
-    <path d="M 175 745 C 205 715, 245 720, 265 755 C 235 770, 200 765, 175 745 Z" fill="url(#leafTint)" stroke-width="1.2" />
-    <path d="M 175 745 L 260 754" stroke-width="0.8" />
-    <!-- Pequenas bagas silvestres -->
-    <circle cx="215" cy="790" r="4.5" fill="url(#petalTint)" stroke-width="1" />
-    <circle cx="226" cy="783" r="4" fill="url(#petalTint)" stroke-width="0.9" />
-    <circle cx="233" cy="792" r="4.5" fill="url(#petalTint)" stroke-width="1" />
+    <!-- 🍃 FOLHA DE HERA 3 (Formato clássico com recorte lateral) (y=580) -->
+    <g transform="translate(70, 580)">
+      <path d="M 0 0 C 18 -22, 45 -25, 60 -12 C 78 -24, 102 -12, 105 10 C 116 30, 92 48, 76 45 C 62 58, 35 52, 22 38 C 2 30, -10 14, 0 0 Z" fill="url(#ivyLeafTintLeft)" stroke-width="1.3" />
+      <path d="M 5 5 Q 52 15, 100 10" stroke-width="0.8" opacity="0.75" />
+      <path d="M 35 12 Q 50 -14, 58 -12" stroke-width="0.6" opacity="0.65" />
+      <path d="M 48 14 Q 68 42, 74 44" stroke-width="0.6" opacity="0.65" />
+    </g>
 
-    <!-- Folhinhas Soltas Flutuantes Silvestres -->
-    <path d="M 115 85 C 130 65, 155 70, 160 90 C 140 100, 125 95, 115 85 Z" fill="url(#leafTint)" stroke-width="0.9" />
-    <path d="M 50 510 C 65 490, 90 495, 95 515 C 75 525, 60 520, 50 510 Z" fill="url(#leafTint)" stroke-width="0.9" />
-    <path d="M 85 860 C 100 840, 125 845, 130 865 C 110 875, 95 870, 85 860 Z" fill="url(#leafTint)" stroke-width="0.9" />
+    <!-- 🍃 FOLHA DE HERA 4 JOVEM (y=670) -->
+    <g transform="translate(78, 670)">
+      <path d="M 0 0 C 12 -15, 30 -18, 42 -8 C 54 -16, 70 -8, 72 8 C 80 22, 64 34, 52 32 C 42 42, 24 38, 15 26 C 0 20, -8 10, 0 0 Z" fill="url(#ivyLeafTintLeft)" stroke-width="1.1" />
+      <path d="M 5 4 Q 38 12, 70 8" stroke-width="0.7" opacity="0.7" />
+    </g>
+
+    <!-- 🌼 RAMO DE MARCELA DO CAMPO 3 (Base Dourada com Botões Silvestres) (y=770) -->
+    <g transform="translate(55, 770)">
+      <path d="M 0 0 C 45 20, 95 15, 140 -5" stroke-width="1.4" />
+      <path d="M 75 12 C 105 32, 145 35, 175 15" stroke-width="1.1" />
+      
+      <!-- Folhinhas estreitas da macela -->
+      <path d="M 35 10 C 48 20, 68 18, 70 8 C 55 6, 42 6, 35 10 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.8" />
+      <path d="M 95 18 C 110 8, 126 10, 130 20 C 116 22, 102 22, 95 18 Z" fill="url(#marcelaLeafTintLeft)" stroke-width="0.8" />
+
+      <!-- Cacho de Marcela Inferior -->
+      <g transform="translate(140, -5)">
+        <circle cx="0" cy="0" r="7.5" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="9" cy="-5" r="6.8" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="13" cy="5" r="7" fill="url(#marcelaFloretLeft)" stroke-width="1" />
+        <circle cx="3" cy="9" r="6" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="-6" cy="4" r="5.5" fill="url(#marcelaFloretLeft)" stroke-width="0.9" />
+        <circle cx="6" cy="2" r="4.8" fill="#f8e58a" stroke-width="0.7" />
+      </g>
+    </g>
+
+    <!-- Folhinhas de Hera Soltas Flutuantes -->
+    <path d="M 120 70 C 132 55, 150 58, 155 72 C 140 80, 128 78, 120 70 Z" fill="url(#ivyLeafTintLeft)" stroke-width="0.8" />
+    <path d="M 160 520 C 172 505, 190 508, 195 522 C 180 530, 168 528, 160 520 Z" fill="url(#ivyLeafTintLeft)" stroke-width="0.8" />
+    <path d="M 130 890 C 142 875, 160 878, 165 892 C 150 900, 138 898, 130 890 Z" fill="url(#ivyLeafTintLeft)" stroke-width="0.8" />
   </g>
 </svg>
