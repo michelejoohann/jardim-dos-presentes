@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 900" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="goldStem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b89352" stop-opacity="0.65" />
+      <stop offset="50%" stop-color="#cfab69" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#a67f3f" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dfc48d" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#8a6b32" stop-opacity="0.04" />
+    </linearGradient>
+  </defs>
+
+  <g stroke="url(#goldStem)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Haste Principal de Vinha Curvada -->
+    <path d="M -20 880 C 60 780, 110 650, 85 520 C 60 390, 130 260, 90 120 C 70 50, 30 10, -10 -20" stroke-width="2.5" />
+    <path d="M -15 885 C 65 785, 115 655, 90 525 C 65 395, 135 265, 95 125 C 75 55, 35 15, -5 -15" stroke-width="1" stroke-dasharray="8 6" opacity="0.6" />
+
+    <!-- Ramo Inferior com Folhas Amplas -->
+    <path d="M 75 620 C 130 600, 190 630, 240 680" stroke-width="1.8" />
+    <!-- Folha 1 -->
+    <path d="M 240 680 C 270 650, 310 660, 330 700 C 290 710, 260 700, 240 680 Z" fill="url(#leafGrad)" stroke-width="1.2" />
+    <path d="M 240 680 C 275 675, 305 685, 330 700" stroke-width="0.8" />
+    <path d="M 265 678 Q 275 665, 290 665" stroke-width="0.6" />
+    <path d="M 280 683 Q 295 695, 310 695" stroke-width="0.6" />
+    <!-- Folha 2 -->
+    <path d="M 180 622 C 210 590, 250 595, 270 630 C 240 645, 205 640, 180 622 Z" fill="url(#leafGrad)" stroke-width="1.2" />
+    <path d="M 180 622 C 215 612, 245 618, 270 630" stroke-width="0.8" />
+    <!-- Gavinha enrolada -->
+    <path d="M 240 680 C 265 720, 290 735, 305 725 C 315 715, 305 700, 295 705" stroke-width="1" />
+
+    <!-- Flor Botânica Estilo Rosa Silvestre Gravada -->
+    <g transform="translate(180, 480)">
+      <!-- Pétalas Externas -->
+      <path d="M 0 0 C -25 -35, -45 -15, -35 15 C -25 45, 0 35, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
+      <path d="M 0 0 C -15 -45, 25 -45, 35 -15 C 45 15, 20 35, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
+      <path d="M 0 0 C 25 -35, 55 -10, 45 25 C 35 55, 5 45, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
+      <path d="M 0 0 C 35 15, 30 55, -5 50 C -40 45, -25 15, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
+      <path d="M 0 0 C -35 25, -55 5, -40 -25 C -25 -45, -5 -25, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
+      <!-- Núcleo da Flor com Estames -->
+      <circle cx="0" cy="5" r="8" fill="#e6cca0" fill-opacity="0.3" stroke-width="1.2" />
+      <path d="M -4 3 L -8 -2 M 0 1 L 0 -6 M 4 3 L 8 -2 M 3 7 L 8 8 M -3 7 L -7 9" stroke-width="0.8" />
+    </g>
+
+    <!-- Haste com Folhas Médias e Botões -->
+    <path d="M 90 520 C 130 500, 160 480, 180 480" stroke-width="1.8" />
+    <path d="M 120 505 C 135 465, 170 455, 190 480" stroke-width="1" />
+    <!-- Botão de Flor -->
+    <path d="M 190 480 C 205 460, 220 465, 225 480 C 215 495, 200 495, 190 480 Z" fill="url(#leafGrad)" stroke-width="1" />
+
+    <!-- Ramo Superior Esquerdo -->
+    <path d="M 95 380 C 140 330, 200 320, 260 340" stroke-width="1.6" />
+    <!-- Par de Folhas Finas -->
+    <path d="M 170 335 C 185 295, 220 285, 240 310 C 215 330, 190 335, 170 335 Z" fill="url(#leafGrad)" stroke-width="1.1" />
+    <path d="M 170 335 L 235 310" stroke-width="0.7" />
+    <path d="M 210 330 C 235 305, 270 310, 285 335 C 255 350, 230 345, 210 330 Z" fill="url(#leafGrad)" stroke-width="1.1" />
+    <path d="M 210 330 L 280 335" stroke-width="0.7" />
+    <!-- Gavinha topo -->
+    <path d="M 260 340 C 295 350, 320 335, 315 315 C 310 300, 290 305, 295 320" stroke-width="0.9" />
+
+    <!-- Ramo Topo Delicado -->
+    <path d="M 85 220 C 120 180, 160 160, 210 165" stroke-width="1.5" />
+    <path d="M 140 185 C 150 150, 185 145, 195 170 C 175 185, 155 190, 140 185 Z" fill="url(#leafGrad)" stroke-width="1" />
+    <path d="M 180 170 C 200 140, 235 145, 245 170 C 220 185, 200 180, 180 170 Z" fill="url(#leafGrad)" stroke-width="1" />
+    <path d="M 210 165 C 240 165, 265 145, 260 130 C 255 120, 240 125, 245 138" stroke-width="0.9" />
+
+    <!-- Folhinhas Soltas Flutuantes Elegantes -->
+    <path d="M 130 80 C 145 60, 170 65, 175 85 C 155 95, 140 90, 130 80 Z" fill="url(#leafGrad)" stroke-width="0.9" />
+    <path d="M 70 700 C 85 680, 110 685, 115 705 C 95 715, 80 710, 70 700 Z" fill="url(#leafGrad)" stroke-width="0.9" />
+    <path d="M 40 440 C 50 420, 75 425, 80 445 C 60 455, 45 450, 40 440 Z" fill="url(#leafGrad)" stroke-width="0.9" />
+  </g>
+</svg>

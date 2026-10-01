@@ -190,8 +190,26 @@ export default function App() {
     setSubcategory('all');
   }
 
+  const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+
   return (
     <div className="app-shell">
+      {/* Folhagens Botânicas Vitorianas de Fundo */}
+      <div className="foliage-frame foliage-frame-left" aria-hidden="true">
+        <img
+          src={`${baseUrl}/images/foliage-branch-left.svg`}
+          alt=""
+          loading="eager"
+        />
+      </div>
+      <div className="foliage-frame foliage-frame-right" aria-hidden="true">
+        <img
+          src={`${baseUrl}/images/foliage-branch-right.svg`}
+          alt=""
+          loading="eager"
+        />
+      </div>
+
       <header className="hero">
         <div className="hero-emblem" aria-hidden="true">
           <span className="hero-monogram">MJ</span>
