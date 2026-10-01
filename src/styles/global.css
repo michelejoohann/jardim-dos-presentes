@@ -134,264 +134,342 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   HERO / CABEÇALHO BOTÂNICO VITORIANO
+   BARRA SUPERIOR HERBARIUM VITORIANO (OPÇÃO 1)
+   ========================================================================== */
+
+.site-top-bar {
+  position: relative;
+  z-index: 10;
+  padding: 14px clamp(16px, 4vw, 48px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(197, 159, 90, 0.22);
+  background: rgba(250, 247, 242, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.site-top-bar-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--green-deep);
+}
+
+.brand-author {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.site-top-bar-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.top-nav-link {
+  background: none;
+  border: none;
+  padding: 6px 0;
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  color: var(--text-body);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.top-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--gold-antique);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.top-nav-link:hover,
+.top-nav-link.active {
+  color: var(--green-deep);
+  font-weight: 600;
+}
+
+.top-nav-link:hover::after,
+.top-nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.site-top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.top-action-icon-btn {
+  background: none;
+  border: 1px solid transparent;
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--text-body);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.top-action-icon-btn:hover {
+  background: rgba(197, 159, 90, 0.15);
+  border-color: var(--gold-border);
+  color: var(--green-deep);
+  transform: scale(1.06);
+}
+
+@media (max-width: 768px) {
+  .site-top-bar-nav {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   HERO / CABEÇALHO COMPACTO & SLENDER (OPÇÃO 1)
    ========================================================================== */
 
 .hero {
   position: relative;
   z-index: 1;
-  padding: 64px 24px 44px;
+  padding: 30px 20px 8px;
   text-align: center;
-  background: linear-gradient(180deg, rgba(253, 251, 247, 0.95) 0%, rgba(246, 239, 227, 0.85) 100%);
-  border-bottom: 1px solid var(--gold-border);
-  box-shadow: 0 8px 30px rgba(22, 43, 29, 0.04);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 5%, var(--gold-antique) 50%, transparent 95%);
+.hero-title {
+  max-width: 900px;
+  margin: 0 auto 4px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.hero-subtitle {
+  max-width: 720px;
+  margin: 0 auto 14px;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: clamp(1.02rem, 2vw, 1.22rem);
+  font-style: italic;
+  line-height: 1.4;
 }
 
 .hero-emblem {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 16px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fffcf5 0%, #f4ebd7 70%, #e6d5b3 100%);
-  border: 2px solid var(--gold-antique);
-  box-shadow: 
-    0 4px 14px rgba(179, 139, 69, 0.28),
-    inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    inset 0 -2px 4px rgba(179, 139, 69, 0.2);
-  position: relative;
-}
-
-.hero-emblem::before {
-  content: '❧';
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gold-antique);
-  font-size: 1.1rem;
-}
-
-.hero-emblem::after {
-  content: '☙';
-  position: absolute;
-  right: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--gold-antique);
-  font-size: 1.1rem;
-}
-
-.hero-monogram {
-  font-family: var(--font-display);
-  font-size: 1.45rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--green-deep);
-  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-moss) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--wine-velvet);
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  max-width: 960px;
-  margin: 14px auto 10px;
-  color: var(--green-deep);
-  font-family: var(--font-serif);
-  font-size: clamp(2.6rem, 6.5vw, 4.4rem);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-}
-
-.hero-subtitle-name {
-  display: block;
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  color: var(--gold-antique);
-  margin-top: 4px;
-}
-
-.hero-desc {
-  max-width: 680px;
-  margin: 12px auto 0;
-  color: var(--text-muted);
-  font-family: var(--font-serif);
-  font-size: 1.28rem;
-  font-style: italic;
-  line-height: 1.45;
-}
-
-.hero-ornament {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  max-width: 380px;
-  margin: 22px auto 0;
+  margin: 0 auto 2px;
 }
 
-.ornament-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-antique), transparent);
-}
-
-.ornament-glyph {
-  color: var(--gold-antique);
-  font-size: 0.95rem;
-  letter-spacing: 0.3em;
+.hero-emblem-svg {
+  width: 140px;
+  height: auto;
+  filter: drop-shadow(0 2px 6px rgba(179, 139, 69, 0.16));
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL & TOOLBAR BOTÂNICA
+   CONTEÚDO PRINCIPAL & CONTROLES CENTRADOS (ESTILO OPÇÃO 1)
    ========================================================================== */
 
 .content {
-  width: min(1200px, calc(100% - 36px));
-  margin: 36px auto 90px;
+  width: min(1160px, calc(100% - 36px));
+  margin: 18px auto 90px;
   position: relative;
   z-index: 1;
 }
 
-.catalog-toolbar {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(170px, auto));
-  gap: 14px;
-  padding: 20px;
-  margin-bottom: 18px;
-  background: rgba(253, 251, 247, 0.94);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--gold-border);
-  border-radius: 20px;
-  box-shadow: var(--shadow-card);
+.catalog-controls {
+  max-width: 780px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+/* Pílula de Busca Central */
+.search-pill-wrapper {
   position: relative;
+  max-width: 540px;
+  margin: 0 auto 16px;
 }
 
-.catalog-toolbar input,
-.catalog-toolbar select {
+.search-input-pill {
   width: 100%;
-  padding: 13px 16px;
-  border: 1px solid var(--line-subtle);
-  border-radius: 12px;
+  padding: 13px 48px 13px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-border);
   background: #ffffff;
+  font-size: 0.95rem;
   color: var(--text-main);
-  font-size: 0.92rem;
+  box-shadow: 0 4px 16px rgba(184, 147, 82, 0.12);
   transition: all 0.2s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
-.catalog-toolbar input:focus,
-.catalog-toolbar select:focus {
+.search-input-pill:focus {
   outline: none;
   border-color: var(--gold-antique);
-  box-shadow: 0 0 0 3px var(--gold-glow), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 0 0 3px var(--gold-glow), 0 4px 16px rgba(184, 147, 82, 0.18);
 }
 
-.catalog-toolbar select {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b38b45' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-  appearance: none;
+.search-icon-adornment {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  pointer-events: none;
+  opacity: 0.55;
 }
 
-/* ==========================================================================
-   BARRA DE FILTRO POR PRIORIDADE (SELOS DE CERA VITORIANOS)
-   ========================================================================== */
-
+/* Barra de Filtro por Prioridade Centrada (Selos de Cera) */
 .priority-filter-bar {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
-  margin: 0 0 26px;
+  margin: 0 auto 16px;
   flex-wrap: wrap;
-  padding: 4px 6px;
 }
 
 .priority-filter-label {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--wine-velvet);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  margin-right: 4px;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+  margin-right: 6px;
 }
 
 .priority-filter-btn {
-  padding: 7px 16px;
-  border: 1px solid var(--line-subtle);
+  padding: 6px 18px;
   border-radius: 999px;
-  background: rgba(253, 251, 247, 0.85);
-  color: var(--green-moss);
+  background: #ffffff;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(22, 43, 29, 0.04);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--line-subtle);
+  color: var(--text-body);
 }
 
 .priority-filter-btn:hover {
-  background: #ffffff;
-  border-color: var(--gold-antique);
   transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(179, 139, 69, 0.2);
+  box-shadow: 0 4px 14px rgba(179, 139, 69, 0.22);
 }
 
 .priority-filter-btn.active {
   background: var(--green-forest);
   color: #ffffff;
   border-color: var(--green-deep);
-  box-shadow: 0 4px 14px rgba(34, 62, 43, 0.35);
+  box-shadow: 0 4px 14px rgba(34, 62, 43, 0.28);
 }
 
+.priority-filter-btn.priority-alta {
+  border-color: rgba(42, 78, 52, 0.3);
+  color: #2a4e34;
+  background: rgba(234, 241, 235, 0.5);
+}
+
+.priority-filter-btn.priority-alta:hover,
 .priority-filter-btn.priority-alta.active {
-  background: linear-gradient(135deg, #c59f5a 0%, #9e7428 100%);
-  border-color: #8c641d;
+  background: #2a4e34;
+  border-color: #1c3623;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(158, 116, 40, 0.4);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(42, 78, 52, 0.35);
 }
 
+.priority-filter-btn.priority-media {
+  border-color: rgba(115, 62, 76, 0.3);
+  color: #733e4c;
+  background: rgba(250, 239, 242, 0.5);
+}
+
+.priority-filter-btn.priority-media:hover,
 .priority-filter-btn.priority-media.active {
-  background: linear-gradient(135deg, #7c3a4d 0%, #521c29 100%);
-  border-color: #42131f;
+  background: #733e4c;
+  border-color: #552935;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(124, 58, 77, 0.38);
+  box-shadow: 0 4px 14px rgba(115, 62, 76, 0.35);
 }
 
+.priority-filter-btn.priority-baixa {
+  border-color: rgba(110, 86, 59, 0.3);
+  color: #6e563b;
+  background: rgba(246, 237, 217, 0.5);
+}
+
+.priority-filter-btn.priority-baixa:hover,
 .priority-filter-btn.priority-baixa.active {
-  background: linear-gradient(135deg, #53755c 0%, #36503d 100%);
-  border-color: #2b4031;
+  background: #6e563b;
+  border-color: #4f3b25;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(54, 80, 61, 0.35);
+  box-shadow: 0 4px 14px rgba(110, 86, 59, 0.35);
+}
+
+/* Linha Secundária de Filtros (Ambientes, Canteiros, Ordenação) */
+.catalog-filters-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.catalog-filters-row select {
+  padding: 8px 32px 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-subtle);
+  background: #ffffff;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.16s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23b38b45' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  appearance: none;
+}
+
+.catalog-filters-row select:focus {
+  outline: none;
+  border-color: var(--gold-antique);
+  box-shadow: 0 0 0 2px var(--gold-glow);
+}
+
+/* Título de Seção "Nossa Curadoria do Sonho" */
+.catalog-section-title {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--green-deep);
+  margin: 32px 0 26px;
+  letter-spacing: -0.01em;
 }
 
 /* ==========================================================================

@@ -1,72 +1,110 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 900" width="100%" height="100%" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 950" width="100%" height="100%" fill="none">
   <defs>
-    <linearGradient id="goldStem" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#b89352" stop-opacity="0.65" />
-      <stop offset="50%" stop-color="#cfab69" stop-opacity="0.5" />
-      <stop offset="100%" stop-color="#a67f3f" stop-opacity="0.4" />
+    <linearGradient id="wildGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b89352" stop-opacity="0.75" />
+      <stop offset="50%" stop-color="#cfab69" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#9e7938" stop-opacity="0.45" />
     </linearGradient>
-    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#dfc48d" stop-opacity="0.16" />
-      <stop offset="100%" stop-color="#8a6b32" stop-opacity="0.04" />
+    <linearGradient id="petalTint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5e8cc" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#d4af6a" stop-opacity="0.08" />
+    </linearGradient>
+    <linearGradient id="leafTint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d9e6d5" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#8fa88a" stop-opacity="0.08" />
     </linearGradient>
   </defs>
 
-  <g stroke="url(#goldStem)" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Haste Principal de Vinha Curvada -->
-    <path d="M -20 880 C 60 780, 110 650, 85 520 C 60 390, 130 260, 90 120 C 70 50, 30 10, -10 -20" stroke-width="2.5" />
-    <path d="M -15 885 C 65 785, 115 655, 90 525 C 65 395, 135 265, 95 125 C 75 55, 35 15, -5 -15" stroke-width="1" stroke-dasharray="8 6" opacity="0.6" />
+  <g stroke="url(#wildGold)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Haste Principal Orgânica Curvada -->
+    <path d="M -15 920 C 50 820, 95 700, 75 580 C 55 450, 115 320, 80 180 C 65 110, 30 50, -5 5" stroke-width="2.2" />
+    <path d="M -10 925 C 55 825, 100 705, 80 585 C 60 455, 120 325, 85 185 C 70 115, 35 55, 0 10" stroke-width="0.8" stroke-dasharray="6 5" opacity="0.65" />
 
-    <!-- Ramo Inferior com Folhas Amplas -->
-    <path d="M 75 620 C 130 600, 190 630, 240 680" stroke-width="1.8" />
-    <!-- Folha 1 -->
-    <path d="M 240 680 C 270 650, 310 660, 330 700 C 290 710, 260 700, 240 680 Z" fill="url(#leafGrad)" stroke-width="1.2" />
-    <path d="M 240 680 C 275 675, 305 685, 330 700" stroke-width="0.8" />
-    <path d="M 265 678 Q 275 665, 290 665" stroke-width="0.6" />
-    <path d="M 280 683 Q 295 695, 310 695" stroke-width="0.6" />
-    <!-- Folha 2 -->
-    <path d="M 180 622 C 210 590, 250 595, 270 630 C 240 645, 205 640, 180 622 Z" fill="url(#leafGrad)" stroke-width="1.2" />
-    <path d="M 180 622 C 215 612, 245 618, 270 630" stroke-width="0.8" />
-    <!-- Gavinha enrolada -->
-    <path d="M 240 680 C 265 720, 290 735, 305 725 C 315 715, 305 700, 295 705" stroke-width="1" />
-
-    <!-- Flor Botânica Estilo Rosa Silvestre Gravada -->
-    <g transform="translate(180, 480)">
-      <!-- Pétalas Externas -->
-      <path d="M 0 0 C -25 -35, -45 -15, -35 15 C -25 45, 0 35, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
-      <path d="M 0 0 C -15 -45, 25 -45, 35 -15 C 45 15, 20 35, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
-      <path d="M 0 0 C 25 -35, 55 -10, 45 25 C 35 55, 5 45, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
-      <path d="M 0 0 C 35 15, 30 55, -5 50 C -40 45, -25 15, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
-      <path d="M 0 0 C -35 25, -55 5, -40 -25 C -25 -45, -5 -25, 0 0" fill="url(#leafGrad)" stroke-width="1.2" />
-      <!-- Núcleo da Flor com Estames -->
-      <circle cx="0" cy="5" r="8" fill="#e6cca0" fill-opacity="0.3" stroke-width="1.2" />
-      <path d="M -4 3 L -8 -2 M 0 1 L 0 -6 M 4 3 L 8 -2 M 3 7 L 8 8 M -3 7 L -7 9" stroke-width="0.8" />
+    <!-- 🌸 Flor Silvestre 1: Margarida do Campo / Chamomile no topo (y=160) -->
+    <g transform="translate(140, 160)">
+      <!-- Haste de suporte -->
+      <path d="M -60 20 C -30 25, -10 15, 0 0" stroke-width="1.5" />
+      <!-- Pétalas de Margarida Silvestre -->
+      <path d="M 0 0 C -8 -30, 8 -30, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C 15 -25, 28 -15, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C 30 -8, 30 8, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C 25 15, 15 28, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C 8 30, -8 30, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C -15 25, -28 15, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C -30 8, -30 -8, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <path d="M 0 0 C -25 -15, -15 -28, 0 0" fill="url(#petalTint)" stroke-width="1.1" />
+      <!-- Miolo da Margarida -->
+      <circle cx="0" cy="0" r="7.5" fill="#e8cf92" fill-opacity="0.4" stroke-width="1.2" />
+      <circle cx="0" cy="0" r="3.5" fill="#c59f5a" fill-opacity="0.5" stroke-width="0.8" />
     </g>
 
-    <!-- Haste com Folhas Médias e Botões -->
-    <path d="M 90 520 C 130 500, 160 480, 180 480" stroke-width="1.8" />
-    <path d="M 120 505 C 135 465, 170 455, 190 480" stroke-width="1" />
-    <!-- Botão de Flor -->
-    <path d="M 190 480 C 205 460, 220 465, 225 480 C 215 495, 200 495, 190 480 Z" fill="url(#leafGrad)" stroke-width="1" />
+    <!-- Botão de flor silvestre jovem -->
+    <g transform="translate(195, 110)">
+      <path d="M -55 50 C -30 30, -10 10, 0 0" stroke-width="1.2" />
+      <path d="M 0 0 C -8 -16, 8 -16, 0 0" fill="url(#petalTint)" stroke-width="1" />
+      <path d="M -4 2 C -10 -8, -2 -14, 0 0" stroke-width="0.8" />
+      <path d="M 4 2 C 10 -8, 2 -14, 0 0" stroke-width="0.8" />
+      <path d="M -5 6 C -8 10, -3 14, 0 6 C 3 14, 8 10, 5 6" fill="url(#leafTint)" stroke-width="0.8" />
+    </g>
 
-    <!-- Ramo Superior Esquerdo -->
-    <path d="M 95 380 C 140 330, 200 320, 260 340" stroke-width="1.6" />
-    <!-- Par de Folhas Finas -->
-    <path d="M 170 335 C 185 295, 220 285, 240 310 C 215 330, 190 335, 170 335 Z" fill="url(#leafGrad)" stroke-width="1.1" />
-    <path d="M 170 335 L 235 310" stroke-width="0.7" />
-    <path d="M 210 330 C 235 305, 270 310, 285 335 C 255 350, 230 345, 210 330 Z" fill="url(#leafGrad)" stroke-width="1.1" />
-    <path d="M 210 330 L 280 335" stroke-width="0.7" />
-    <!-- Gavinha topo -->
-    <path d="M 260 340 C 295 350, 320 335, 315 315 C 310 300, 290 305, 295 320" stroke-width="0.9" />
+    <!-- Raminho com Folhas Serrilhadas Silvestres (y=280) -->
+    <path d="M 95 310 C 150 280, 205 285, 260 310" stroke-width="1.6" />
+    <!-- Folha Silvestre 1 -->
+    <path d="M 180 292 C 190 260, 225 255, 245 280 C 220 295, 195 295, 180 292 Z" fill="url(#leafTint)" stroke-width="1.1" />
+    <path d="M 180 292 L 240 280" stroke-width="0.7" />
+    <path d="M 200 288 Q 208 275, 218 274" stroke-width="0.6" />
+    <path d="M 215 285 Q 225 292, 235 290" stroke-width="0.6" />
+    <!-- Folha Silvestre 2 -->
+    <path d="M 220 298 C 245 275, 280 280, 295 305 C 265 320, 240 315, 220 298 Z" fill="url(#leafTint)" stroke-width="1.1" />
+    <path d="M 220 298 L 290 305" stroke-width="0.7" />
 
-    <!-- Ramo Topo Delicado -->
-    <path d="M 85 220 C 120 180, 160 160, 210 165" stroke-width="1.5" />
-    <path d="M 140 185 C 150 150, 185 145, 195 170 C 175 185, 155 190, 140 185 Z" fill="url(#leafGrad)" stroke-width="1" />
-    <path d="M 180 170 C 200 140, 235 145, 245 170 C 220 185, 200 180, 180 170 Z" fill="url(#leafGrad)" stroke-width="1" />
-    <path d="M 210 165 C 240 165, 265 145, 260 130 C 255 120, 240 125, 245 138" stroke-width="0.9" />
+    <!-- 🌸 Flor Silvestre 2: Rosa Silvestre / Silene Aberta no meio (y=450) -->
+    <g transform="translate(170, 440)">
+      <path d="M -90 10 C -50 20, -20 15, 0 0" stroke-width="1.6" />
+      <!-- 5 Pétalas Delicadas Coroadas -->
+      <path d="M 0 0 C -20 -35, -40 -15, -30 15 C -20 40, 0 30, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
+      <path d="M 0 0 C -12 -45, 22 -45, 30 -15 C 38 12, 18 30, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
+      <path d="M 0 0 C 25 -30, 52 -8, 42 22 C 32 50, 5 40, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
+      <path d="M 0 0 C 32 15, 28 50, -5 45 C -35 40, -22 15, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
+      <path d="M 0 0 C -32 22, -50 5, -35 -22 C -22 -40, -5 -20, 0 0" fill="url(#petalTint)" stroke-width="1.2" />
+      <!-- Detalhes Centrais / Pistilo Silvestre -->
+      <circle cx="0" cy="3" r="7" fill="#dfbe76" fill-opacity="0.45" stroke-width="1.1" />
+      <path d="M -3 1 L -7 -3 M 0 -1 L 0 -7 M 3 1 L 7 -3 M 4 5 L 8 6 M -4 5 L -8 7" stroke-width="0.8" />
+    </g>
 
-    <!-- Folhinhas Soltas Flutuantes Elegantes -->
-    <path d="M 130 80 C 145 60, 170 65, 175 85 C 155 95, 140 90, 130 80 Z" fill="url(#leafGrad)" stroke-width="0.9" />
-    <path d="M 70 700 C 85 680, 110 685, 115 705 C 95 715, 80 710, 70 700 Z" fill="url(#leafGrad)" stroke-width="0.9" />
-    <path d="M 40 440 C 50 420, 75 425, 80 445 C 60 455, 45 450, 40 440 Z" fill="url(#leafGrad)" stroke-width="0.9" />
+    <!-- Gavinha Espiral Delicada de Vinha Silvestre -->
+    <path d="M 230 460 C 265 480, 290 470, 295 450 C 300 430, 280 425, 275 438 C 270 450, 285 455, 290 450" stroke-width="1" />
+
+    <!-- 🌸 Flor Silvestre 3: Flores Mínimas / Miosótis ou Campânulas (y=620) -->
+    <g transform="translate(150, 620)">
+      <path d="M -75 -15 C -40 -10, -10 5, 0 0" stroke-width="1.5" />
+      <!-- Pequena Florzinha 1 -->
+      <circle cx="20" cy="-15" r="5" fill="url(#petalTint)" stroke-width="1" />
+      <circle cx="32" cy="-22" r="4.5" fill="url(#petalTint)" stroke-width="0.9" />
+      <circle cx="42" cy="-14" r="5" fill="url(#petalTint)" stroke-width="1" />
+      <circle cx="36" cy="-2" r="4.5" fill="url(#petalTint)" stroke-width="0.9" />
+      <circle cx="23" cy="-4" r="5" fill="url(#petalTint)" stroke-width="1" />
+      <circle cx="31" cy="-11" r="3" fill="#cfab69" stroke-width="0.7" />
+
+      <!-- Folhas de suporte arredondadas -->
+      <path d="M -10 5 C 10 25, 45 25, 55 5 C 35 -5, 10 0, -10 5 Z" fill="url(#leafTint)" stroke-width="1.1" />
+      <path d="M -10 5 L 50 6" stroke-width="0.7" />
+    </g>
+
+    <!-- Ramo Inferior com Folhas de Amora Silvestre e Bagas (y=780) -->
+    <path d="M 65 740 C 120 730, 180 755, 230 805" stroke-width="1.8" />
+    <path d="M 230 805 C 260 775, 300 785, 320 825 C 280 835, 250 825, 230 805 Z" fill="url(#leafTint)" stroke-width="1.2" />
+    <path d="M 230 805 L 315 823" stroke-width="0.8" />
+    <path d="M 175 745 C 205 715, 245 720, 265 755 C 235 770, 200 765, 175 745 Z" fill="url(#leafTint)" stroke-width="1.2" />
+    <path d="M 175 745 L 260 754" stroke-width="0.8" />
+    <!-- Pequenas bagas silvestres -->
+    <circle cx="215" cy="790" r="4.5" fill="url(#petalTint)" stroke-width="1" />
+    <circle cx="226" cy="783" r="4" fill="url(#petalTint)" stroke-width="0.9" />
+    <circle cx="233" cy="792" r="4.5" fill="url(#petalTint)" stroke-width="1" />
+
+    <!-- Folhinhas Soltas Flutuantes Silvestres -->
+    <path d="M 115 85 C 130 65, 155 70, 160 90 C 140 100, 125 95, 115 85 Z" fill="url(#leafTint)" stroke-width="0.9" />
+    <path d="M 50 510 C 65 490, 90 495, 95 515 C 75 525, 60 520, 50 510 Z" fill="url(#leafTint)" stroke-width="0.9" />
+    <path d="M 85 860 C 100 840, 125 845, 130 865 C 110 875, 95 870, 85 860 Z" fill="url(#leafTint)" stroke-width="0.9" />
   </g>
 </svg>

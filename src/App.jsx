@@ -210,20 +210,100 @@ export default function App() {
         />
       </div>
 
-      <header className="hero">
-        <div className="hero-emblem" aria-hidden="true">
-          <span className="hero-monogram">MJ</span>
+      {/* Barra de Topo Estilo Herbarium Vitoriano (Opção 1) */}
+      <nav className="site-top-bar" aria-label="Navegação superior">
+        <div className="site-top-bar-brand">
+          <span className="brand-title">O Jardim dos Presentes</span>
+          <span className="brand-author">de Michèlé Joohann</span>
         </div>
-        <p className="eyebrow">Curadoria Exclusiva · Jardim dos Presentes</p>
-        <h1>
-          O Jardim dos Presentes
-          <span className="hero-subtitle-name">de Michèlé Joohann</span>
-        </h1>
-        <p className="hero-desc">Sonhos cultivados com carinho, significado e história.</p>
-        <div className="hero-ornament" aria-hidden="true">
-          <span className="ornament-line"></span>
-          <span className="ornament-glyph">❦ 🌸 ❦</span>
-          <span className="ornament-line"></span>
+
+        <div className="site-top-bar-nav">
+          <button
+            type="button"
+            className={`top-nav-link ${category === 'all' && priorityFilter === 'all' && !search ? 'active' : ''}`}
+            onClick={() => { setCategory('all'); setSubcategory('all'); setPriorityFilter('all'); setSearch(''); }}
+          >
+            Coleções
+          </button>
+          <button
+            type="button"
+            className={`top-nav-link ${priorityFilter === 'alta' ? 'active' : ''}`}
+            onClick={() => setPriorityFilter(prev => prev === 'alta' ? 'all' : 'alta')}
+          >
+            Destaques
+          </button>
+          <button
+            type="button"
+            className="top-nav-link"
+            onClick={() => {
+              const el = document.querySelector('.catalog-filters-row');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Ambientes
+          </button>
+          <button
+            type="button"
+            className="top-nav-link"
+            onClick={() => alert('O Jardim dos Presentes: Curadoria exclusiva de sonhos e memórias afetivas por Michèlé Joohann.')}
+          >
+            Sobre
+          </button>
+        </div>
+
+        <div className="site-top-bar-actions">
+          <button
+            type="button"
+            className="top-action-icon-btn"
+            title="Buscar presentes"
+            aria-label="Buscar"
+            onClick={() => document.querySelector('.search-input-pill')?.focus()}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="top-action-icon-btn"
+            title="Painel de Administração"
+            aria-label="Administração"
+            onClick={() => setShowAdminPanel(prev => !prev)}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Slender e Nobre (Opção 1) */}
+      <header className="hero">
+        <h1 className="hero-title">O Jardim dos Presentes</h1>
+        <p className="hero-subtitle">Curadoria Exclusiva de Sonhos: Onde a Magia do Presente se Revela.</p>
+        
+        {/* Monograma com Raminhos de Louro Dourados */}
+        <div className="hero-emblem" aria-hidden="true">
+          <svg className="hero-emblem-svg" viewBox="0 0 160 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Raminho Esquerdo */}
+            <path d="M 54 30 C 44 20, 32 18, 18 24 C 28 29, 34 38, 48 34" stroke="#b38b45" strokeWidth="1.2" fill="rgba(212,175,106,0.18)"/>
+            <path d="M 50 34 C 40 43, 26 44, 16 38 C 24 33, 32 32, 44 34" stroke="#b38b45" strokeWidth="1.2" fill="rgba(212,175,106,0.18)"/>
+            <path d="M 44 22 C 34 12, 20 14, 10 22 C 20 24, 28 22, 40 25" stroke="#b38b45" strokeWidth="1" fill="rgba(212,175,106,0.14)"/>
+            <path d="M 56 30 C 40 30, 24 28, 8 30" stroke="#b38b45" strokeWidth="1.3" strokeLinecap="round"/>
+            
+            {/* Selo Medalhão Central */}
+            <circle cx="80" cy="30" r="23" stroke="#b38b45" strokeWidth="1.4" fill="#faf6ee"/>
+            <circle cx="80" cy="30" r="20" stroke="#dfc48d" strokeWidth="0.8" strokeDasharray="2 2" fill="none"/>
+            <text x="80" y="35" textAnchor="middle" fontFamily="'Cinzel', Georgia, serif" fontSize="13.5" fontWeight="700" fill="#162b1d" letterSpacing="2.5">M J</text>
+            
+            {/* Raminho Direito */}
+            <path d="M 106 30 C 116 20, 128 18, 142 24 C 132 29, 126 38, 112 34" stroke="#b38b45" strokeWidth="1.2" fill="rgba(212,175,106,0.18)"/>
+            <path d="M 110 34 C 120 43, 134 44, 144 38 C 136 33, 128 32, 116 34" stroke="#b38b45" strokeWidth="1.2" fill="rgba(212,175,106,0.18)"/>
+            <path d="M 116 22 C 126 12, 140 14, 150 22 C 140 24, 132 22, 120 25" stroke="#b38b45" strokeWidth="1" fill="rgba(212,175,106,0.14)"/>
+            <path d="M 104 30 C 120 30, 136 28, 152 30" stroke="#b38b45" strokeWidth="1.3" strokeLinecap="round"/>
+          </svg>
         </div>
       </header>
 
@@ -237,67 +317,81 @@ export default function App() {
           />
         )}
 
-        <section className="catalog-toolbar" aria-label="Controles do catálogo">
-          <input
-            type="search"
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-            placeholder="Buscar por nome, sonho, coleção ou história…"
-            aria-label="Buscar presentes"
-          />
-          <select value={category} onChange={handleCategoryChange} aria-label="Filtrar por ambiente">
-            <option value="all">Todos os ambientes</option>
-            {availableCategories.map(value => (
-              <option key={value} value={value}>{categoryLabels[value] || labelFromValue(value)}</option>
-            ))}
-          </select>
-          <select value={subcategory} onChange={event => setSubcategory(event.target.value)} aria-label="Filtrar por canteiro">
-            <option value="all">Todos os canteiros</option>
-            {availableSubcategories.map(value => (
-              <option key={value} value={value}>{labelFromValue(value)}</option>
-            ))}
-          </select>
-          <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Ordenar presentes">
-            <option value="priority">⭐ Maior prioridade primeiro</option>
-            <option value="priorityAsc">Menor prioridade primeiro</option>
-            <option value="priceAsc">Menor valor ao maior</option>
-            <option value="priceDesc">Maior valor ao menor</option>
-            <option value="nameAsc">Nome de A a Z</option>
-            <option value="default">Ordem original do catálogo</option>
-          </select>
+        <section className="catalog-controls" aria-label="Controles e busca do catálogo">
+          <div className="search-pill-wrapper">
+            <input
+              type="search"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+              placeholder="Encontre o presente perfeito…"
+              aria-label="Buscar presentes"
+              className="search-input-pill"
+            />
+            <span className="search-icon-adornment" aria-hidden="true">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8b734b" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+          </div>
+
+          <div className="priority-filter-bar" aria-label="Filtrar por prioridade">
+            <span className="priority-filter-label">Prioridade:</span>
+            <button
+              type="button"
+              className={`priority-filter-btn ${priorityFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setPriorityFilter('all')}
+            >
+              Todas
+            </button>
+            <button
+              type="button"
+              className={`priority-filter-btn priority-alta ${priorityFilter === 'alta' ? 'active' : ''}`}
+              onClick={() => setPriorityFilter('alta')}
+            >
+              🍃 Alta
+            </button>
+            <button
+              type="button"
+              className={`priority-filter-btn priority-media ${priorityFilter === 'media' ? 'active' : ''}`}
+              onClick={() => setPriorityFilter('media')}
+            >
+              🌸 Média
+            </button>
+            <button
+              type="button"
+              className={`priority-filter-btn priority-baixa ${priorityFilter === 'baixa' ? 'active' : ''}`}
+              onClick={() => setPriorityFilter('baixa')}
+            >
+              🌰 Baixa
+            </button>
+          </div>
+
+          <div className="catalog-filters-row">
+            <select value={category} onChange={handleCategoryChange} aria-label="Filtrar por ambiente">
+              <option value="all">Todos os ambientes</option>
+              {availableCategories.map(value => (
+                <option key={value} value={value}>{categoryLabels[value] || labelFromValue(value)}</option>
+              ))}
+            </select>
+            <select value={subcategory} onChange={event => setSubcategory(event.target.value)} aria-label="Filtrar por canteiro">
+              <option value="all">Todos os canteiros</option>
+              {availableSubcategories.map(value => (
+                <option key={value} value={value}>{labelFromValue(value)}</option>
+              ))}
+            </select>
+            <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Ordenar presentes">
+              <option value="priority">⭐ Maior prioridade primeiro</option>
+              <option value="priorityAsc">Menor prioridade primeiro</option>
+              <option value="priceAsc">Menor valor ao maior</option>
+              <option value="priceDesc">Maior valor ao menor</option>
+              <option value="nameAsc">Nome de A a Z</option>
+              <option value="default">Ordem original</option>
+            </select>
+          </div>
         </section>
 
-        <div className="priority-filter-bar" aria-label="Filtrar por prioridade">
-          <span className="priority-filter-label">Prioridade:</span>
-          <button
-            type="button"
-            className={`priority-filter-btn ${priorityFilter === 'all' ? 'active' : ''}`}
-            onClick={() => setPriorityFilter('all')}
-          >
-            Todas
-          </button>
-          <button
-            type="button"
-            className={`priority-filter-btn priority-alta ${priorityFilter === 'alta' ? 'active' : ''}`}
-            onClick={() => setPriorityFilter('alta')}
-          >
-            ⭐ Alta prioridade
-          </button>
-          <button
-            type="button"
-            className={`priority-filter-btn priority-media ${priorityFilter === 'media' ? 'active' : ''}`}
-            onClick={() => setPriorityFilter('media')}
-          >
-            Média
-          </button>
-          <button
-            type="button"
-            className={`priority-filter-btn priority-baixa ${priorityFilter === 'baixa' ? 'active' : ''}`}
-            onClick={() => setPriorityFilter('baixa')}
-          >
-            Baixa
-          </button>
-        </div>
+        <h2 className="catalog-section-title">Nossa Curadoria do Sonho</h2>
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}
         {firestoreStatus === 'empty' && !loading && <p className="notice warning">Nenhum presente cadastrado no Firestore.</p>}
