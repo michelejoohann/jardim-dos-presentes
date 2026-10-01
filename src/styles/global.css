@@ -1,86 +1,1287 @@
-:root{font-family:Georgia,'Times New Roman',serif;color:#292622;background:#f5efe3;font-synthesis:none;text-rendering:optimizeLegibility;--paper:#fffaf1;--green:#314738;--green-soft:#58705c;--wine:#733e4c;--gold:#b58b4b;--muted:#746d65;--line:#ded3c2;--shadow:0 14px 38px rgba(49,71,56,.12)}*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh;background:radial-gradient(circle at top left,#fffaf1 0,#f5efe3 48%,#e8dece 100%)}button,input,select,textarea{font:inherit}.app-shell{min-height:100vh}.hero{padding:72px 24px 48px;text-align:center;background:linear-gradient(180deg,rgba(255,250,241,.95),rgba(245,239,227,.68));border-bottom:1px solid var(--line)}.eyebrow{margin:0;color:var(--wine);font:700 .78rem Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase}.hero h1{max-width:920px;margin:16px auto;color:var(--green);font-size:clamp(2.4rem,7vw,5rem);font-weight:500;line-height:1.05}.hero>p:not(.eyebrow){max-width:760px;margin:0 auto;color:var(--muted);font-size:1.08rem}.content{width:min(1180px,calc(100% - 32px));margin:32px auto 80px}.admin-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:22px;align-items:center;padding:24px;margin-bottom:20px;background:linear-gradient(135deg,rgba(255,250,241,.98),rgba(239,229,215,.9));border:1px solid rgba(181,139,75,.38);border-radius:22px;box-shadow:var(--shadow)}.admin-panel h2{margin:4px 0 8px;color:var(--green)}.admin-panel p{margin:0;color:var(--muted)}.section-kicker{color:var(--wine)!important;font:700 .74rem Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}.admin-login{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-login label{display:grid;gap:6px;color:var(--green);font:700 .78rem Arial,sans-serif}.admin-login input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff}.admin-login button,.admin-actions button{padding:11px 14px;border:0;border-radius:11px;background:var(--green);color:#fff;cursor:pointer;font:700 .85rem Arial,sans-serif}.admin-login button{grid-column:1/-1}.admin-login button:disabled,.admin-actions button:disabled{cursor:wait;opacity:.65}.admin-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.admin-actions .secondary-button{background:transparent;color:var(--wine);border:1px solid var(--wine)}.admin-panel>.notice{grid-column:1/-1;margin:0}.catalog-toolbar{display:grid;grid-template-columns:minmax(260px,1.4fr) repeat(3,minmax(170px,auto));gap:12px;padding:18px;margin-bottom:20px;background:rgba(255,250,241,.92);border:1px solid rgba(181,139,75,.28);border-radius:20px;box-shadow:var(--shadow)}.catalog-toolbar input,.catalog-toolbar select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:white;color:#292622}.notice{padding:13px 16px;border-radius:14px;background:#edf3ed;color:var(--green)}.notice.success{background:#e5f1e6;color:#285b32}.notice.warning{background:#fff1cf;color:#725215}.notice.error{background:#f8e2e2;color:#7d3030}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:22px}.product-card{display:flex;flex-direction:column;overflow:hidden;background:rgba(255,250,241,.97);border:1px solid rgba(181,139,75,.28);border-radius:24px;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease}.product-card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(49,71,56,.18)}.product-media{height:220px;position:relative;display:grid;place-items:center;background:linear-gradient(145deg,#e9dfcf,#fdf8ed);overflow:hidden}.product-media img{width:100%;height:100%;object-fit:cover}.product-icon{font-size:4.5rem}.status-badge{position:absolute;top:14px;right:14px;padding:6px 10px;border-radius:999px;background:#fffaf1e8;border:1px solid var(--line);font:700 .72rem Arial,sans-serif}.status-reserved{color:#875c0d}.status-received{color:#6f3a68}.status-available{color:var(--green)}.product-body{display:flex;flex:1;flex-direction:column;padding:20px}.collection-name{margin:0 0 8px;color:var(--wine);font:700 .74rem Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}.product-body h2{margin:0;color:var(--green);font-size:1.35rem;line-height:1.22}.product-description{color:var(--muted);margin:12px 0}.dream-section{margin:4px 0 14px;padding:14px;border-radius:15px;background:#edf3ed;border:1px solid #d8e4d8}.dream-label{display:block;margin-bottom:6px;color:var(--green);font:700 .76rem Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}.dream-section p{margin:0;color:var(--green-soft);font-style:italic;line-height:1.45}.meaning-tags{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}.meaning-tags span{padding:6px 9px;border-radius:999px;background:#f3e7d6;color:var(--wine);font:700 .72rem Arial,sans-serif}.product-meta{margin:0 0 12px;color:var(--muted);font-size:.92rem}.quantity-progress{display:grid;gap:8px;margin:0 0 16px;padding:12px 14px;border:1px solid #d8e4d8;border-radius:14px;background:#f3f7f1}.quantity-progress__text{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--green);font:700 .78rem Arial,sans-serif}.quantity-progress__text span{color:var(--green-soft);font-weight:600}.quantity-progress progress{width:100%;height:9px;accent-color:var(--green)}.story-details{margin:0 0 18px;border-top:1px solid var(--line);padding-top:12px}.story-details summary{cursor:pointer;color:var(--green);font:700 .82rem Arial,sans-serif}.story-details blockquote{margin:10px 0 0;padding-left:12px;border-left:3px solid var(--gold);color:var(--green-soft);font-style:italic}.product-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto}.product-footer strong{color:var(--wine);font:700 1rem Arial,sans-serif}.product-footer a{padding:10px 12px;border-radius:10px;background:var(--green);color:white;text-decoration:none;font:700 .85rem Arial,sans-serif;white-space:nowrap}.empty-state{text-align:center;padding:48px 16px;color:var(--muted)}@media(max-width:1050px){.catalog-toolbar{grid-template-columns:1fr 1fr}.catalog-toolbar input{grid-column:1/-1}}@media(max-width:900px){.admin-panel{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.hero{padding-top:52px}.content{width:min(100% - 22px,1180px)}.admin-login,.catalog-toolbar,.product-grid{grid-template-columns:1fr}.admin-login button,.catalog-toolbar input{grid-column:auto}.admin-actions{justify-content:stretch}.admin-actions button{width:100%}.product-media{height:200px}.product-footer{align-items:flex-start;flex-direction:column}.product-footer a{width:100%;text-align:center}.quantity-progress__text{align-items:flex-start;flex-direction:column}}
+/* ==========================================================================
+   O Jardim dos Presentes de Michèlé Joohann
+   Design System: Herbarium Botânico Vitoriano (Opção 1)
+   ========================================================================== */
 
-/* --- Presentear / Modal de Gesto de Afeto --- */
-.product-footer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.store-link-button{padding:8px 12px;border-radius:10px;background:transparent;color:var(--green);border:1px solid var(--green);text-decoration:none;font:700 .8rem Arial,sans-serif;white-space:nowrap;transition:background .15s}
-.store-link-button:hover{background:rgba(49,71,56,.08)}
-.gift-action-button{padding:8px 14px;border-radius:10px;background:var(--wine);color:#fff;border:0;font:700 .85rem Arial,sans-serif;cursor:pointer;white-space:nowrap;transition:transform .15s,background .15s}
-.gift-action-button:hover{transform:translateY(-1px);background:#5a2f3a}
-.gift-tag{padding:6px 12px;border-radius:999px;font:700 .78rem Arial,sans-serif;display:inline-flex;align-items:center}
-.gift-tag.done{background:#e5f1e6;color:#285b32;border:1px solid #c2dfc5}
-.gift-tag.reserved{background:#fff1cf;color:#725215;border:1px solid #ebd096}
-.reservation-notice{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fffaf1;border:1px dashed var(--gold);border-radius:12px;margin-bottom:12px;font-size:.82rem;color:var(--wine);font-weight:600;gap:8px;flex-wrap:wrap}
-.text-link-button{background:transparent;border:0;color:var(--wine);font:700 .78rem Arial,sans-serif;text-decoration:underline;cursor:pointer;padding:0}
-.text-link-button:hover{opacity:.8}
+:root {
+  /* Tipografia Nobre */
+  --font-display: 'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-/* Modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(41,38,34,.68);backdrop-filter:blur(6px);z-index:9999;display:grid;place-items:center;padding:20px;overflow-y:auto}
-.modal-card{position:relative;width:min(580px,100%);background:var(--paper);border:1px solid rgba(181,139,75,.4);border-radius:24px;padding:32px;box-shadow:0 24px 60px rgba(49,71,56,.28);margin:auto}
-.modal-close-button{position:absolute;top:16px;right:16px;border:0;background:transparent;font-size:1.2rem;cursor:pointer;color:var(--muted);padding:6px 10px;border-radius:50%}
-.modal-close-button:hover{background:rgba(0,0,0,.05)}
-.modal-header h2{margin:4px 0 0;color:var(--green);font-size:1.6rem}
-.modal-product-summary{display:flex;gap:14px;align-items:center;padding:12px 16px;background:rgba(239,229,215,.55);border-radius:16px;border:1px solid var(--line);margin:18px 0 22px}
-.modal-product-media{width:56px;height:56px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:#fff;flex-shrink:0}
-.modal-product-media img{width:100%;height:100%;object-fit:cover}
-.modal-product-media span{font-size:1.8rem}
-.modal-product-details h3{margin:0 0 2px;color:var(--green);font-size:1.05rem}
-.modal-product-details p{margin:0;color:var(--wine);font:700 .9rem Arial,sans-serif}
-.modal-product-details small{color:var(--muted);font-size:.78rem}
+  /* Paleta Herbário Vitoriano & Papelaria Imperial */
+  --canvas-bg: #f8f4ec;
+  --paper-card: #fdfbf7;
+  --paper-elevated: #ffffff;
+  --paper-soft: #f2ebd9;
+  
+  --green-deep: #162b1d;
+  --green-forest: #223e2b;
+  --green-moss: #3a5c43;
+  --green-sage: #53755c;
+  --green-tint: #eaf1eb;
+  
+  --gold-foil: #c59f5a;
+  --gold-antique: #b38b45;
+  --gold-shimmer: #dfc48d;
+  --gold-light: #f7edd8;
+  --gold-border: rgba(197, 159, 90, 0.42);
+  --gold-glow: rgba(197, 159, 90, 0.22);
+  
+  --wine-velvet: #6b2838;
+  --wine-deep: #521c29;
+  --wine-soft: #85374a;
+  --wine-tint: #faeff2;
+  
+  --text-main: #24201b;
+  --text-body: #423d36;
+  --text-muted: #6e655a;
+  --text-faint: #968c7e;
+  
+  --line-subtle: #e3d9c7;
+  --line-golden: rgba(197, 159, 90, 0.35);
+  
+  --shadow-subtle: 0 8px 24px rgba(22, 43, 29, 0.06);
+  --shadow-card: 0 12px 32px rgba(22, 43, 29, 0.08), 0 2px 6px rgba(197, 159, 90, 0.12);
+  --shadow-card-hover: 0 22px 48px rgba(22, 43, 29, 0.14), 0 0 0 1px rgba(197, 159, 90, 0.45);
+  --shadow-modal: 0 32px 80px rgba(16, 32, 21, 0.32);
+}
 
-.modal-form{display:grid;gap:18px}
-.form-group{display:grid;gap:8px}
-.form-label{color:var(--green);font:700 .85rem Arial,sans-serif}
-.intent-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.intent-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid var(--line);border-radius:14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
-.intent-card.active{border-color:var(--green);background:#edf3ed}
-.intent-card input{margin-top:3px}
-.intent-card strong{display:block;color:var(--green);font-size:.9rem}
-.intent-card span{display:block;color:var(--muted);font-size:.76rem;margin-top:3px;line-height:1.3}
+* {
+  box-sizing: border-box;
+}
 
-.anon-toggle label{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--green);font:700 .84rem Arial,sans-serif}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-row label{display:grid;gap:6px;color:var(--green);font:700 .78rem Arial,sans-serif}
-.form-row input,.modal-form textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit}
-.anon-note{margin:4px 0 0;padding:8px 12px;border-radius:10px;background:#f5efe3;color:var(--muted);font-size:.82rem;font-style:italic}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  background-color: var(--canvas-bg);
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(255, 252, 245, 0.8) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(243, 233, 215, 0.6) 0%, transparent 45%),
+    linear-gradient(180deg, #faf6ee 0%, #f4ede1 40%, #eee4d3 100%);
+  background-attachment: fixed;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
 
-.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
-.primary-button{padding:11px 18px;background:var(--green);color:#fff;border:0;border-radius:11px;font:700 .88rem Arial,sans-serif;cursor:pointer;transition:opacity .15s}
-.primary-button:disabled{opacity:.65;cursor:wait}
+button, input, select, textarea {
+  font-family: inherit;
+}
 
-.modal-success{text-align:center;padding:24px 12px}
-.modal-success-icon{font-size:3.6rem;margin-bottom:12px;animation:heartBeat 1s ease-in-out infinite alternate}
-.modal-success h2{color:var(--green);margin:0 0 10px}
-.modal-success p{color:var(--muted);margin:0 0 8px;font-size:1.05rem}
-.modal-success-sub{color:var(--green-soft)!important;font-size:.92rem!important;font-style:italic;margin-bottom:24px!important}
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-/* Gestão de presentes no painel admin */
-.admin-gifts-section{grid-column:1/-1;margin-top:20px;border-top:1px solid var(--line);padding-top:20px}
-.admin-gifts-header h3{margin:0 0 4px;color:var(--green);font-size:1.25rem}
-.admin-gifts-header p{margin:0 0 14px;color:var(--muted);font-size:.9rem}
-.admin-gifts-list{display:grid;gap:12px}
-.admin-gift-card{background:#fff;padding:16px;border-radius:16px;border:1px solid var(--line);box-shadow:0 4px 12px rgba(49,71,56,.06)}
-.admin-gift-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
-.admin-gift-card-header h4{margin:6px 0 0;color:var(--green);font-size:1.15rem}
-.gift-price{display:inline-block;margin-top:3px;color:var(--wine);font:700 .85rem Arial,sans-serif}
-.admin-gift-donor p{margin:0;color:var(--green);font-size:.9rem}
-.donor-contact{color:var(--muted)}
-.donor-date{color:var(--muted);font-size:.8rem}
-.admin-gift-message{margin:10px 0 0;padding:10px 14px;background:#edf3ed;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;color:var(--green-soft);font-style:italic;font-size:.95rem;line-height:1.45}
-.admin-gift-no-message{margin:6px 0 0;color:var(--muted);font-size:.82rem;font-style:italic}
-.priority-badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:0.8rem;font-weight:600;vertical-align:middle}
-.priority-alta,.priority-essencial{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
-.priority-media{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
-.priority-baixa{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+/* ==========================================================================
+   HERO / CABEÇALHO BOTÂNICO VITORIANO
+   ========================================================================== */
 
-.priority-filter-bar{display:flex;align-items:center;gap:8px;margin:-8px 0 22px;flex-wrap:wrap;padding:4px 2px}
-.priority-filter-label{font:700 .78rem Arial,sans-serif;color:var(--wine);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
-.priority-filter-btn{padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:#fffaf1d0;color:var(--green);font:700 .76rem Arial,sans-serif;cursor:pointer;transition:all .18s ease}
-.priority-filter-btn:hover{background:#fff;border-color:var(--gold);transform:translateY(-1px)}
-.priority-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 3px 10px rgba(49,71,56,.25)}
-.priority-filter-btn.priority-alta.active{background:#b45309;border-color:#b45309;box-shadow:0 3px 10px rgba(180,83,9,.25)}
-.priority-filter-btn.priority-media.active{background:#0369a1;border-color:#0369a1;box-shadow:0 3px 10px rgba(3,105,161,.25)}
-.priority-filter-btn.priority-baixa.active{background:#475569;border-color:#475569;box-shadow:0 3px 10px rgba(71,85,105,.25)}
+.hero {
+  position: relative;
+  padding: 64px 24px 44px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(253, 251, 247, 0.95) 0%, rgba(246, 239, 227, 0.85) 100%);
+  border-bottom: 1px solid var(--gold-border);
+  box-shadow: 0 8px 30px rgba(22, 43, 29, 0.04);
+}
 
-@media(max-width:620px){.intent-options,.form-row{grid-template-columns:1fr}.modal-card{padding:24px 18px}}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, var(--gold-antique) 50%, transparent 95%);
+}
 
-@keyframes heartBeat{0%{transform:scale(1)}100%{transform:scale(1.15)}}
+.hero-emblem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fffcf5 0%, #f4ebd7 70%, #e6d5b3 100%);
+  border: 2px solid var(--gold-antique);
+  box-shadow: 
+    0 4px 14px rgba(179, 139, 69, 0.28),
+    inset 0 1px 3px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 4px rgba(179, 139, 69, 0.2);
+  position: relative;
+}
+
+.hero-emblem::before {
+  content: '❧';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-antique);
+  font-size: 1.1rem;
+}
+
+.hero-emblem::after {
+  content: '☙';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-antique);
+  font-size: 1.1rem;
+}
+
+.hero-monogram {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--green-deep);
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-moss) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--wine-velvet);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 960px;
+  margin: 14px auto 10px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 6.5vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.hero-subtitle-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--gold-antique);
+  margin-top: 4px;
+}
+
+.hero-desc {
+  max-width: 680px;
+  margin: 12px auto 0;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.hero-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  max-width: 380px;
+  margin: 22px auto 0;
+}
+
+.ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-antique), transparent);
+}
+
+.ornament-glyph {
+  color: var(--gold-antique);
+  font-size: 0.95rem;
+  letter-spacing: 0.3em;
+}
+
+/* ==========================================================================
+   CONTEÚDO PRINCIPAL & TOOLBAR BOTÂNICA
+   ========================================================================== */
+
+.content {
+  width: min(1200px, calc(100% - 36px));
+  margin: 36px auto 90px;
+}
+
+.catalog-toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(170px, auto));
+  gap: 14px;
+  padding: 20px;
+  margin-bottom: 18px;
+  background: rgba(253, 251, 247, 0.94);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--gold-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.catalog-toolbar input,
+.catalog-toolbar select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.catalog-toolbar input:focus,
+.catalog-toolbar select:focus {
+  outline: none;
+  border-color: var(--gold-antique);
+  box-shadow: 0 0 0 3px var(--gold-glow), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.catalog-toolbar select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b38b45' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  appearance: none;
+}
+
+/* ==========================================================================
+   BARRA DE FILTRO POR PRIORIDADE (SELOS DE CERA VITORIANOS)
+   ========================================================================== */
+
+.priority-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 26px;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+}
+
+.priority-filter-label {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--wine-velvet);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-right: 4px;
+}
+
+.priority-filter-btn {
+  padding: 7px 16px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 999px;
+  background: rgba(253, 251, 247, 0.85);
+  color: var(--green-moss);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(22, 43, 29, 0.04);
+}
+
+.priority-filter-btn:hover {
+  background: #ffffff;
+  border-color: var(--gold-antique);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(179, 139, 69, 0.2);
+}
+
+.priority-filter-btn.active {
+  background: var(--green-forest);
+  color: #ffffff;
+  border-color: var(--green-deep);
+  box-shadow: 0 4px 14px rgba(34, 62, 43, 0.35);
+}
+
+.priority-filter-btn.priority-alta.active {
+  background: linear-gradient(135deg, #c59f5a 0%, #9e7428 100%);
+  border-color: #8c641d;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(158, 116, 40, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.priority-filter-btn.priority-media.active {
+  background: linear-gradient(135deg, #7c3a4d 0%, #521c29 100%);
+  border-color: #42131f;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(124, 58, 77, 0.38);
+}
+
+.priority-filter-btn.priority-baixa.active {
+  background: linear-gradient(135deg, #53755c 0%, #36503d 100%);
+  border-color: #2b4031;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(54, 80, 61, 0.35);
+}
+
+/* ==========================================================================
+   CARDS DE PRODUTOS — PLACAS DE HERBÁRIO BOTÂNICO
+   ========================================================================== */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+  margin-top: 10px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper-card);
+  border: 1px solid var(--gold-border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease;
+  position: relative;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(197, 159, 90, 0.18);
+  border-radius: 17px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold-antique);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.product-media {
+  height: 230px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #eae1d1 0%, #fcf7ed 100%);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line-golden);
+}
+
+.product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-media img {
+  transform: scale(1.04);
+}
+
+.product-icon {
+  font-size: 4.8rem;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+}
+
+/* Badges de Status (Fitilho Botânico) */
+.status-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(253, 251, 247, 0.94);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--gold-border);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
+
+.status-available {
+  color: var(--green-moss);
+}
+
+.status-reserved {
+  color: #92580c;
+  background: rgba(255, 248, 230, 0.95);
+  border-color: #eed592;
+}
+
+.status-received {
+  color: var(--wine-velvet);
+  background: rgba(253, 241, 244, 0.95);
+  border-color: #e5b3be;
+}
+
+/* Corpo do Card */
+.product-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 22px 22px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.collection-name {
+  margin: 0 0 8px;
+  color: var(--wine-velvet);
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.product-body h2 {
+  margin: 0;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.48rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.product-description {
+  color: var(--text-body);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 12px 0 14px;
+}
+
+/* Seção de Sonho (Anotação Poética em Pergaminho) */
+.dream-section {
+  margin: 4px 0 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f4f8f4 0%, #edf4ee 100%);
+  border: 1px solid #d4e3d6;
+  border-left: 3px solid var(--gold-antique);
+}
+
+.dream-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--green-forest);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dream-section p {
+  margin: 0;
+  color: var(--green-moss);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+/* Tags de Significados */
+.meaning-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+}
+
+.meaning-tags span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--gold-light);
+  border: 1px solid rgba(197, 159, 90, 0.35);
+  color: var(--wine-velvet);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.product-meta {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+/* Selo de Prioridade nos cards */
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  vertical-align: middle;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.priority-alta, .priority-essencial {
+  background: #fdf5df;
+  color: #8c641d;
+  border: 1px solid #ecc97a;
+}
+
+.priority-media {
+  background: #f6e8ec;
+  color: var(--wine-velvet);
+  border: 1px solid #deb6c2;
+}
+
+.priority-baixa {
+  background: #eef3ef;
+  color: var(--green-moss);
+  border: 1px solid #c9d8cc;
+}
+
+/* Progresso de Quantidade Desejada */
+.quantity-progress {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid #d5e2d6;
+  border-radius: 14px;
+  background: #f4f8f4;
+}
+
+.quantity-progress__text {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: var(--green-forest);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.quantity-progress progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--green-forest);
+  border-radius: 999px;
+}
+
+/* Detalhes e Histórias */
+.story-details {
+  margin: 0 0 16px;
+  border-top: 1px solid var(--line-subtle);
+  padding-top: 12px;
+}
+
+.story-details summary {
+  cursor: pointer;
+  color: var(--green-forest);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.story-details blockquote {
+  margin: 10px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--gold-antique);
+  color: var(--text-body);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+/* Rodapé do Card */
+.product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-subtle);
+}
+
+.product-footer strong {
+  color: var(--wine-velvet);
+  font-family: var(--font-sans);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.product-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.store-link-button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--green-forest);
+  border: 1px solid var(--green-forest);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.16s ease;
+}
+
+.store-link-button:hover {
+  background: var(--green-tint);
+  border-color: var(--green-deep);
+}
+
+.gift-action-button {
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--wine-velvet) 0%, var(--wine-deep) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(223, 196, 141, 0.4);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(107, 40, 56, 0.28);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gift-action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(107, 40, 56, 0.4), 0 0 0 1px var(--gold-antique);
+}
+
+.gift-tag {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+}
+
+.gift-tag.done {
+  background: #e6f2e8;
+  color: #24572f;
+  border: 1px solid #b9dec0;
+}
+
+.gift-tag.reserved {
+  background: #fdf5de;
+  color: #7d5913;
+  border: 1px solid #e9d191;
+}
+
+.reservation-notice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #fffcf5;
+  border: 1px dashed var(--gold-antique);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-size: 0.82rem;
+  color: var(--wine-velvet);
+  font-weight: 600;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.text-link-button {
+  background: transparent;
+  border: 0;
+  color: var(--wine-velvet);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ==========================================================================
+   MODAL DE GESTO DE AFETO — CONVITE VITORIANO
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 43, 29, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-card {
+  position: relative;
+  width: min(590px, 100%);
+  background: var(--paper-card);
+  border: 1px solid var(--gold-antique);
+  border-radius: 26px;
+  padding: 34px;
+  box-shadow: var(--shadow-modal), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  margin: auto;
+}
+
+.modal-card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(197, 159, 90, 0.28);
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  border-radius: 50%;
+  transition: all 0.16s ease;
+  z-index: 3;
+}
+
+.modal-close-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+}
+
+.modal-header h2 {
+  margin: 4px 0 0;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+}
+
+.modal-product-summary {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(244, 237, 225, 0.65);
+  border-radius: 16px;
+  border: 1px solid var(--gold-border);
+  margin: 18px 0 24px;
+}
+
+.modal-product-media {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line-subtle);
+  flex-shrink: 0;
+}
+
+.modal-product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-product-details h3 {
+  margin: 0 0 3px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.modal-product-details p {
+  margin: 0;
+  color: var(--wine-velvet);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.modal-form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-label {
+  color: var(--green-forest);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.intent-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.intent-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border: 2px solid var(--line-subtle);
+  border-radius: 16px;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.intent-card.active {
+  border-color: var(--green-forest);
+  background: var(--green-tint);
+  box-shadow: 0 4px 14px rgba(34, 62, 43, 0.12);
+}
+
+.intent-card input {
+  margin-top: 3px;
+  accent-color: var(--green-forest);
+}
+
+.intent-card strong {
+  display: block;
+  color: var(--green-deep);
+  font-size: 0.92rem;
+}
+
+.intent-card span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-row label {
+  display: grid;
+  gap: 6px;
+  color: var(--green-forest);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.form-row input,
+.modal-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 0.92rem;
+  transition: border-color 0.16s ease;
+}
+
+.form-row input:focus,
+.modal-form textarea:focus {
+  outline: none;
+  border-color: var(--gold-antique);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.anon-note {
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--gold-light);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-style: italic;
+  border: 1px solid var(--line-golden);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.primary-button {
+  padding: 12px 22px;
+  background: linear-gradient(135deg, var(--green-forest) 0%, var(--green-deep) 100%);
+  color: #ffffff;
+  border: 1px solid var(--gold-border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 43, 29, 0.28);
+  transition: all 0.2s ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(22, 43, 29, 0.38);
+}
+
+.secondary-button {
+  padding: 11px 18px;
+  background: transparent;
+  color: var(--wine-velvet);
+  border: 1px solid var(--wine-velvet);
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.secondary-button:hover {
+  background: var(--wine-tint);
+}
+
+.modal-success {
+  text-align: center;
+  padding: 28px 12px;
+}
+
+.modal-success-icon {
+  font-size: 3.8rem;
+  margin-bottom: 14px;
+  animation: heartBeat 1.1s ease-in-out infinite alternate;
+}
+
+.modal-success h2 {
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  margin: 0 0 10px;
+}
+
+.modal-success p {
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+
+/* ==========================================================================
+   PAINEL ADMINISTRATIVO & MENSAGENS
+   ========================================================================== */
+
+.admin-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
+  gap: 24px;
+  align-items: center;
+  padding: 26px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(253, 251, 247, 0.98), rgba(243, 235, 222, 0.92));
+  border: 1px solid var(--gold-antique);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.admin-panel h2 {
+  margin: 4px 0 8px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+}
+
+.admin-panel p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.section-kicker {
+  color: var(--wine-velvet) !important;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.admin-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.admin-login label {
+  display: grid;
+  gap: 6px;
+  color: var(--green-deep);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.admin-login input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.admin-login button,
+.admin-actions button {
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--green-forest);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.16s ease;
+}
+
+.admin-login button {
+  grid-column: 1 / -1;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-gifts-section {
+  grid-column: 1 / -1;
+  margin-top: 22px;
+  border-top: 1px solid var(--gold-border);
+  padding-top: 22px;
+}
+
+.admin-gifts-header h3 {
+  margin: 0 0 4px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+}
+
+.admin-gifts-header p {
+  margin: 0 0 14px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.admin-gifts-list {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-gift-card {
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid var(--line-subtle);
+  box-shadow: 0 4px 14px rgba(22, 43, 29, 0.05);
+}
+
+.admin-gift-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-gift-card-header h4 {
+  margin: 6px 0 0;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+}
+
+.gift-price {
+  display: inline-block;
+  margin-top: 3px;
+  color: var(--wine-velvet);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.admin-gift-donor p {
+  margin: 0;
+  color: var(--green-forest);
+  font-size: 0.9rem;
+}
+
+.donor-contact {
+  color: var(--text-muted);
+}
+
+.donor-date {
+  color: var(--text-faint);
+  font-size: 0.8rem;
+}
+
+.admin-gift-message {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  background: #f4f8f4;
+  border-left: 3px solid var(--gold-antique);
+  border-radius: 0 12px 12px 0;
+  color: var(--green-moss);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.admin-gift-no-message {
+  margin: 6px 0 0;
+  color: var(--text-faint);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   ESTADOS DE AVISO, VAZIO E ANIMAÇÃO
+   ========================================================================== */
+
+.notice {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #ebf3eb;
+  color: var(--green-forest);
+  font-size: 0.94rem;
+}
+
+.notice.success {
+  background: #e4f2e6;
+  color: #1f5027;
+  border: 1px solid #c2e2c6;
+}
+
+.notice.warning {
+  background: #fcf4de;
+  color: #795711;
+  border: 1px solid #ebd9a2;
+}
+
+.notice.error {
+  background: #fbe6e6;
+  color: #832727;
+  border: 1px solid #ebbcbc;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 56px 20px;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15); }
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE (TABLET & MOBILE)
+   ========================================================================== */
+
+@media (max-width: 1050px) {
+  .catalog-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .catalog-toolbar input {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-panel {
+    grid-template-columns: 1fr;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .hero {
+    padding-top: 48px;
+    padding-bottom: 36px;
+  }
+  .hero-emblem {
+    width: 52px;
+    height: 52px;
+  }
+  .hero-emblem::before,
+  .hero-emblem::after {
+    display: none;
+  }
+  .content {
+    width: min(calc(100% - 24px), 1200px);
+  }
+  .catalog-toolbar,
+  .product-grid,
+  .intent-options,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .product-media {
+    height: 200px;
+  }
+  .product-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .product-footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .store-link-button,
+  .gift-action-button {
+    width: 100%;
+    text-align: center;
+  }
+  .modal-card {
+    padding: 24px 18px;
+  }
+}

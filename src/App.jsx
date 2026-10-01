@@ -193,9 +193,20 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="hero">
-        <p className="eyebrow">Jardim dos Presentes · versão 2.4</p>
-        <h1>O Jardim dos Presentes de Michèlé Joohann</h1>
-        <p>Sonhos cultivados com carinho, significado e história.</p>
+        <div className="hero-emblem" aria-hidden="true">
+          <span className="hero-monogram">MJ</span>
+        </div>
+        <p className="eyebrow">Curadoria Exclusiva · Jardim dos Presentes</p>
+        <h1>
+          O Jardim dos Presentes
+          <span className="hero-subtitle-name">de Michèlé Joohann</span>
+        </h1>
+        <p className="hero-desc">Sonhos cultivados com carinho, significado e história.</p>
+        <div className="hero-ornament" aria-hidden="true">
+          <span className="ornament-line"></span>
+          <span className="ornament-glyph">❦ 🌸 ❦</span>
+          <span className="ornament-line"></span>
+        </div>
       </header>
 
       <main className="content">
