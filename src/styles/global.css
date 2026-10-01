@@ -1424,3 +1424,400 @@ button, input, select, textarea {
     padding: 24px 18px;
   }
 }
+
+/* ==========================================================================
+   REDESIGN — JARDIM DOS PRESENTES / REFERÊNCIA HERBARIUM VITORIANO
+   Ajustes de composição para aproximar a página da referência fornecida.
+   ========================================================================== */
+
+:root {
+  --canvas-bg: #f7f4ed;
+  --paper-card: #fbf9f3;
+  --green-deep: #17311f;
+  --green-forest: #274532;
+  --text-main: #27251f;
+  --text-body: #4a463e;
+  --text-muted: #6e685e;
+  --gold-antique: #ad9363;
+  --gold-border: rgba(173, 147, 99, 0.46);
+  --wine-velvet: #671f35;
+  --wine-deep: #521729;
+}
+
+body {
+  background-color: #f7f4ed;
+  background-image:
+    radial-gradient(circle at 18% 14%, rgba(255,255,255,.72) 0, transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(232,224,205,.38) 0, transparent 32%),
+    linear-gradient(180deg, #faf8f2 0%, #f6f1e8 54%, #f1eadc 100%);
+}
+
+.app-shell {
+  overflow-x: hidden;
+}
+
+.foliage-frame {
+  width: clamp(210px, 20vw, 330px);
+  opacity: .42;
+  z-index: 0;
+}
+
+.site-top-bar {
+  min-height: 84px;
+  padding: 11px clamp(28px, 4vw, 54px);
+  border-bottom: 1px solid rgba(119, 101, 70, .24);
+  background: rgba(250, 248, 243, .78);
+  backdrop-filter: blur(7px);
+}
+
+.site-top-bar-brand {
+  min-width: 235px;
+}
+
+.brand-title {
+  font-size: 1.28rem;
+  line-height: 1.02;
+  color: #162a1c;
+}
+
+.brand-author {
+  font-size: 1.02rem;
+  line-height: 1.02;
+  color: #162a1c;
+  font-style: normal;
+}
+
+.site-top-bar-nav {
+  gap: 25px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.top-nav-link {
+  padding: 7px 3px;
+  font-size: 1.08rem;
+  color: #292821;
+}
+
+.top-nav-link .nav-arrow {
+  display: none;
+}
+
+.top-action-icon-btn {
+  width: 38px;
+  height: 38px;
+  padding: 8px;
+  border-radius: 0;
+}
+
+.top-action-icon-btn:hover,
+.top-action-icon-btn.active {
+  background: transparent;
+  border-color: transparent;
+  color: var(--green-deep);
+  transform: none;
+}
+
+.hero {
+  padding: 17px 18px 4px;
+}
+
+.hero-title {
+  max-width: 1000px;
+  margin-bottom: 2px;
+  font-size: clamp(2.8rem, 5.1vw, 4.05rem);
+  line-height: 1.02;
+  letter-spacing: -.025em;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  max-width: 760px;
+  margin-bottom: 5px;
+  color: #25231e;
+  font-size: clamp(1rem, 1.8vw, 1.18rem);
+  font-style: normal;
+}
+
+.hero-emblem-svg {
+  width: 72px;
+  height: 72px;
+}
+
+.content {
+  width: min(930px, calc(100% - 40px));
+  margin: 3px auto 56px;
+}
+
+.catalog-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin: 0 auto;
+}
+
+.search-pill-wrapper {
+  width: min(486px, 100%);
+  position: relative;
+}
+
+.search-input-pill {
+  width: 100%;
+  height: 40px;
+  padding: 0 43px 0 17px;
+  border: 1px solid rgba(151, 130, 92, .45);
+  border-radius: 999px;
+  background: rgba(253, 251, 247, .82);
+  color: #39362f;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.75);
+}
+
+.search-input-pill:focus {
+  outline: none;
+  border-color: rgba(138, 112, 65, .68);
+  box-shadow: 0 0 0 3px rgba(173,147,99,.11);
+}
+
+.search-icon-adornment {
+  right: 15px;
+}
+
+.catalog-filters-row {
+  gap: 8px;
+  margin-top: 1px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.catalog-filters-row select {
+  height: 38px;
+  min-width: 116px;
+  padding: 6px 29px 6px 14px;
+  border-color: rgba(151, 130, 92, .42);
+  border-radius: 999px;
+  background-color: rgba(253,251,247,.8);
+  color: #3b3831;
+  font-family: var(--font-serif);
+  font-size: .92rem;
+  box-shadow: none;
+}
+
+.catalog-section-title {
+  margin: 17px 0 12px;
+  color: #152b1c;
+  font-size: clamp(1.65rem, 2.8vw, 2rem);
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.product-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 0;
+}
+
+.product-card {
+  border-radius: 16px;
+  border-color: rgba(165, 137, 84, .68);
+  background: rgba(252, 249, 241, .95);
+  box-shadow: 0 8px 20px rgba(68, 56, 36, .11);
+}
+
+.product-card::before {
+  inset: 4px;
+  border-radius: 12px;
+  border-color: rgba(173,147,99,.25);
+}
+
+.product-media {
+  height: 170px;
+  margin: 7px 7px 0;
+  border: 0;
+  border-radius: 10px;
+  background: #eee7d9;
+}
+
+.product-media img {
+  border-radius: 10px;
+}
+
+.status-badge {
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  font-size: .64rem;
+}
+
+.product-body {
+  align-items: center;
+  text-align: center;
+  padding: 9px 18px 16px;
+}
+
+.collection-name {
+  margin: 0 0 2px;
+  color: #29271f;
+  font-family: var(--font-serif);
+  font-size: .83rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.product-body h2 {
+  color: #171610;
+  font-size: 1.28rem;
+  line-height: 1.08;
+  font-weight: 500;
+}
+
+.product-description {
+  margin: 6px 0 8px;
+  font-family: var(--font-serif);
+  font-size: .92rem;
+  color: #28261f;
+  line-height: 1.25;
+}
+
+.dream-section {
+  width: 100%;
+  margin: 3px 0 9px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+.dream-label {
+  display: none;
+}
+
+.dream-section p {
+  color: #1e1d18;
+  font-size: .9rem;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.meaning-tags,
+.product-meta,
+.story-details,
+.quantity-progress,
+.reservation-notice {
+  width: 100%;
+  text-align: left;
+}
+
+.product-footer {
+  width: 100%;
+  justify-content: center;
+  border-top: 0;
+  padding-top: 4px;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.product-footer strong {
+  color: #171610;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.product-footer-actions {
+  justify-content: center;
+}
+
+.store-link-button {
+  display: none;
+}
+
+.gift-action-button {
+  min-width: 154px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: var(--wine-velvet);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 4px 10px rgba(82, 23, 41, .18);
+  font-family: var(--font-serif);
+  font-size: .96rem;
+  font-weight: 500;
+}
+
+.gift-action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(82,23,41,.24);
+}
+
+.gift-action-button::first-letter {
+  font-size: .9em;
+}
+
+.empty-state {
+  font-family: var(--font-serif);
+}
+
+@media (max-width: 1050px) {
+  .site-top-bar-nav {
+    gap: 14px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .site-top-bar {
+    min-height: 70px;
+    padding: 10px 16px;
+  }
+
+  .site-top-bar-brand {
+    min-width: 0;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .brand-author {
+    font-size: .86rem;
+  }
+
+  .site-top-bar-actions {
+    gap: 2px;
+  }
+
+  .hero {
+    padding-top: 25px;
+  }
+
+  .hero-title {
+    font-size: clamp(2.25rem, 10vw, 3.2rem);
+  }
+
+  .hero-subtitle {
+    font-size: .98rem;
+  }
+
+  .content {
+    width: min(100% - 24px, 680px);
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .product-media {
+    height: 210px;
+  }
+
+  .catalog-filters-row select {
+    min-width: 0;
+    flex: 1 1 44%;
+  }
+}
