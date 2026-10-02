@@ -540,7 +540,7 @@ export default function App() {
               <path d="M62 136C49 139 40 146 36 158C50 157 61 151 67 142Z"/>
               <path d="M118 136C131 139 140 146 144 158C130 157 119 151 113 142Z"/>
             </g>
-            <!-- pequenos ramos de marcela -->
+            {/* pequenos ramos de marcela */}
             <g stroke="#a98a55" strokeWidth=".8" fill="#ead9ad">
               <g transform="translate(28 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
               <g transform="translate(152 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
