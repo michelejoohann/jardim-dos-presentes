@@ -2003,3 +2003,118 @@ body {
     width: min(280px, calc(100vw - 32px));
   }
 }
+
+
+/* --- Cabeçalho: busca integrada e contato --- */
+.site-top-bar-actions {
+  min-width: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.site-top-bar-actions.search-open {
+  min-width: min(360px, 38vw);
+}
+
+.top-search-bar {
+  width: min(330px, 34vw);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px 3px 14px;
+  border: 1px solid rgba(151, 130, 92, .48);
+  border-radius: 999px;
+  background: rgba(253, 251, 247, .96);
+  box-shadow: 0 6px 18px rgba(68, 56, 36, .09);
+}
+
+.top-search-input {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #39362f;
+  font-family: var(--font-serif);
+  font-size: .94rem;
+}
+
+.top-search-input::placeholder {
+  color: #81796c;
+}
+
+.top-search-close {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #6f6658;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.top-search-close:hover {
+  background: rgba(173,147,99,.11);
+  color: var(--green-deep);
+}
+
+.contact-email-link {
+  display: inline-block;
+  margin-top: 7px;
+  color: var(--wine-velvet);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-email-link:hover {
+  text-decoration: underline;
+}
+
+.submenu-divider {
+  height: 1px;
+  margin: 7px 4px 6px;
+  background: rgba(173,147,99,.24);
+}
+
+.submenu-section-label {
+  display: block;
+  padding: 3px 10px 5px;
+  color: #77613b;
+  font-family: var(--font-display);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .site-top-bar-actions.search-open {
+    min-width: min(320px, 55vw);
+  }
+
+  .top-search-bar {
+    width: min(290px, 52vw);
+  }
+}
+
+@media (max-width: 760px) {
+  .site-top-bar-actions.search-open {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    min-width: 0;
+    z-index: 110;
+  }
+
+  .top-search-bar {
+    width: 100%;
+    height: 42px;
+  }
+}
