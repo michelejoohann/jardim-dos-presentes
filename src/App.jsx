@@ -219,14 +219,14 @@ export default function App() {
       {/* Folhagens Botânicas Vitorianas de Fundo */}
       <div className="foliage-frame foliage-frame-left" aria-hidden="true">
         <img
-          src={`${baseUrl}/images/foliage-branch-left.svg`}
+          src={`${baseUrl}/images/herbarium-wild-left.svg`}
           alt=""
           loading="eager"
         />
       </div>
       <div className="foliage-frame foliage-frame-right" aria-hidden="true">
         <img
-          src={`${baseUrl}/images/foliage-branch-right.svg`}
+          src={`${baseUrl}/images/herbarium-wild-right.svg`}
           alt=""
           loading="eager"
         />
@@ -283,17 +283,17 @@ export default function App() {
             )}
           </div>
 
-          {/* Menu Novidades */}
+          {/* Menu Prioridades */}
           <div className="nav-item-dropdown">
             <button
               type="button"
               className={`top-nav-link ${priorityFilter !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'novidades' ? null : 'novidades')}
-              aria-expanded={openSubmenu === 'novidades'}
+              onClick={() => setOpenSubmenu(prev => prev === 'prioridades' ? null : 'novidades')}
+              aria-expanded={openSubmenu === 'prioridades'}
             >
               Novidades <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
-            {openSubmenu === 'novidades' && (
+            {openSubmenu === 'prioridades' && (
               <div className="top-submenu-dropdown" role="menu">
                 <button
                   type="button"
@@ -508,73 +508,45 @@ export default function App() {
         
         {/* Selo Medalhão Central: MJ em fonte vintage com círculo de Heras Enroladas */}
         <div className="hero-emblem" aria-hidden="true">
-          <svg className="hero-emblem-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="hero-emblem-svg" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="medallionIvyGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#c59f5a" />
-                <stop offset="50%" stopColor="#b38b45" />
-                <stop offset="100%" stopColor="#8a6728" />
+              <linearGradient id="mjGold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#8d7040"/>
+                <stop offset=".5" stopColor="#c2a76b"/>
+                <stop offset="1" stopColor="#765d34"/>
               </linearGradient>
-              <linearGradient id="medallionLeafFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#eaf3e3" stopOpacity="0.85" />
-                <stop offset="100%" stopColor="#b9d4ad" stopOpacity="0.5" />
-              </linearGradient>
+              <filter id="softInk" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation=".35"/>
+              </filter>
             </defs>
-
-            {/* Selo Base Central com Borda Dupla Nobre */}
-            <circle cx="70" cy="70" r="33" fill="#fdfbf7" stroke="url(#medallionIvyGold)" strokeWidth="1.8" />
-            <circle cx="70" cy="70" r="28.5" fill="none" stroke="#b38b45" strokeWidth="0.8" strokeDasharray="2.5 2" opacity="0.85" />
-
-            {/* Monograma MJ Vintage em Caligrafia Nobre */}
-            <g fontFamily="'Cormorant Garamond', 'Cinzel', Georgia, serif" fontWeight="700">
-              <text x="69" y="78" textAnchor="middle" fontSize="24" fontStyle="italic" fill="#183120" letterSpacing="1">
-                M<tspan fontSize="15" fill="#b38b45" dy="-3">·</tspan><tspan dy="3">J</tspan>
-              </text>
+            <circle cx="90" cy="90" r="39" fill="#fbf8ef" stroke="url(#mjGold)" strokeWidth="2"/>
+            <circle cx="90" cy="90" r="34" stroke="#a48751" strokeWidth=".9" strokeDasharray="1.5 3"/>
+            <circle cx="90" cy="90" r="28" stroke="#d2bc88" strokeWidth=".6"/>
+            <g fill="#19311f" fontFamily="'Cormorant Garamond', Georgia, serif" fontStyle="italic" fontWeight="700">
+              <text x="90" y="101" textAnchor="middle" fontSize="34" letterSpacing="-5">MJ</text>
             </g>
-
-            {/* ==============================================================
-                 RAMOS DE HERA ENROLADAS (Hedera helix) AO REDOR DO CÍRCULO
-                 ============================================================== */}
-            {/* Caule de Hera Contornando a Esquerda */}
-            <path d="M 70 105 C 44 105, 27 88, 30 68 C 33 46, 50 33, 70 33" stroke="url(#medallionIvyGold)" strokeWidth="1.6" strokeLinecap="round" />
-            
-            {/* Caule de Hera Contornando a Direita */}
-            <path d="M 70 105 C 96 105, 113 88, 110 68 C 107 46, 90 33, 70 33" stroke="url(#medallionIvyGold)" strokeWidth="1.6" strokeLinecap="round" />
-
-            {/* Entrelaçamento de Gavinhas no Topo e Base */}
-            <path d="M 64 35 C 70 28, 76 28, 82 35" stroke="url(#medallionIvyGold)" strokeWidth="1.3" />
-            <path d="M 63 103 C 70 110, 77 110, 84 103" stroke="url(#medallionIvyGold)" strokeWidth="1.3" />
-
-            {/* Folha de Hera 1 (Inferior Esquerda - 3 lóbulos pontiagudos) */}
-            <path d="M 44 96 C 36 102, 26 108, 18 116 C 22 106, 16 100, 12 98 C 20 94, 25 88, 30 82 C 35 88, 41 93, 44 96 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1.1" />
-            <path d="M 38 90 L 22 110" stroke="#8a6728" strokeWidth="0.6" opacity="0.8" />
-
-            {/* Folha de Hera 2 (Lateral Esquerda - Lóbulo clássico) */}
-            <path d="M 30 68 C 22 67, 12 70, 5 68 C 12 62, 11 53, 7 47 C 17 50, 23 56, 30 62 C 30 65, 30 67, 30 68 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1.1" />
-            <path d="M 26 62 L 9 66" stroke="#8a6728" strokeWidth="0.6" opacity="0.8" />
-
-            {/* Folha de Hera 3 (Superior Esquerda) */}
-            <path d="M 46 42 C 40 32, 31 25, 24 18 C 28 26, 26 33, 22 38 C 32 38, 39 40, 46 42 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1" />
-
-            {/* Folha de Hera 4 (Topo Central) */}
-            <path d="M 70 32 C 67 22, 59 15, 55 7 C 63 15, 68 17, 70 20 C 72 17, 77 15, 85 7 C 81 15, 73 22, 70 32 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1" />
-
-            {/* Folha de Hera 5 (Superior Direita) */}
-            <path d="M 94 42 C 100 32, 109 25, 116 18 C 112 26, 114 33, 118 38 C 108 38, 101 40, 94 42 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1" />
-
-            {/* Folha de Hera 6 (Lateral Direita) */}
-            <path d="M 110 68 C 118 67, 128 70, 135 68 C 128 62, 129 53, 133 47 C 123 50, 117 56, 110 62 C 110 65, 110 67, 110 68 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1.1" />
-            <path d="M 114 62 L 131 66" stroke="#8a6728" strokeWidth="0.6" opacity="0.8" />
-
-            {/* Folha de Hera 7 (Inferior Direita) */}
-            <path d="M 96 96 C 104 102, 114 108, 122 116 C 118 106, 124 100, 128 98 C 120 94, 115 88, 110 82 C 105 88, 99 93, 96 96 Z" fill="url(#medallionLeafFill)" stroke="url(#medallionIvyGold)" strokeWidth="1.1" />
-            <path d="M 102 90 L 118 110" stroke="#8a6728" strokeWidth="0.6" opacity="0.8" />
-
-            {/* Espirais de Gavinhas Delicadas de Hera */}
-            <path d="M 22 84 C 16 86, 12 80, 15 76 C 18 72, 22 75, 20 78" stroke="url(#medallionIvyGold)" strokeWidth="0.9" />
-            <path d="M 118 84 C 124 86, 128 80, 125 76 C 122 72, 118 75, 120 78" stroke="url(#medallionIvyGold)" strokeWidth="0.9" />
+            <!-- heras enroladas -->
+            <g stroke="url(#mjGold)" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M90 49C56 43 33 57 31 85C29 112 48 134 78 139" strokeWidth="1.7"/>
+              <path d="M90 49C124 43 147 57 149 85C151 112 132 134 102 139" strokeWidth="1.7"/>
+              <path d="M53 53C42 43 35 33 37 22M127 53C138 43 145 33 143 22" strokeWidth="1.15"/>
+              <path d="M68 139C61 149 53 157 42 158M112 139C119 149 127 157 138 158" strokeWidth="1.15"/>
+            </g>
+            <g fill="#c9d1a9" stroke="#7b7550" strokeWidth=".85">
+              <path d="M48 57C34 56 24 49 19 39C34 38 45 43 51 52Z"/>
+              <path d="M132 57C146 56 156 49 161 39C146 38 135 43 129 52Z"/>
+              <path d="M38 91C24 96 16 105 14 118C28 117 38 108 42 97Z"/>
+              <path d="M142 91C156 96 164 105 166 118C152 117 142 108 138 97Z"/>
+              <path d="M62 136C49 139 40 146 36 158C50 157 61 151 67 142Z"/>
+              <path d="M118 136C131 139 140 146 144 158C130 157 119 151 113 142Z"/>
+            </g>
+            <!-- pequenos ramos de marcela -->
+            <g stroke="#a98a55" strokeWidth=".8" fill="#ead9ad">
+              <g transform="translate(28 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
+              <g transform="translate(152 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
+            </g>
           </svg>
-        </div>
+        </div>        </div>
       </header>
 
       <main className="content">
