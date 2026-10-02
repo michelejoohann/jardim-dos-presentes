@@ -546,7 +546,7 @@ export default function App() {
               <g transform="translate(152 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
             </g>
           </svg>
-        </div>        </div>
+        </div>
       </header>
 
       <main className="content">
