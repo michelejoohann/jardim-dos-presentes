@@ -2118,3 +2118,107 @@ body {
     height: 42px;
   }
 }
+
+
+/* --- Direção de arte final: herbário vintage, sem filtros duplicados --- */
+.catalog-controls,
+.search-pill-wrapper {
+  display: none !important;
+}
+
+.foliage-frame {
+  width: clamp(220px, 23vw, 360px);
+  opacity: .34;
+  filter: sepia(.16) saturate(.72);
+}
+
+.foliage-frame img {
+  object-fit: cover;
+}
+
+.hero-emblem {
+  margin-top: 3px;
+  margin-bottom: 4px;
+}
+
+.hero-emblem-svg {
+  width: 82px;
+  height: 82px;
+  filter: drop-shadow(0 2px 5px rgba(120, 91, 42, .14));
+}
+
+.site-top-bar {
+  position: relative;
+}
+
+.site-top-bar-actions.search-open {
+  flex: 0 0 auto;
+}
+
+.top-search-bar {
+  width: min(300px, 26vw);
+  border-color: rgba(132, 105, 60, .45);
+  background: rgba(250, 247, 240, .98);
+  box-shadow: 0 5px 16px rgba(66, 52, 32, .08);
+}
+
+.top-search-input {
+  font-size: .92rem;
+}
+
+.top-search-input:focus {
+  outline: none;
+}
+
+.contact-email-link {
+  font-family: var(--font-serif);
+  font-size: .96rem;
+  letter-spacing: .01em;
+}
+
+.submenu-item.priority-alta {
+  color: #6c5728;
+}
+
+.submenu-item.priority-media {
+  color: #6b3442;
+}
+
+.submenu-item.priority-baixa {
+  color: #49614e;
+}
+
+@media (max-width: 1100px) {
+  .site-top-bar {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .site-top-bar-nav {
+    gap: 15px;
+  }
+
+  .top-nav-link {
+    font-size: .96rem;
+  }
+
+  .top-search-bar {
+    width: min(250px, 24vw);
+  }
+}
+
+@media (max-width: 760px) {
+  .foliage-frame {
+    width: 120px;
+    opacity: .22;
+  }
+
+  .hero-emblem-svg {
+    width: 76px;
+    height: 76px;
+  }
+
+  .top-search-bar {
+    width: 100%;
+  }
+}
