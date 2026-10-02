@@ -64,10 +64,20 @@ export default function App() {
 
   useEffect(() => {
     function handlePointerDown(e) {
-      if (!e.target.closest('.site-top-bar')) {
+      // Menus/diálogos de navegação fecham ao clicar fora da própria caixa.
+      // Isso também permite clicar no espaço vazio do cabeçalho sem manter
+      // um submenu aberto sobre o conteúdo.
+      if (!e.target.closest('.nav-item-dropdown')) {
         setOpenSubmenu(null);
       }
+
+      // A busca é tratada como uma caixa independente e também recolhe
+      // quando o usuário clica fora dela.
+      if (!e.target.closest('.search-pill-wrapper') && !e.target.closest('.top-action-icon-btn')) {
+        setSearchVisible(false);
+      }
     }
+
     document.addEventListener('pointerdown', handlePointerDown);
     return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, []);
