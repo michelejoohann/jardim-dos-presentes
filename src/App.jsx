@@ -339,6 +339,30 @@ export default function App() {
                 >
                   🌰 Baixa prioridade
                 </button>
+
+                <div className="submenu-divider" aria-hidden="true"></div>
+                <span className="submenu-section-label">Ordenar por</span>
+                {[
+                  ['priority', '⭐ Maior prioridade'],
+                  ['priorityAsc', '🌱 Menor prioridade'],
+                  ['priceAsc', '♡ Menor valor'],
+                  ['priceDesc', '♢ Maior valor'],
+                  ['nameAsc', 'Aa Nome de A a Z'],
+                  ['default', '↕ Ordem original'],
+                ].map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={`submenu-item ${sort === value ? 'active' : ''}`}
+                    onClick={() => {
+                      setSort(value);
+                      setOpenSubmenu(null);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))
               </div>
             )}
           </div>
