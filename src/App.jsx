@@ -54,7 +54,7 @@ export default function App() {
   const [publicReservations, setPublicReservations] = useState({});
   const [giftingProduct, setGiftingProduct] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
-  const [searchVisible, setSearchVisible] = useState(true);
+  const [searchVisible, setSearchVisible] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(() => {
     if (typeof window === 'undefined') return false;
     const params = new URLSearchParams(window.location.search);
@@ -73,7 +73,7 @@ export default function App() {
 
       // A busca é tratada como uma caixa independente e também recolhe
       // quando o usuário clica fora dela.
-      if (!e.target.closest('.search-pill-wrapper') && !e.target.closest('.top-action-icon-btn')) {
+      if (!e.target.closest('.top-search-bar') && !e.target.closest('.top-action-icon-btn')) {
         setSearchVisible(false);
       }
     }
@@ -417,7 +417,8 @@ export default function App() {
             <div className="top-submenu-dropdown top-submenu-about" role="menu">
               <p className="submenu-about-text">
                 <strong>Jardim dos Presentes</strong><br />
-                Para escolher um presente, use a busca, as coleções e os filtros do jardim.
+                Para falar comigo sobre o Jardim dos Presentes, escreva para:<br />
+                <a className="contact-email-link" href="mailto:michelejoohann@gmail.com">michelejoohann@gmail.com</a>
               </p>
             </div>
           )}
@@ -425,24 +426,42 @@ export default function App() {
 
         </div>
 
-        <div className="site-top-bar-actions">
-          <button
-            type="button"
-            className={`top-action-icon-btn ${searchVisible ? 'active' : ''}`}
-            title="Alternar barra de pesquisa"
-            aria-label="Abrir ou fechar busca"
-            onClick={() => {
-              setSearchVisible(prev => !prev);
-              setTimeout(() => {
-                document.querySelector('.search-input-pill')?.focus();
-              }, 120);
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </button>
+        <div className={`site-top-bar-actions ${searchVisible ? 'search-open' : ''}`}>
+          {searchVisible ? (
+            <div className="top-search-bar">
+              <input
+                type="search"
+                value={search}
+                onChange={event => setSearch(event.target.value)}
+                placeholder="Encontre o presente perfeito…"
+                aria-label="Buscar presentes"
+                className="top-search-input"
+                autoFocus
+              />
+              <button
+                type="button"
+                className="top-search-close"
+                aria-label="Fechar busca"
+                title="Fechar busca"
+                onClick={() => setSearchVisible(false)}
+              >
+                ×
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="top-action-icon-btn"
+              title="Buscar presentes"
+              aria-label="Abrir busca"
+              onClick={() => setSearchVisible(true)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          )}
           <button
             type="button"
             className="top-action-icon-btn"
@@ -543,61 +562,6 @@ export default function App() {
             products={sourceProducts}
           />
         )}
-
-        <section className="catalog-controls" aria-label="Controles e busca do catálogo">
-          {searchVisible && (
-            <div className="search-pill-wrapper">
-              <input
-                type="search"
-                value={search}
-                onChange={event => setSearch(event.target.value)}
-                placeholder="Encontre o presente perfeito…"
-                aria-label="Buscar presentes"
-                className="search-input-pill"
-              />
-              <span className="search-icon-adornment" aria-hidden="true">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8b734b" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </span>
-            </div>
-          )}
-
-          {/* Lista de Filtros Integrada (com prioridades adicionadas e sem o foco centralizado antigo) */}
-          <div className="catalog-filters-row">
-            <select value={category} onChange={handleCategoryChange} aria-label="Filtrar por ambiente">
-              <option value="all">Todos os ambientes</option>
-              {availableCategories.map(value => (
-                <option key={value} value={value}>{categoryLabels[value] || labelFromValue(value)}</option>
-              ))}
-            </select>
-            <select value={subcategory} onChange={event => setSubcategory(event.target.value)} aria-label="Filtrar por canteiro">
-              <option value="all">Todos os canteiros</option>
-              {availableSubcategories.map(value => (
-                <option key={value} value={value}>{labelFromValue(value)}</option>
-              ))}
-            </select>
-            <select
-              value={priorityFilter}
-              onChange={event => setPriorityFilter(event.target.value)}
-              aria-label="Filtrar por prioridade"
-            >
-              <option value="all">⭐ Todas as prioridades</option>
-              <option value="alta">🍃 Alta prioridade (Essencial)</option>
-              <option value="media">🌸 Média prioridade</option>
-              <option value="baixa">🌰 Baixa prioridade</option>
-            </select>
-            <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Ordenar presentes">
-              <option value="priority">⭐ Maior prioridade primeiro</option>
-              <option value="priorityAsc">Menor prioridade primeiro</option>
-              <option value="priceAsc">Menor valor ao maior</option>
-              <option value="priceDesc">Maior valor ao menor</option>
-              <option value="nameAsc">Nome de A a Z</option>
-              <option value="default">Ordem original</option>
-            </select>
-          </div>
-        </section>
 
         <h2 className="catalog-section-title">Nossa Curadoria do Sonho</h2>
 
