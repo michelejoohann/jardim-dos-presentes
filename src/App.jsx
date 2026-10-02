@@ -288,7 +288,7 @@ export default function App() {
             <button
               type="button"
               className={`top-nav-link ${priorityFilter !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'prioridades' ? null : 'novidades')}
+              onClick={() => setOpenSubmenu(prev => prev === 'prioridades' ? null : 'prioridades')}
               aria-expanded={openSubmenu === 'prioridades'}
             >
               Novidades <span className="nav-arrow" aria-hidden="true">▾</span>
