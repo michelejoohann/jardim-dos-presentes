@@ -362,7 +362,7 @@ export default function App() {
                   >
                     {label}
                   </button>
-                ))
+                ))}
               </div>
             )}
           </div>
