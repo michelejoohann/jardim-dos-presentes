@@ -291,7 +291,7 @@ export default function App() {
               onClick={() => setOpenSubmenu(prev => prev === 'prioridades' ? null : 'prioridades')}
               aria-expanded={openSubmenu === 'prioridades'}
             >
-              Novidades <span className="nav-arrow" aria-hidden="true">▾</span>
+              Prioridades <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
             {openSubmenu === 'prioridades' && (
               <div className="top-submenu-dropdown" role="menu">
