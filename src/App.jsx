@@ -525,7 +525,7 @@ export default function App() {
             <g fill="#19311f" fontFamily="'Cormorant Garamond', Georgia, serif" fontStyle="italic" fontWeight="700">
               <text x="90" y="101" textAnchor="middle" fontSize="34" letterSpacing="-5">MJ</text>
             </g>
-            <!-- heras enroladas -->
+            {/* heras enroladas */}
             <g stroke="url(#mjGold)" strokeLinecap="round" strokeLinejoin="round">
               <path d="M90 49C56 43 33 57 31 85C29 112 48 134 78 139" strokeWidth="1.7"/>
               <path d="M90 49C124 43 147 57 149 85C151 112 132 134 102 139" strokeWidth="1.7"/>
