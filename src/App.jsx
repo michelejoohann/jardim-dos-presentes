@@ -281,9 +281,9 @@ export default function App() {
               onClick={() => setOpenSubmenu(prev => prev === 'novidades' ? null : 'novidades')}
               aria-expanded={openSubmenu === 'novidades'}
             >
-              Destaques <span className="nav-arrow" aria-hidden="true">▾</span>
+              Novidades <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
-            {openSubmenu === 'destaques' && (
+            {openSubmenu === 'novidades' && (
               <div className="top-submenu-dropdown" role="menu">
                 <button
                   type="button"
@@ -341,9 +341,9 @@ export default function App() {
               onClick={() => setOpenSubmenu(prev => prev === 'ocasioes' ? null : 'ocasioes')}
               aria-expanded={openSubmenu === 'ocasioes'}
             >
-              Ambientes <span className="nav-arrow" aria-hidden="true">▾</span>
+              Ocasiões <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
-            {openSubmenu === 'ambientes' && (
+            {openSubmenu === 'ocasioes' && (
               <div className="top-submenu-dropdown" role="menu">
                 <button
                   type="button"
