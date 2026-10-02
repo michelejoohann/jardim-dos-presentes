@@ -278,8 +278,8 @@ export default function App() {
             <button
               type="button"
               className={`top-nav-link ${priorityFilter !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'destaques' ? null : 'destaques')}
-              aria-expanded={openSubmenu === 'destaques'}
+              onClick={() => setOpenSubmenu(prev => prev === 'novidades' ? null : 'novidades')}
+              aria-expanded={openSubmenu === 'novidades'}
             >
               Destaques <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
@@ -338,8 +338,8 @@ export default function App() {
             <button
               type="button"
               className={`top-nav-link ${subcategory !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'ambientes' ? null : 'ambientes')}
-              aria-expanded={openSubmenu === 'ambientes'}
+              onClick={() => setOpenSubmenu(prev => prev === 'ocasioes' ? null : 'ocasioes')}
+              aria-expanded={openSubmenu === 'ocasioes'}
             >
               Ambientes <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
@@ -354,7 +354,7 @@ export default function App() {
                     document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  🌳 Todos os canteiros / ambientes
+                  🌿 Todas as ocasiões
                 </button>
                 {availableSubcategories.map(sub => (
                   <button
@@ -392,7 +392,6 @@ export default function App() {
               </div>
             )}
           </div>
-        </div>
 
         {/* Menu Contato — mantém a navegação informativa sem inventar dados de contato */}
         <div className="nav-item-dropdown">
@@ -412,6 +411,8 @@ export default function App() {
               </p>
             </div>
           )}
+        </div>
+
         </div>
 
         <div className="site-top-bar-actions">
