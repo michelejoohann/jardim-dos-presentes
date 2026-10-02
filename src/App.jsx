@@ -273,7 +273,7 @@ export default function App() {
             )}
           </div>
 
-          {/* Menu Destaques */}
+          {/* Menu Novidades */}
           <div className="nav-item-dropdown">
             <button
               type="button"
@@ -333,7 +333,7 @@ export default function App() {
             )}
           </div>
 
-          {/* Menu Ambientes */}
+          {/* Menu Ocasiões */}
           <div className="nav-item-dropdown">
             <button
               type="button"
@@ -392,6 +392,26 @@ export default function App() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Menu Contato — mantém a navegação informativa sem inventar dados de contato */}
+        <div className="nav-item-dropdown">
+          <button
+            type="button"
+            className={`top-nav-link ${openSubmenu === 'contato' ? 'active' : ''}`}
+            onClick={() => setOpenSubmenu(prev => prev === 'contato' ? null : 'contato')}
+            aria-expanded={openSubmenu === 'contato'}
+          >
+            Contato <span className="nav-arrow" aria-hidden="true">▾</span>
+          </button>
+          {openSubmenu === 'contato' && (
+            <div className="top-submenu-dropdown top-submenu-about" role="menu">
+              <p className="submenu-about-text">
+                <strong>Jardim dos Presentes</strong><br />
+                Para escolher um presente, use a busca, as coleções e os filtros do jardim.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="site-top-bar-actions">
