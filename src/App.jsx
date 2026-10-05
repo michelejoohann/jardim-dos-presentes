@@ -157,7 +157,7 @@ export default function App() {
   const visibleProducts = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR');
     const filtered = sourceProducts.filter(product => {
-      if (product.published === false || product.visible === false) return false;
+      if (product.enabled === false || product.published === false || product.visible === false) return false;
       const matchesCategory = category === 'all' || product.category === category;
       const matchesSubcategory = subcategory === 'all' || product.subcategory === subcategory;
       const matchesPriority = priorityFilter === 'all' || (() => {

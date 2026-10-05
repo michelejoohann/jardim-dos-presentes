@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { formatCurrencyBRL, saveProduct } from '../services/productService.js';
+import { generateGiftSuggestions } from '../services/giftSuggestions.js';
 
 const DEFAULT_CATEGORIES = [
   { value: 'casa', label: '🏡 Casa' },
@@ -34,12 +35,19 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
     sizes: Array.isArray(product?.sizes) ? product.sizes.join(', ') : (product?.sizes || ''),
     notes: Array.isArray(product?.notes) ? product.notes.join(', ') : (product?.notes || ''),
     quantityDesired: product?.quantityDesired ? String(product.quantityDesired) : '1',
-    published: product?.published !== false,
+    enabled: product ? (product.enabled !== false && product.published !== false && product.visible !== false) : true,
   });
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [previewImageError, setPreviewImageError] = useState(false);
+  const [appliedSuggestionNotice, setAppliedSuggestionNotice] = useState('');
+
+  // Sugestão gerada dinamicamente com base no nome do produto
+  const activeSuggestions = useMemo(() => {
+    if (!formData.name.trim()) return null;
+    return generateGiftSuggestions(formData.name, formData.category);
+  }, [formData.name, formData.category]);
 
   // Trava scroll da página ao abrir o modal
   useEffect(() => {
@@ -78,6 +86,36 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
   function handleAutoFormatPrice() {
     if (formData.price) {
       handleChange('priceLabel', formatCurrencyBRL(formData.price));
+    }
+  }
+
+  // Aplica todas as sugestões (prioridade, textos afetivos, sonho, história, coleção)
+  function handleApplyAllSuggestions() {
+    if (!activeSuggestions) return;
+
+    setFormData(prev => ({
+      ...prev,
+      category: activeSuggestions.category || prev.category,
+      subcategory: prev.subcategory || activeSuggestions.subcategory,
+      collection: prev.collection || activeSuggestions.collection,
+      priority: activeSuggestions.priority || prev.priority,
+      description: activeSuggestions.description || prev.description,
+      dream: activeSuggestions.dream || prev.dream,
+      story: activeSuggestions.story || prev.story,
+      meanings: prev.meanings ? prev.meanings : activeSuggestions.meanings.join(', '),
+    }));
+
+    setAppliedSuggestionNotice('✨ Sugestões afetivas e prioridade aplicadas com sucesso!');
+    setTimeout(() => setAppliedSuggestionNotice(''), 4500);
+  }
+
+  // Aplica sugestão pontual para um único campo
+  function handleApplySingle(field) {
+    if (!activeSuggestions) return;
+    if (field === 'meanings') {
+      handleChange('meanings', activeSuggestions.meanings.join(', '));
+    } else if (activeSuggestions[field]) {
+      handleChange(field, activeSuggestions[field]);
     }
   }
 
@@ -123,27 +161,98 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
           <p className="editor-modal-subtitle">
             {isEditing
               ? `Atualizando "${product.name}" na base de dados do Firestore.`
-              : 'Cadastre um novo desejo que ficará visível instantaneamente na vitrine.'}
+              : 'Cadastre um novo desejo que ficará disponível na vitrine.'}
           </p>
         </div>
 
+        {/* STATUS DE HABILITAÇÃO PARA VISUALIZAÇÃO NO SITE */}
+        <div className={`editor-status-banner ${formData.enabled ? 'is-enabled' : 'is-disabled'}`}>
+          <div className="editor-status-info">
+            <span className="editor-status-icon">{formData.enabled ? '🟢' : '⚪'}</span>
+            <div>
+              <strong>
+                {formData.enabled
+                  ? 'Produto HABILITADO para visualização no site'
+                  : 'Produto DESABILITADO (Oculto no site)'}
+              </strong>
+              <p>
+                {formData.enabled
+                  ? 'Este presente é visível normalmente para todos os visitantes do catálogo.'
+                  : 'Este presente fica salvo no banco de dados, mas não aparecerá para os visitantes.'}
+              </p>
+            </div>
+          </div>
+
+          <label className="editor-status-toggle">
+            <input
+              type="checkbox"
+              checked={formData.enabled}
+              onChange={e => handleChange('enabled', e.target.checked)}
+            />
+            <span className="editor-toggle-track">
+              <span className="editor-toggle-thumb"></span>
+            </span>
+            <span className="editor-toggle-text">
+              {formData.enabled ? 'Habilitado' : 'Desabilitado'}
+            </span>
+          </label>
+        </div>
+
         <form className="editor-form" onSubmit={handleSubmit}>
-          {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
+          {/* SEÇÃO 1: IDENTIFICAÇÃO & SUGESTÃO INTELIGENTE */}
           <fieldset className="editor-fieldset">
             <legend className="editor-legend">1. Identificação do Presente</legend>
 
             <div className="editor-field-full">
               <label className="editor-label">
                 Nome do Presente *
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={e => handleChange('name', e.target.value)}
-                  placeholder="Ex: Cafeteira Italiana Inox, Jogo de Lençóis 400 Fios…"
-                  required
-                />
+                <div className="editor-input-with-action">
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={e => handleChange('name', e.target.value)}
+                    placeholder="Ex: Cafeteira Nespresso Vertuo, Workstation Branca 1,30m, Jogo de Lençóis 400 Fios…"
+                    required
+                  />
+                  {formData.name.trim() && (
+                    <button
+                      type="button"
+                      className="editor-suggestion-action-btn"
+                      onClick={handleApplyAllSuggestions}
+                      title="Gerar sugestão automática de prioridade, textos afetivos, sonho e história com base neste produto"
+                    >
+                      🪄 Sugerir Tudo
+                    </button>
+                  )}
+                </div>
               </label>
             </div>
+
+            {/* CARD DE SUGESTÃO DETECTADA */}
+            {activeSuggestions && (
+              <div className="editor-smart-suggestion-pill">
+                <div className="suggestion-pill-header">
+                  <span>🪄 <strong>Sugestão inteligente para "{formData.name}":</strong></span>
+                  <button
+                    type="button"
+                    className="suggestion-pill-apply-btn"
+                    onClick={handleApplyAllSuggestions}
+                  >
+                    Aplicar sugestão padrão completa
+                  </button>
+                </div>
+                <div className="suggestion-pill-preview">
+                  <span className="suggestion-tag">Prioridade sugerida: <strong>{activeSuggestions.priority === 'alta' ? '⭐ Alta' : activeSuggestions.priority === 'media' ? '🌸 Média' : '🌰 Baixa'}</strong></span>
+                  <span className="suggestion-tag">Jardim: <strong>{activeSuggestions.subcategory}</strong></span>
+                  <span className="suggestion-tag">Coleção: <strong>{activeSuggestions.collection}</strong></span>
+                </div>
+                <small className="suggestion-reason">{activeSuggestions.priorityReason}</small>
+              </div>
+            )}
+
+            {appliedSuggestionNotice && (
+              <p className="notice success" style={{ margin: '6px 0 0' }}>{appliedSuggestionNotice}</p>
+            )}
 
             <div className="editor-grid-3">
               <label className="editor-label">
@@ -160,22 +269,46 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
 
               <label className="editor-label">
                 Jardim / Subcategoria
-                <input
-                  type="text"
-                  value={formData.subcategory}
-                  onChange={e => handleChange('subcategory', e.target.value)}
-                  placeholder="Ex: Cozinha, Quarto, Escritório…"
-                />
+                <div className="editor-input-with-action">
+                  <input
+                    type="text"
+                    value={formData.subcategory}
+                    onChange={e => handleChange('subcategory', e.target.value)}
+                    placeholder="Ex: Cozinha, Quarto, Escritório…"
+                  />
+                  {activeSuggestions?.subcategory && formData.subcategory !== activeSuggestions.subcategory && (
+                    <button
+                      type="button"
+                      className="editor-mini-action"
+                      onClick={() => handleApplySingle('subcategory')}
+                      title={`Sugerir "${activeSuggestions.subcategory}"`}
+                    >
+                      🪄
+                    </button>
+                  )}
+                </div>
               </label>
 
               <label className="editor-label">
                 Nome da Coleção Afetiva
-                <input
-                  type="text"
-                  value={formData.collection}
-                  onChange={e => handleChange('collection', e.target.value)}
-                  placeholder="Ex: Escritório dos Sonhos"
-                />
+                <div className="editor-input-with-action">
+                  <input
+                    type="text"
+                    value={formData.collection}
+                    onChange={e => handleChange('collection', e.target.value)}
+                    placeholder="Ex: Escritório dos Sonhos"
+                  />
+                  {activeSuggestions?.collection && formData.collection !== activeSuggestions.collection && (
+                    <button
+                      type="button"
+                      className="editor-mini-action"
+                      onClick={() => handleApplySingle('collection')}
+                      title={`Sugerir "${activeSuggestions.collection}"`}
+                    >
+                      🪄
+                    </button>
+                  )}
+                </div>
               </label>
             </div>
           </fieldset>
@@ -221,14 +354,26 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
 
               <label className="editor-label">
                 Prioridade
-                <select
-                  value={formData.priority}
-                  onChange={e => handleChange('priority', e.target.value)}
-                >
-                  <option value="alta">⭐ Alta / Essencial</option>
-                  <option value="media">🌸 Média prioridade</option>
-                  <option value="baixa">🌰 Baixa prioridade</option>
-                </select>
+                <div className="editor-input-with-action">
+                  <select
+                    value={formData.priority}
+                    onChange={e => handleChange('priority', e.target.value)}
+                  >
+                    <option value="alta">⭐ Alta / Essencial</option>
+                    <option value="media">🌸 Média prioridade</option>
+                    <option value="baixa">🌰 Baixa prioridade</option>
+                  </select>
+                  {activeSuggestions && formData.priority !== activeSuggestions.priority && (
+                    <button
+                      type="button"
+                      className="editor-mini-action"
+                      onClick={() => handleApplySingle('priority')}
+                      title={`Sugerir prioridade ${activeSuggestions.priority}`}
+                    >
+                      🪄
+                    </button>
+                  )}
+                </div>
               </label>
             </div>
 
@@ -245,14 +390,11 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
                 />
               </label>
 
-              <label className="editor-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formData.published}
-                  onChange={e => handleChange('published', e.target.checked)}
-                />
-                <span><strong>Publicado no Catálogo</strong> (visível para os convidados)</span>
-              </label>
+              <div className="editor-hint-box">
+                <small>
+                  💡 <strong>Dica de Prioridade:</strong> Itens fundamentais da rotina ou do lar recebem <em>Alta</em>; itens de aconchego e bem-estar recebem <em>Média</em>; mimos complementares recebem <em>Baixa</em>.
+                </small>
+              </div>
             </div>
           </fieldset>
 
@@ -314,22 +456,44 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
             </div>
           </fieldset>
 
-          {/* SEÇÃO 4: TEXTOS AFETIVOS & HISTÓRIA */}
+          {/* SEÇÃO 4: TEXTOS AFETIVOS, SONHO & HISTÓRIA */}
           <fieldset className="editor-fieldset">
-            <legend className="editor-legend">4. Textos Afetivos & Detalhes</legend>
+            <legend className="editor-legend">4. Textos Afetivos, Sonho & História</legend>
 
             <label className="editor-label">
-              Descrição Curta
+              <div className="editor-label-with-suggest">
+                <span>Descrição Afetiva</span>
+                {activeSuggestions && (
+                  <button
+                    type="button"
+                    className="editor-text-suggest-btn"
+                    onClick={() => handleApplySingle('description')}
+                  >
+                    🪄 Sugerir descrição
+                  </button>
+                )}
+              </div>
               <textarea
                 rows="2"
                 value={formData.description}
                 onChange={e => handleChange('description', e.target.value)}
-                placeholder="Breve descrição dos atributos do item…"
+                placeholder="Breve descrição afetiva dos atributos do item…"
               />
             </label>
 
             <label className="editor-label">
-              🌱 O Sonho (Por que este presente é especial para você?)
+              <div className="editor-label-with-suggest">
+                <span>🌱 O Sonho (Por que este presente é especial para você?)</span>
+                {activeSuggestions && (
+                  <button
+                    type="button"
+                    className="editor-text-suggest-btn"
+                    onClick={() => handleApplySingle('dream')}
+                  >
+                    🪄 Sugerir sonho
+                  </button>
+                )}
+              </div>
               <textarea
                 rows="2"
                 value={formData.dream}
@@ -339,7 +503,18 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
             </label>
 
             <label className="editor-label">
-              📖 A História (Opcional)
+              <div className="editor-label-with-suggest">
+                <span>📖 A História (Memória, significado ou motivo especial)</span>
+                {activeSuggestions && (
+                  <button
+                    type="button"
+                    className="editor-text-suggest-btn"
+                    onClick={() => handleApplySingle('story')}
+                  >
+                    🪄 Sugerir história
+                  </button>
+                )}
+              </div>
               <textarea
                 rows="2"
                 value={formData.story}
@@ -350,7 +525,18 @@ export default function ProductEditorModal({ product, onClose, onSaved }) {
 
             <div className="editor-grid-3">
               <label className="editor-label">
-                Significados (separados por vírgula)
+                <div className="editor-label-with-suggest">
+                  <span>Significados</span>
+                  {activeSuggestions && (
+                    <button
+                      type="button"
+                      className="editor-text-suggest-btn"
+                      onClick={() => handleApplySingle('meanings')}
+                    >
+                      🪄 Sugerir
+                    </button>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={formData.meanings}

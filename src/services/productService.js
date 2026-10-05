@@ -70,6 +70,8 @@ export async function saveProduct(rawData, existingId = null) {
     return [];
   };
 
+    const isEnabled = rawData.enabled !== false;
+
   const payload = {
     name: rawData.name.trim(),
     category: rawData.category?.trim() || 'casa',
@@ -89,8 +91,9 @@ export async function saveProduct(rawData, existingId = null) {
     notes: parseList(rawData.notes),
     quantityDesired: parsedQtyDesired,
     quantityReceived: parsedQtyReceived,
-    published: rawData.published !== false,
-    visible: rawData.visible !== false,
+    enabled: isEnabled,
+    published: isEnabled,
+    visible: isEnabled,
     updatedAt: serverTimestamp(),
   };
 
@@ -103,6 +106,22 @@ export async function saveProduct(rawData, existingId = null) {
   }
 
   return productId;
+}
+
+/**
+ * Alterna de forma rápida o status de habilitação (visibilidade no site) de um presente.
+ */
+export async function toggleProductEnabled(productId, currentEnabled) {
+  if (!productId) throw new Error('ID do produto não informado.');
+  const newStatus = !currentEnabled;
+  const productRef = doc(db, 'products', productId);
+  await updateDoc(productRef, {
+    enabled: newStatus,
+    published: newStatus,
+    visible: newStatus,
+    updatedAt: serverTimestamp(),
+  });
+  return newStatus;
 }
 
 /**

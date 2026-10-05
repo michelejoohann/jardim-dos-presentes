@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase/config.js';
 import { publishStagedProductsToFirestore } from '../services/stagedMigration.js';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
-import { deleteProduct } from '../services/productService.js';
+import { deleteProduct, toggleProductEnabled } from '../services/productService.js';
 import ProductEditorModal from './ProductEditorModal.jsx';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
@@ -34,6 +34,7 @@ export default function AdminMigrationPanel({
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [visibilityFilter, setVisibilityFilter] = useState('all'); // 'all' | 'enabled' | 'disabled'
 
   const isAdmin = user?.uid === ADMIN_UID;
 
@@ -125,6 +126,17 @@ export default function AdminMigrationPanel({
     }
   }
 
+  async function handleToggleEnabled(prod) {
+    const isCurrentlyEnabled = prod.enabled !== false && prod.published !== false && prod.visible !== false;
+    try {
+      const newStatus = await toggleProductEnabled(prod.id, isCurrentlyEnabled);
+      setMessage(`O presente "${prod.name}" agora está ${newStatus ? '🟢 HABILITADO' : '⚪ DESABILITADO'} para visualização no site.`);
+    } catch (err) {
+      console.error(err);
+      setError(`Não foi possível alterar a visibilidade do presente: ${err.message}`);
+    }
+  }
+
   const productsById = useMemo(() => {
     return products.reduce((acc, item) => {
       acc[item.id] = item;
@@ -143,6 +155,8 @@ export default function AdminMigrationPanel({
   const filteredProducts = useMemo(() => {
     const term = searchFilter.trim().toLowerCase();
     return products.filter(p => {
+      const isEnabled = p.enabled !== false && p.published !== false && p.visible !== false;
+
       const matchesSearch = !term ||
         p.name?.toLowerCase().includes(term) ||
         p.collection?.toLowerCase().includes(term) ||
@@ -157,9 +171,13 @@ export default function AdminMigrationPanel({
       const effectiveStatus = res?.status || p.status || 'available';
       const matchesStatus = statusFilter === 'all' || effectiveStatus === statusFilter;
 
-      return matchesSearch && matchesCat && matchesPrio && matchesStatus;
+      const matchesVisibility = visibilityFilter === 'all' ||
+        (visibilityFilter === 'enabled' && isEnabled) ||
+        (visibilityFilter === 'disabled' && !isEnabled);
+
+      return matchesSearch && matchesCat && matchesPrio && matchesStatus && matchesVisibility;
     });
-  }, [products, searchFilter, categoryFilter, priorityFilter, statusFilter, reservationsByProductId]);
+  }, [products, searchFilter, categoryFilter, priorityFilter, statusFilter, visibilityFilter, reservationsByProductId]);
 
   const totalReceived = useMemo(() => {
     return reservations.filter(r => r.status === 'received').length;
@@ -168,6 +186,14 @@ export default function AdminMigrationPanel({
   const totalReserved = useMemo(() => {
     return reservations.filter(r => r.status === 'reserved').length;
   }, [reservations]);
+
+  const totalEnabled = useMemo(() => {
+    return products.filter(p => p.enabled !== false && p.published !== false && p.visible !== false).length;
+  }, [products]);
+
+  const totalDisabled = useMemo(() => {
+    return products.filter(p => p.enabled === false || p.published === false || p.visible === false).length;
+  }, [products]);
 
   // Se não estiver logada como administradora, exibe tela de login
   if (!isAdmin) {
@@ -276,9 +302,25 @@ export default function AdminMigrationPanel({
           <span className="metric-icon">🎁</span>
           <div>
             <strong>{firestoreCount || products.length}</strong>
-            <small>Presentes no catálogo</small>
+            <small>Total no banco</small>
           </div>
         </div>
+        <div className="metric-badge">
+          <span className="metric-icon">🟢</span>
+          <div>
+            <strong>{totalEnabled}</strong>
+            <small>Habilitados no site</small>
+          </div>
+        </div>
+        {totalDisabled > 0 && (
+          <div className="metric-badge">
+            <span className="metric-icon">⚪</span>
+            <div>
+              <strong>{totalDisabled}</strong>
+              <small>Desabilitados (ocultos)</small>
+            </div>
+          </div>
+        )}
         <div className="metric-badge">
           <span className="metric-icon">💌</span>
           <div>
@@ -290,14 +332,7 @@ export default function AdminMigrationPanel({
           <span className="metric-icon">🌸</span>
           <div>
             <strong>{totalReceived}</strong>
-            <small>Florescidos (já comprados)</small>
-          </div>
-        </div>
-        <div className="metric-badge">
-          <span className="metric-icon">⏳</span>
-          <div>
-            <strong>{totalReserved}</strong>
-            <small>Planejados (vão comprar)</small>
+            <small>Florescidos</small>
           </div>
         </div>
       </div>
@@ -345,6 +380,12 @@ export default function AdminMigrationPanel({
             </div>
 
             <div className="admin-filter-selects">
+              <select value={visibilityFilter} onChange={e => setVisibilityFilter(e.target.value)}>
+                <option value="all">Todas as Visibilidades</option>
+                <option value="enabled">🟢 Apenas Habilitados no Site</option>
+                <option value="disabled">⚪ Apenas Desabilitados (Ocultos)</option>
+              </select>
+
               <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
                 <option value="all">Todas as Categorias</option>
                 <option value="casa">🏡 Casa</option>
@@ -395,6 +436,7 @@ export default function AdminMigrationPanel({
                     <th>Jardim / Coleção</th>
                     <th>Valor</th>
                     <th>Prioridade</th>
+                    <th>Exibição no Site</th>
                     <th>Status</th>
                     <th style={{ textAlign: 'right' }}>Ações</th>
                   </tr>
@@ -403,6 +445,7 @@ export default function AdminMigrationPanel({
                   {filteredProducts.map(prod => {
                     const res = reservationsByProductId[prod.id];
                     const effectiveStatus = res?.status || prod.status || 'available';
+                    const isEnabled = prod.enabled !== false && prod.published !== false && prod.visible !== false;
                     const rawImage = prod.imageUrl || prod.image;
                     const imageUrl = rawImage?.startsWith('/') && !rawImage.startsWith(import.meta.env.BASE_URL)
                       ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImage}`
@@ -411,7 +454,7 @@ export default function AdminMigrationPanel({
                     const priorityLower = String(prod.priority || prod.prioridade || '').toLowerCase();
 
                     return (
-                      <tr key={prod.id}>
+                      <tr key={prod.id} className={!isEnabled ? 'row-disabled' : ''}>
                         <td className="product-table-identity">
                           <div className="table-thumb">
                             {imageUrl ? (
@@ -422,8 +465,8 @@ export default function AdminMigrationPanel({
                           </div>
                           <div>
                             <strong>{prod.name}</strong>
-                            {prod.published === false && (
-                              <span className="badge-draft">Rascunho / Oculto</span>
+                            {!isEnabled && (
+                              <span className="badge-draft">Oculto no site</span>
                             )}
                           </div>
                         </td>
@@ -442,6 +485,17 @@ export default function AdminMigrationPanel({
                             {priorityLower.includes('alta') ? '⭐ ' : ''}
                             {prod.priority || prod.prioridade || 'Média'}
                           </span>
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            className={`badge-visibility-toggle ${isEnabled ? 'is-enabled' : 'is-disabled'}`}
+                            onClick={() => handleToggleEnabled(prod)}
+                            title={isEnabled ? 'Clique para desabilitar da vitrine' : 'Clique para habilitar na vitrine'}
+                          >
+                            {isEnabled ? '🟢 Habilitado' : '⚪ Desabilitado'}
+                          </button>
                         </td>
 
                         <td>
