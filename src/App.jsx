@@ -541,7 +541,7 @@ export default function App() {
               user={user}
               firestoreCount={firestoreProducts.length}
               onClose={() => setShowAdminPanel(false)}
-              products={sourceProducts}
+              products={firestoreProducts}
             />
           </Suspense>
         )}
