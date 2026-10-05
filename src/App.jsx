@@ -585,7 +585,7 @@ export default function App() {
           loading="lazy"
         />
         <p className="footer-title">O Jardim dos Presentes</p>
-        <p className="footer-subtitle">Curadoria Afetiva de Michèlé Joohann</p>
+        <p className="footer-subtitle">Curadoria feita com carinho por Michèlé Joohann</p>
       </footer>
     </div>
   );
