@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './firebase/config.js';
 import ProductCard from './components/ProductCard.jsx';
-import AdminMigrationPanel from './components/AdminMigrationPanel.jsx';
-import GiftModal from './components/GiftModal.jsx';
 import { cancelReservation, subscribeToPublicReservations } from './services/reservationService.js';
+
+const AdminMigrationPanel = lazy(() => import('./components/AdminMigrationPanel.jsx'));
+const GiftModal = lazy(() => import('./components/GiftModal.jsx'));
 
 const categoryLabels = {
   casa: '🏡 Casa',
@@ -535,12 +536,14 @@ export default function App() {
 
       <main className="content">
         {showAdminPanel && (
-          <AdminMigrationPanel
-            user={user}
-            firestoreCount={firestoreProducts.length}
-            onClose={() => setShowAdminPanel(false)}
-            products={sourceProducts}
-          />
+          <Suspense fallback={<p className="notice">Carregando painel…</p>}>
+            <AdminMigrationPanel
+              user={user}
+              firestoreCount={firestoreProducts.length}
+              onClose={() => setShowAdminPanel(false)}
+              products={sourceProducts}
+            />
+          </Suspense>
         )}
 
         <h2 className="catalog-section-title">Nossa Curadoria do Sonho</h2>
@@ -581,11 +584,13 @@ export default function App() {
       </footer>
 
       {giftingProduct && (
-        <GiftModal
-          product={giftingProduct}
-          user={user}
-          onClose={() => setGiftingProduct(null)}
-        />
+        <Suspense fallback={null}>
+          <GiftModal
+            product={giftingProduct}
+            user={user}
+            onClose={() => setGiftingProduct(null)}
+          />
+        </Suspense>
       )}
     </div>
   );
