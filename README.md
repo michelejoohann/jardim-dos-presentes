@@ -174,7 +174,7 @@ JardimDosPresentes/
 
 ## 🧚 Funcionalidades Principais
 
-- 🌿 **Catálogo Botânico Afetivo**: Categorização elegante por coleções e ocasiões.
+- 🌿 **Catálogo Botânico Afetivo**: Categorização elegante por coleções e jardins temáticos.
 - ⭐ **Filtros e Ordenação Inteligentes**:
   - Filtro por prioridade (*Alta*, *Média*, *Baixa*).
   - Ordenação por maior prioridade, menor prioridade, valor ascendente/descendente e ordem alfabética.

@@ -296,18 +296,19 @@ export default function App() {
             )}
           </div>
 
-          {/* Menu Prioridades */}
+          {/* Menu Ordenação */}
           <div className="nav-item-dropdown">
             <button
               type="button"
-              className={`top-nav-link ${priorityFilter !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'prioridades' ? null : 'prioridades')}
-              aria-expanded={openSubmenu === 'prioridades'}
+              className={`top-nav-link ${priorityFilter !== 'all' || sort !== 'priority' ? 'active' : ''}`}
+              onClick={() => setOpenSubmenu(prev => prev === 'ordenacao' ? null : 'ordenacao')}
+              aria-expanded={openSubmenu === 'ordenacao'}
             >
-              Prioridades <span className="nav-arrow" aria-hidden="true">▾</span>
+              Ordenação <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
-            {openSubmenu === 'prioridades' && (
+            {openSubmenu === 'ordenacao' && (
               <div className="top-submenu-dropdown" role="menu">
+                <span className="submenu-section-label">Filtrar por prioridade</span>
                 <button
                   type="button"
                   className={`submenu-item ${priorityFilter === 'all' ? 'active' : ''}`}
@@ -354,7 +355,7 @@ export default function App() {
                 </button>
 
                 <div className="submenu-divider" aria-hidden="true"></div>
-                <span className="submenu-section-label">Ordenar por</span>
+                <span className="submenu-section-label">Organizar presentes</span>
                 {[
                   ['priority', '⭐ Maior prioridade'],
                   ['priorityAsc', '🌱 Menor prioridade'],
@@ -380,17 +381,17 @@ export default function App() {
             )}
           </div>
 
-          {/* Menu Ocasiões */}
+          {/* Menu Jardins */}
           <div className="nav-item-dropdown">
             <button
               type="button"
               className={`top-nav-link ${subcategory !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'ocasioes' ? null : 'ocasioes')}
-              aria-expanded={openSubmenu === 'ocasioes'}
+              onClick={() => setOpenSubmenu(prev => prev === 'jardins' ? null : 'jardins')}
+              aria-expanded={openSubmenu === 'jardins'}
             >
-              Ocasiões <span className="nav-arrow" aria-hidden="true">▾</span>
+              Jardins <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
-            {openSubmenu === 'ocasioes' && (
+            {openSubmenu === 'jardins' && (
               <div className="top-submenu-dropdown" role="menu">
                 <button
                   type="button"
@@ -401,7 +402,7 @@ export default function App() {
                     document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  🌿 Todas as ocasiões
+                  🌿 Todos os jardins
                 </button>
                 {availableSubcategories.map(sub => (
                   <button
