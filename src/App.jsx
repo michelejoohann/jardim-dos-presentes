@@ -207,11 +207,6 @@ export default function App() {
     return filtered;
   }, [sourceProducts, search, category, subcategory, priorityFilter, sort]);
 
-  function handleCategoryChange(event) {
-    setCategory(event.target.value);
-    setSubcategory('all');
-  }
-
   const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
   return (
@@ -219,14 +214,14 @@ export default function App() {
       {/* Folhagens Botânicas Vitorianas de Fundo */}
       <div className="foliage-frame foliage-frame-left" aria-hidden="true">
         <img
-          src={`${baseUrl}/images/herbarium-wild-left.svg`}
+          src={`${baseUrl}/images/foliage-left.png`}
           alt=""
           loading="eager"
         />
       </div>
       <div className="foliage-frame foliage-frame-right" aria-hidden="true">
         <img
-          src={`${baseUrl}/images/herbarium-wild-right.svg`}
+          src={`${baseUrl}/images/foliage-right.png`}
           alt=""
           loading="eager"
         />
@@ -234,10 +229,28 @@ export default function App() {
 
       {/* Barra de Topo Estilo Herbarium Vitoriano com Submenus Interativos */}
       <nav className="site-top-bar" aria-label="Navegação superior">
-        <div className="site-top-bar-brand">
-          <span className="brand-title">O Jardim dos Presentes</span>
-          <span className="brand-author">de Michèlé Joohann</span>
-        </div>
+        <a
+          href="#top"
+          className="site-top-bar-brand"
+          onClick={e => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          title="O Jardim dos Presentes de Michèlé Joohann"
+        >
+          <img
+            src={`${baseUrl}/images/logo-michele-joohann.png`}
+            alt="Logo Michèlé Joohann"
+            className="site-top-bar-logo"
+            width="44"
+            height="44"
+            loading="eager"
+          />
+          <div className="brand-text">
+            <span className="brand-title">O Jardim dos Presentes</span>
+            <span className="brand-author">de Michèlé Joohann</span>
+          </div>
+        </a>
 
         <div className="site-top-bar-nav">
           {/* Menu Coleções */}
@@ -506,46 +519,16 @@ export default function App() {
         <h1 className="hero-title">O Jardim dos Presentes</h1>
         <p className="hero-subtitle">Curadoria Exclusiva de Sonhos: Onde a Magia do Presente se Revela.</p>
         
-        {/* Selo Medalhão Central: MJ em fonte vintage com círculo de Heras Enroladas */}
-        <div className="hero-emblem" aria-hidden="true">
-          <svg className="hero-emblem-svg" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="mjGold" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#8d7040"/>
-                <stop offset=".5" stopColor="#c2a76b"/>
-                <stop offset="1" stopColor="#765d34"/>
-              </linearGradient>
-              <filter id="softInk" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation=".35"/>
-              </filter>
-            </defs>
-            <circle cx="90" cy="90" r="39" fill="#fbf8ef" stroke="url(#mjGold)" strokeWidth="2"/>
-            <circle cx="90" cy="90" r="34" stroke="#a48751" strokeWidth=".9" strokeDasharray="1.5 3"/>
-            <circle cx="90" cy="90" r="28" stroke="#d2bc88" strokeWidth=".6"/>
-            <g fill="#19311f" fontFamily="'Cormorant Garamond', Georgia, serif" fontStyle="italic" fontWeight="700">
-              <text x="90" y="101" textAnchor="middle" fontSize="34" letterSpacing="-5">MJ</text>
-            </g>
-            {/* heras enroladas */}
-            <g stroke="url(#mjGold)" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M90 49C56 43 33 57 31 85C29 112 48 134 78 139" strokeWidth="1.7"/>
-              <path d="M90 49C124 43 147 57 149 85C151 112 132 134 102 139" strokeWidth="1.7"/>
-              <path d="M53 53C42 43 35 33 37 22M127 53C138 43 145 33 143 22" strokeWidth="1.15"/>
-              <path d="M68 139C61 149 53 157 42 158M112 139C119 149 127 157 138 158" strokeWidth="1.15"/>
-            </g>
-            <g fill="#c9d1a9" stroke="#7b7550" strokeWidth=".85">
-              <path d="M48 57C34 56 24 49 19 39C34 38 45 43 51 52Z"/>
-              <path d="M132 57C146 56 156 49 161 39C146 38 135 43 129 52Z"/>
-              <path d="M38 91C24 96 16 105 14 118C28 117 38 108 42 97Z"/>
-              <path d="M142 91C156 96 164 105 166 118C152 117 142 108 138 97Z"/>
-              <path d="M62 136C49 139 40 146 36 158C50 157 61 151 67 142Z"/>
-              <path d="M118 136C131 139 140 146 144 158C130 157 119 151 113 142Z"/>
-            </g>
-            {/* pequenos ramos de marcela */}
-            <g stroke="#a98a55" strokeWidth=".8" fill="#ead9ad">
-              <g transform="translate(28 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
-              <g transform="translate(152 25) scale(.48)"><circle r="8"/><path d="M0-8v-18M6-6l13-14M8 0h20M6 6l13 14M0 8v18M-6 6l-13 14M-8 0h-20M-6-6l-13-14" fill="none"/></g>
-            </g>
-          </svg>
+        {/* Selo Medalhão Central: Guirlanda de Galhos e Heras Michèlé Joohann */}
+        <div className="hero-emblem" aria-label="Logo Michèlé Joohann">
+          <img
+            src={`${baseUrl}/images/logo-michele-joohann.png`}
+            alt="Michèlé Joohann - O Jardim dos Presentes"
+            className="hero-emblem-img"
+            width="132"
+            height="132"
+            loading="eager"
+          />
         </div>
       </header>
 
@@ -589,6 +572,20 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Rodapé Afetivo com a Logo Michèlé Joohann */}
+      <footer className="site-footer">
+        <img
+          src={`${baseUrl}/images/logo-michele-joohann.png`}
+          alt="Michèlé Joohann"
+          className="footer-emblem-img"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
+        <p className="footer-title">O Jardim dos Presentes</p>
+        <p className="footer-subtitle">Curadoria Afetiva de Michèlé Joohann</p>
+      </footer>
     </div>
   );
 }

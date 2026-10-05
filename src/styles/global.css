@@ -55,6 +55,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
   font-family: var(--font-sans);
   color: var(--text-main);
   background-color: var(--canvas-bg);
@@ -85,13 +86,14 @@ button, input, select, textarea {
 
 .foliage-frame {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  width: clamp(240px, 25vw, 420px);
+  top: clamp(80px, 9.5vh, 102px);
+  bottom: 20px;
+  width: clamp(260px, 28vw, 450px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.62;
-  transition: opacity 0.3s ease;
+  opacity: 0.48;
+  filter: contrast(0.96) brightness(0.96);
+  transition: opacity 0.35s ease, width 0.35s ease, left 0.35s ease, right 0.35s ease, transform 0.35s ease;
   user-select: none;
 }
 
@@ -102,34 +104,60 @@ button, input, select, textarea {
 }
 
 .foliage-frame-left {
-  left: 0;
-  transform-origin: left top;
+  left: clamp(-95px, -6vw, -36px);
+  transform-origin: left bottom;
+  transform: perspective(900px) rotateY(-8deg) rotate(4.5deg);
 }
 
 .foliage-frame-left img {
   object-position: left top;
+  filter: drop-shadow(6px 10px 18px rgba(35, 28, 16, 0.12));
 }
 
 .foliage-frame-right {
-  right: 0;
-  transform-origin: right top;
+  right: clamp(-95px, -6vw, -36px);
+  transform-origin: right bottom;
+  transform: perspective(900px) rotateY(8deg) rotate(-4.5deg);
 }
 
 .foliage-frame-right img {
   object-position: right top;
+  filter: drop-shadow(-6px 10px 18px rgba(35, 28, 16, 0.12));
 }
 
 @media (max-width: 1200px) {
   .foliage-frame {
-    opacity: 0.38;
-    width: clamp(160px, 18vw, 260px);
+    top: clamp(74px, 8.5vh, 92px);
+    opacity: 0.36;
+    width: clamp(200px, 24vw, 320px);
+  }
+
+  .foliage-frame-left {
+    left: clamp(-60px, -4.5vw, -24px);
+    transform: perspective(900px) rotateY(-6deg) rotate(3deg);
+  }
+
+  .foliage-frame-right {
+    right: clamp(-60px, -4.5vw, -24px);
+    transform: perspective(900px) rotateY(6deg) rotate(-3deg);
   }
 }
 
 @media (max-width: 768px) {
   .foliage-frame {
-    opacity: 0.22;
-    width: 140px;
+    top: 72px;
+    opacity: 0.20;
+    width: 150px;
+  }
+
+  .foliage-frame-left {
+    left: -40px;
+    transform: rotate(2.5deg);
+  }
+
+  .foliage-frame-right {
+    right: -40px;
+    transform: rotate(-2.5deg);
   }
 }
 
@@ -150,6 +178,33 @@ button, input, select, textarea {
 }
 
 .site-top-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+
+.site-top-bar-brand:hover {
+  opacity: 0.92;
+}
+
+.site-top-bar-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 7px rgba(138, 107, 48, 0.22));
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-top-bar-brand:hover .site-top-bar-logo {
+  transform: scale(1.08) rotate(3deg);
+}
+
+.brand-text {
   display: flex;
   flex-direction: column;
   line-height: 1.15;
@@ -353,18 +408,28 @@ button, input, select, textarea {
   line-height: 1.35;
 }
 
-/* Selo Medalhão Central: MJ em fonte vintage com Heras Enroladas */
+/* Selo Medalhão Central: Monograma Nobre MJ com Heras Enroladas */
 .hero-emblem {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 6px;
+  margin: 6px auto 10px;
 }
 
+.hero-emblem-img,
 .hero-emblem-svg {
-  width: 64px;
-  height: 64px;
-  filter: drop-shadow(0 2px 8px rgba(179, 139, 69, 0.22));
+  width: clamp(100px, 12vw, 134px);
+  height: clamp(100px, 12vw, 134px);
+  object-fit: contain;
+  filter: drop-shadow(0 8px 26px rgba(138, 107, 48, 0.26));
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.45s ease;
+  user-select: none;
+}
+
+.hero-emblem-img:hover,
+.hero-emblem-svg:hover {
+  transform: scale(1.06) rotate(2deg);
+  filter: drop-shadow(0 12px 32px rgba(138, 107, 48, 0.4));
 }
 
 /* ==========================================================================
@@ -1456,12 +1521,6 @@ body {
   overflow-x: hidden;
 }
 
-.foliage-frame {
-  width: clamp(210px, 20vw, 330px);
-  opacity: .42;
-  z-index: 0;
-}
-
 .site-top-bar {
   min-height: 84px;
   padding: 11px clamp(28px, 4vw, 54px);
@@ -2125,17 +2184,6 @@ body {
 .search-pill-wrapper {
   display: none !important;
 }
-
-.foliage-frame {
-  width: clamp(220px, 23vw, 360px);
-  opacity: .34;
-  filter: sepia(.16) saturate(.72);
-}
-
-.foliage-frame img {
-  object-fit: cover;
-}
-
 .hero-emblem {
   margin-top: 3px;
   margin-bottom: 4px;
@@ -2208,17 +2256,76 @@ body {
 }
 
 @media (max-width: 760px) {
+  .site-top-bar-brand {
+    gap: 8px;
+  }
+
+  .site-top-bar-logo {
+    width: 36px;
+    height: 36px;
+  }
+
   .foliage-frame {
     width: 120px;
     opacity: .22;
   }
 
+  .hero-emblem-img,
   .hero-emblem-svg {
-    width: 76px;
-    height: 76px;
+    width: 86px;
+    height: 86px;
   }
 
   .top-search-bar {
     width: 100%;
   }
+}
+
+/* ==========================================================================
+   RODAPÉ AFETIVO COM MONOGRAMA MJ
+   ========================================================================== */
+
+.site-footer {
+  text-align: center;
+  padding: 44px 20px 56px;
+  margin-top: 50px;
+  border-top: 1px solid rgba(197, 159, 90, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(248, 244, 236, 0) 0%, rgba(242, 235, 217, 0.5) 100%);
+}
+
+.footer-emblem-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  opacity: 0.92;
+  filter: drop-shadow(0 3px 10px rgba(138, 107, 48, 0.22));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.footer-emblem-img:hover {
+  transform: scale(1.1) rotate(-3deg);
+  opacity: 1;
+}
+
+.footer-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--green-deep);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.footer-subtitle {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0;
 }

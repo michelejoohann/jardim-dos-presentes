@@ -2,34 +2,49 @@
 
 > **Desejar. Cultivar. Conquistar. Florescer.** ✨  
 > Um espaço digital e afetivo para transformar desejos em sementes: registrar sonhos, acompanhar o que já foi conquistado e dar significado a cada realização.
+> 
+> *Direção de Arte: Herbarium Botânico Vitoriano de Luxo com selo medalhão MJ, folhagens silvestres, heras e marcelas.*
 
 ---
 
 ## 🏛️ Arquitetura do Sistema
 
-O **Jardim dos Presentes** foi construído com arquitetura baseada em **React 19**, **Vite 7** e **Firebase 12**, entregue via **GitHub Pages** através de integração contínua (GitHub Actions).
+O **Jardim dos Presentes** é construído sobre uma arquitetura moderna com **React 19**, **Vite 7** e **Firebase 12**, entregue via **GitHub Pages** através de integração e deploy contínuos (GitHub Actions).
 
 ```mermaid
 graph TB
     subgraph Client ["🖥️ Cliente / Navegador"]
-        subgraph PublicUI ["Site Público (Visitantes)"]
-            Hero["Hero & Apresentação"]
-            Toolbar["Barra de Busca, Ambientes & Canteiros"]
-            Grid["Grade de Produtos (ProductCard)"]
+        subgraph TopNav ["Barra Superior & Navegação Integrada"]
+            Brand["Marca: O Jardim dos Presentes (Michèlé Joohann)"]
+            MenuColecoes["Submenu: Coleções"]
+            MenuPrioridades["Submenu: Prioridades & Ordenação"]
+            MenuOcasioes["Submenu: Ocasiões"]
+            MenuSobreContato["Submenus: Sobre & Contato"]
+            SearchBtn["Busca Retrátil Integrada"]
+            AdminBtn["Acesso Rápido Admin"]
         end
-        subgraph AdminUI ["Painel de Administração"]
-            AdminPanel["AdminMigrationPanel (Login & Importação)"]
+
+        subgraph HeroSection ["Cabeçalho Hero Compacto"]
+            HeroTitle["Título & Subtítulo Poéticos"]
+            Medallion["Medalhão Central MJ com Heras & Marcelas"]
         end
-        subgraph CoreApp ["Aplicação React 19 + Vite"]
-            App["App.jsx (Estado, Filtros & Sincronização em Tempo Real)"]
+
+        subgraph PublicUI ["Catálogo & Vitrine Afetiva"]
+            Grid["Grade de Presentes (ProductCard)"]
+            Details["Detalhes Expansíveis, Significados & História"]
+            GiftModalUI["Modal de Presentear (GiftModal)"]
+        end
+
+        subgraph AdminUI ["Painel Privado de Gestão (?admin=true)"]
+            AdminPanel["AdminMigrationPanel (Login, Mensagens & Reservas)"]
         end
     end
 
     subgraph FirebaseServices ["🔥 Firebase Backend-as-a-Service"]
-        Auth["Firebase Authentication<br/>(Anônimo para visitantes & Email/Senha para Admin)"]
-        Firestore["Cloud Firestore Database<br/>(Coleção oficial products)"]
-        Storage["Firebase Storage<br/>(Fotos e assets)"]
-        Rules["Security Rules<br/>(firestore.rules)"]
+        Auth["Firebase Authentication<br/>(Sessões Anônimas e Login Admin)"]
+        Firestore["Cloud Firestore Database<br/>(Coleções: products, publicReservations, privateReservations)"]
+        Storage["Firebase Storage<br/>(Fotos e assets oficiais)"]
+        Rules["Security Rules<br/>(firestore.rules com proteção de privacidade)"]
     end
 
     subgraph HostingPipeline ["🚀 Deploy Contínuo (CI/CD)"]
@@ -38,15 +53,12 @@ graph TB
         GHPages["GitHub Pages CDN"]
     end
 
-    Grid --> App
-    Toolbar --> App
-    Hero --> App
-    AdminPanel --> App
-
-    App -- "Sessão anônima / Admin" --> Auth
-    App -- "Sincronização em tempo real (onSnapshot)" --> Firestore
-    AdminPanel -- "Gravação em lote com IDs estáveis" --> Firestore
-    App -. "Fallback seguro se banco offline/vazio" .-> FallbackData
+    TopNav --> PublicUI
+    HeroSection --> PublicUI
+    PublicUI -- "onSnapshot (tempo real)" --> Firestore
+    PublicUI -- "Sessão Anônima" --> Auth
+    GiftModalUI -- "Criação de reserva atômica" --> Firestore
+    AdminPanel -- "Leitura de dedicatórias privadas" --> Firestore
 
     GHRepo --> GHActions
     GHActions --> GHPages
@@ -55,45 +67,60 @@ graph TB
 
 ---
 
-## 🔄 Ciclo de Vida dos Dados e Tempo Real
+## 🎨 Identidade Visual: Herbarium Botânico Vitoriano
 
-A arquitetura adota o **Cloud Firestore como Fonte Única da Verdade** em tempo de execução:
+O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo sofisticação botânica e afeto:
 
-1. **Leitura Reativa (`onSnapshot`)**: Assim que a página abre, um listener escuta a coleção `products` do Firestore. Qualquer alteração (criação, edição ou exclusão) reflete na tela **instantaneamente sem recarregar a página**.
-2. **Exclusão Imediata (Sem Ressurreição)**: Quando um produto é excluído no Firestore, o aplicativo atualiza a lista em tempo real. O catálogo local **não** ressuscita itens removidos quando o Firestore está ativo (`ready`).
-3. **Fallback Seguro**: O catálogo local consolidado em código serve de contingência estritamente quando o banco estiver indisponível ou vazio (antes da migração inicial).
+1. **Moldura Botânica Silvestre**: Ilustrações vetoriais laterais (`herbarium-wild-left.svg` e `herbarium-wild-right.svg`) emolduram a tela com ramos botânicos de marcela e folhagens antigas.
+2. **Selo Medalhão MJ**: Emblema heráldico central no Hero gravado em tons de ouro antigo (`#c2a76b`) e verde bosque (`#19311f`), envolvido por ramagens de hera entrelaçadas.
+3. **Navegação Superior Flutuante**:
+   - **Coleções**: Filtro rápido por categorias (*Casa*, *Vestuário*, *Joias*, *Livros*, *Tecnologia*, *Arte*, etc.).
+   - **Prioridades & Ordenação**: Filtragem por urgência afetiva (*🍃 Alta*, *🌸 Média*, *🌰 Baixa*) e ordenação instantânea (*Maior prioridade*, *Menor prioridade*, *Valor*, *Nome*).
+   - **Ocasiões**: Filtragem por subcategorias e momentos.
+   - **Sobre**: Apresentação sensível do propósito do Jardim.
+   - **Contato**: Canal direto com a Michèlé via e-mail.
+   - **Busca Retrátil**: Campo de pesquisa rápido que abre no cabeçalho sem poluir o visual.
+4. **Cards Editoriais de Presente**:
+   - Fotografia ou ícone botânico emoldurado.
+   - Badge de status (*Disponível*, *Reservado*, *Floresceu 🌸*).
+   - Seção poética *"O sonho"*.
+   - Gaveta de detalhes colapsável: tags de significados, tamanho desejado, prioridade, decisão de compra, valores e histórias.
+   - Ações: link oficial para a loja e botão **🎁 Presentear**.
+
+---
+
+## 🔄 Ciclo de Vida dos Dados e Sincronização em Tempo Real
+
+O **Cloud Firestore** é a **Fonte Única da Verdade** da aplicação:
+
+1. **Coleção `products`**:
+   - Armazena todos os desejos cadastrados (nome, coleção, subcategoria, preço, prioridade, imagem, história, sonho, etc.).
+   - O listener reativo `onSnapshot` atualiza a vitrine instantaneamente sem necessidade de recarregar o navegador.
+   - Se um produto for excluído ou desativado (`visible: false`), ele desaparece na mesma hora para todos os visitantes.
+
+2. **Coleção `publicReservations`**:
+   - Guarda o status público de reserva (`reserved` ou `received`) associado a cada produto.
+   - Permite que todos os visitantes vejam quais presentes já estão a caminho ou floresceram, sem expor dados pessoais do convidado.
+
+3. **Coleção `privateReservations`**:
+   - Guarda as dedicatórias, nomes, contatos e mensagens confidenciais enviadas pelos convidados.
+   - Protegida por regras de segurança estritas no Firestore (`firestore.rules`), visível unicamente pela administradora autenticada.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Visitante as 👤 Visitante / Admin
-    participant App as ⚛️ React App (App.jsx)
-    participant Auth as 🔐 Firebase Auth
-    participant Firestore as 🔥 Cloud Firestore (products)
-    participant Fallback as 📦 Catálogo Local (Fallback)
+    actor Convidado as 🌸 Convidado
+    participant App as ⚛️ React App
+    participant Firestore as 🔥 Cloud Firestore
+    actor Michele as 🌿 Michèlé (Admin)
 
-    Visitante->>App: Acessa o Jardim
-    App->>Auth: Inicia sessão anônima de visitante
-    Auth-->>App: Sessão confirmada (UID)
-
-    App->>Firestore: onSnapshot na coleção products
-    Firestore-->>App: Snapshot em tempo real
-
-    alt Firestore Conectado e com Itens (status: ready)
-        App->>App: Define produtos exibidos = firestoreProducts
-        Note over App: Firestore é a FONTE ÚNICA da verdade.<br/>Itens deletados somem na hora!
-    else Firestore Vazio ou Indisponível (status: empty / unavailable)
-        App->>Fallback: Carrega catálogo estático consolidado
-        App->>App: Define produtos exibidos = dadosLocais
-        Note over App: Contingência segura até migração
-    end
-
-    App-->>Visitante: Exibe desejos com contadores, busca e filtros
-
-    Note over Visitante,Firestore: Evento: Administradora exclui um produto no Firebase
-    Firestore-->>App: onSnapshot emite lista atualizada (sem o item)
-    App->>App: Re-renderiza sem o produto excluído
-    App-->>Visitante: O produto desaparece na hora da tela
+    Convidado->>App: Clica em "🎁 Presentear"
+    App->>Convidado: Abre GiftModal (Vou comprar / Já comprei + Mensagem)
+    Convidado->>App: Envia presente (com nome ou anônimo)
+    App->>Firestore: Gravação atômica em batch (publicReservations + privateReservations)
+    Firestore-->>App: Confirmação em tempo real
+    App-->>Convidado: Exibe agradecimento afetivo 🌸
+    Firestore-->>Michele: Notifica Painel Administrativo em tempo real com a dedicatória
 ```
 
 ---
@@ -104,70 +131,77 @@ sequenceDiagram
 JardimDosPresentes/
 ├── .github/
 │   └── workflows/
-│       └── deploy-pages.yml      # CI/CD: build Vite e deploy automático no GitHub Pages
+│       └── deploy-pages.yml          # CI/CD: build Vite e deploy automático no GitHub Pages
 ├── docs/
-│   ├── ARCHITECTURE.md           # Desenho detalhado da arquitetura e fluxos
-│   ├── FIREBASE_SETUP.md         # Instruções de configuração do Firebase Console
-│   ├── INITIAL_MIGRATION.md      # Procedimento de migração e consolidação de dados
-│   ├── PRODUCT_BACKLOG.md        # Histórico de requisitos e backlog
-│   └── STAGING_LIST.md           # Lista de espera e staging de produtos para o Firebase
+│   ├── ARCHITECTURE.md               # Detalhes de arquitetura e decisões técnicas
+│   ├── FIREBASE_SETUP.md             # Instruções de configuração do Firebase Console
+│   ├── INITIAL_MIGRATION.md          # Histórico de consolidação e migração de dados
+│   ├── PRODUCT_BACKLOG.md            # Histórico de requisitos e melhorias
+│   └── STAGING_LIST.md               # Lista de produtos preparados para staging
 ├── public/
-│   ├── favicon.svg               # Favicon do Jardim
-│   └── images/                   # Imagens e referências visuais
+│   ├── favicon.svg                   # Favicon oficial do Jardim
+│   └── images/                       # Ilustrações botânicas vetoriais e fotos
+│       ├── herbarium-wild-left.svg   # Moldura botânica esquerda
+│       ├── herbarium-wild-right.svg  # Moldura botânica direita
+│       └── ...                       # Fotografias de catálogo
 ├── src/
 │   ├── components/
-│   │   ├── AdminMigrationPanel.jsx # Painel administrativo (login, mensagens e publicação)
-│   │   ├── GiftModal.jsx           # Modal para registrar presente ou compra
-│   │   └── ProductCard.jsx         # Card de produto com status, prioridade, história e links
+│   │   ├── AdminMigrationPanel.jsx   # Painel da Michèlé (leitura de recados e liberação de itens)
+│   │   ├── GiftModal.jsx             # Modal interativo de presente com dedicatória e anonimato
+│   │   └── ProductCard.jsx           # Card editorial de presente (status, tags, sonho e links)
 │   ├── firebase/
-│   │   └── config.js               # Inicialização do SDK Firebase (Auth, Firestore, Storage)
+│   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/
-│   │   ├── reservationService.js   # Serviço de reservas públicas e privadas no Firestore
-│   │   └── stagedMigration.js      # Serviço de publicação em lote para novos produtos
+│   │   ├── reservationService.js     # Serviços atômicos de reserva pública e privada
+│   │   └── stagedMigration.js        # Script de carga em lote para produtos em staging
 │   ├── styles/
-│   │   └── global.css              # Estilos globais, design system, badges e responsividade
-│   ├── App.jsx                     # Componente raiz: 100% Firestore, queries, ordenação e filtros
-│   └── main.jsx                    # Ponto de montagem da aplicação React 19
-├── firestore.rules               # Regras de segurança atômicas do Firestore
-├── index.html                    # Entrada HTML principal com metadados SEO
-├── package.json                  # Manifesto do projeto e dependências
-├── vite.config.js                # Configuração do Vite com base /jardim-dos-presentes/
-└── README.md                     # Este documento
+│   │   └── global.css                # Design system completo do Herbário Vitoriano
+│   ├── App.jsx                       # Aplicação principal: topo, busca, hero, filtros e grid
+│   └── main.jsx                      # Ponto de montagem React 19
+├── data/
+│   └── stagedProductsForFirestore.json # Dados estruturados prontos para carga
+├── scripts/
+│   ├── buildStagedProducts.mjs       # Script utilitário de estruturação de dados
+│   └── publishToFirestore.mjs        # Script Node para publicação direta no Firestore
+├── firestore.rules                   # Regras de segurança atômicas e privacidade do Firestore
+├── index.html                        # Entrada HTML com tipografia nobre (Cinzel, Cormorant Garamond)
+├── package.json                      # Manifesto de dependências do projeto
+├── vite.config.js                    # Configuração Vite com base /jardim-dos-presentes/
+└── README.md                         # Documentação oficial do projeto
 ```
 
 ---
 
-## 🧚 Funcionalidades
+## 🧚 Funcionalidades Principais
 
-- 🌱 **Catálogo Afetivo**: Organização por ambientes (categorias) e canteiros (subcategorias).
-- ⭐ **Ordem e Filtro por Prioridade**:
-  - Ordenação por *"⭐ Maior prioridade primeiro"* ou *"Menor prioridade primeiro"*.
-  - Barra de filtros rápidos por pílulas (*Todas*, *⭐ Alta prioridade*, *Média*, *Baixa*).
-  - Badges visuais destacados em cada card de produto indicando o nível de prioridade.
-- 👁️ **Controle de Visibilidade**: Produtos com `visible: false` ficam preservados no Firebase, mas são automaticamente ocultados para os visitantes.
-- 🔍 **Busca Completa**: Pesquisa textual instantânea por nome, coleção, história, sonho e descrição.
-- 💰 **Valores & Referências**: Informações de preços, condições e lojas de origem.
-- 📖 **História & Significado**: Cada presente carrega o registro do sonho e da memória associada.
-- 🎁 **Presentear & Reservas em Tempo Real**: Visitantes podem marcar que *"Vão comprar"* ou *"Já compraram"* qualquer item diretamente no card.
-- 💌 **Mensagens de Carinho & Modo Anônimo**: Opção de se identificar (com nome e contato) ou presentear em segredo (modo anônimo), deixando uma dedicatória afetiva para a Michèlé.
-- 📬 **Gestão Privada de Presentes**: Painel administrativo sob demanda (`?admin=true`) com visualização exclusiva de todos os recados recebidos e controle de liberação de itens.
-- 🔥 **Firestore em Tempo Real**: Atualizações, edições, marcações de presentes e exclusões instantâneas via `onSnapshot`.
-- 🛡️ **Privacidade & Segurança Reforçada**: Regras granulares no Firestore garantindo que mensagens e dados de contato sejam lidos exclusivamente pela administradora.
+- 🌿 **Catálogo Botânico Afetivo**: Categorização elegante por coleções e ocasiões.
+- ⭐ **Filtros e Ordenação Inteligentes**:
+  - Filtro por prioridade (*Alta*, *Média*, *Baixa*).
+  - Ordenação por maior prioridade, menor prioridade, valor ascendente/descendente e ordem alfabética.
+- 🔍 **Busca Retrátil no Topo**: Pesquisa instantânea por nome, coleção, sonho, história ou descrição.
+- 🎁 **Presentear & Reservas Atômicas**:
+  - Opções *"Vou comprar"* (reserva o item para evitar duplicidades) e *"Já comprei"* (marca como realizado).
+  - Suporte a presentes anônimos (*Amigo Secreto*) ou identificados com nome e e-mail.
+  - Envio de dedicatória especial.
+- 📬 **Área Privativa da Administradora (`?admin=true`)**:
+  - Login seguro com e-mail e senha da Michèlé.
+  - Visualização em tempo real de todas as mensagens e dados de contato recebidos.
+  - Ação de desmarcar/liberar um presente de volta ao catálogo caso necessário.
+- 🛡️ **Segurança e Privacidade**: Regras do Firestore configuradas para proteger dados confidenciais dos convidados.
 
 ---
 
-## 📝 Como Gerenciar Produtos no Firebase
+## 📝 Como Gerenciar o Catálogo no Firebase
 
-Com a arquitetura consolidada, a gestão dos produtos pode ser feita diretamente pelo **Firebase Console** (Firestore Database → Coleção `products`):
+Toda a gestão é feita diretamente pelo [Firebase Console](https://console.firebase.google.com/) (Firestore Database → Coleção `products`):
 
-| Ação | Como fazer no Firebase Console | Comportamento no Site |
+| Ação desejada | Como configurar no documento do produto | Resultado no Jardim |
 |---|---|---|
-| **Definir Prioridade** | Adicione ou edite o campo `priority` (ou `prioridade`) com `"alta"`, `"media"` ou `"baixa"`. | O card exibe a tag correspondente (`⭐ Alta`, `Média`, `Baixa`) e alimenta a ordenação e os filtros do site. |
-| **Controlar Visibilidade** | Defina o campo `visible` (booleano) como `false` para ocultar ou `true` para exibir. | O produto fica guardado no Firebase, mas não é renderizado para os visitantes. |
-| **Excluir um produto** | Clique no documento do produto na coleção `products` e selecione **Excluir documento**. | O produto **some imediatamente** da tela em tempo real para todos os usuários. |
-| **Editar preço ou foto** | Atualize o campo `price`, `priceLabel` ou `imageUrl` no documento. | O card atualiza instantaneamente no site sem recarregar a página. |
-| **Marcar como Realizado** | Altere o campo `status` para `"received"` ou iguale `quantityReceived` ao `quantityDesired`. | O card exibe o selo **"Floresceu 🌸"** / **"Realizado"**. |
-| **Adicionar novo desejo** | Crie um novo documento na coleção `products` com um `id` descritivo (ex: `luminaria-vintage`). | O novo desejo aparece instantaneamente na grade e nos filtros. |
+| **Definir Prioridade** | Campo `priority`: `"alta"`, `"media"` ou `"baixa"`. | Alimenta os filtros, ordenação e badges no card. |
+| **Controlar Visibilidade** | Campo `visible`: `true` ou `false`. | Se `false`, o item permanece salvo no banco, mas não aparece no site. |
+| **Excluir Produto** | Clique em **Excluir documento**. | O produto desaparece instantaneamente da tela de todos os visitantes. |
+| **Atualizar Preço ou Foto** | Campos `price`, `priceLabel` ou `imageUrl`. | O card reflete as alterações na hora via listener em tempo real. |
+| **Marcar como Florescido** | Campo `status`: `"received"`. | O card exibe o selo **"Floresceu 🌸"**. |
 
 ---
 
@@ -175,16 +209,19 @@ Com a arquitetura consolidada, a gestão dos produtos pode ser feita diretamente
 
 - **React 19** (`^19.1.0`)
 - **Vite 7** (`^7.0.0`)
-- **Firebase 12** (`^12.0.0`): Authentication, Cloud Firestore e Storage
-- **Vanilla CSS Moderno**: Design system artesanal com gradientes, tokens de cores e micro-interações
-- **GitHub Actions & GitHub Pages**: Deploy contínuo automatizado
+- **Firebase 12** (`^12.0.0`): Authentication, Cloud Firestore e Cloud Storage
+- **Vanilla CSS Moderno**: Design system artesanal com tokens e gradientes botânicos
+- **Google Fonts**: *Cinzel*, *Cormorant Garamond* e *Plus Jakarta Sans*
+- **GitHub Actions & GitHub Pages**: CI/CD automatizado a cada push na branch `main`
 
 ---
 
 ## 🚀 Como Executar Localmente
 
-### 1. Instalar dependências
+### 1. Clonar o repositório e instalar dependências
 ```bash
+git clone https://github.com/michelejoohann/jardim-dos-presentes.git
+cd JardimDosDesejos
 npm install
 ```
 
@@ -192,14 +229,14 @@ npm install
 ```bash
 npm run dev
 ```
-O servidor local iniciará em `http://localhost:5173/jardim-dos-presentes/`.
+O servidor iniciará em `http://localhost:5173/jardim-dos-presentes/`.
 
 ### 3. Gerar build de produção
 ```bash
 npm run build
 ```
 
-### 4. Testar a versão de produção localmente
+### 4. Pré-visualizar o pacote de produção
 ```bash
 npm run preview
 ```
@@ -208,4 +245,4 @@ npm run preview
 
 ## 🌸 Filosofia
 
-O **Jardim dos Presentes** não é uma simples lista de compras. É um registro sensível de aspirações, histórias e sonhos — permitindo cultivar a gratidão e celebrar cada pequena ou grande conquista.
+O **Jardim dos Presentes** não é uma simples lista de desejos. É um registro poético e afetuoso de aspirações, histórias e memórias — permitindo cultivar a gratidão e celebrar cada sonho que floresce.
