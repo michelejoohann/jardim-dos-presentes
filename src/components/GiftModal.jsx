@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { createReservation } from '../services/reservationService.js';
 
 export default function GiftModal({ product, user, onClose, onReserved }) {
@@ -10,6 +11,15 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Trava a rolagem da página de fundo enquanto o modal estiver aberto
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
 
   // Fecha modal com tecla ESC
   useEffect(() => {
@@ -63,7 +73,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
     ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImageUrl}`
     : rawImageUrl;
 
-  return (
+  const modalElement = (
     <div className="modal-backdrop" onClick={busy ? undefined : onClose} role="dialog" aria-modal="true">
       <div className="modal-card" onClick={event => event.stopPropagation()}>
         <button
@@ -221,4 +231,6 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }

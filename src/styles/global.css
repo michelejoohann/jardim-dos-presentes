@@ -934,23 +934,25 @@ button, input, select, textarea {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(22, 43, 29, 0.72);
+  background: rgba(22, 43, 29, 0.76);
   backdrop-filter: blur(8px);
-  z-index: 9999;
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
   display: grid;
   place-items: center;
   padding: 20px;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .modal-card {
   position: relative;
   width: min(590px, 100%);
-  background: var(--paper-card);
+  background: #fdfbf7;
   border: 1px solid var(--gold-antique);
   border-radius: 26px;
   padding: 34px;
-  box-shadow: var(--shadow-modal), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-modal), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
   margin: auto;
 }
 

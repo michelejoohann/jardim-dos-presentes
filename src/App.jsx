@@ -564,14 +564,6 @@ export default function App() {
         </section>
 
         {!loading && visibleProducts.length === 0 && <p className="empty-state">Nenhum presente encontrado com esses filtros.</p>}
-
-        {giftingProduct && (
-          <GiftModal
-            product={giftingProduct}
-            user={user}
-            onClose={() => setGiftingProduct(null)}
-          />
-        )}
       </main>
 
       {/* Rodapé Afetivo com a Logo Michèlé Joohann */}
@@ -587,6 +579,14 @@ export default function App() {
         <p className="footer-title">O Jardim dos Presentes</p>
         <p className="footer-subtitle">Curadoria feita com carinho por Michèlé Joohann</p>
       </footer>
+
+      {giftingProduct && (
+        <GiftModal
+          product={giftingProduct}
+          user={user}
+          onClose={() => setGiftingProduct(null)}
+        />
+      )}
     </div>
   );
 }
