@@ -1479,8 +1479,38 @@ button, input, select, textarea {
   white-space: nowrap;
 }
 
+.admin-products-table th.col-item,
+.admin-products-table td.product-cell-identity {
+  min-width: 290px;
+  width: 32%;
+}
+
+.admin-products-table th.col-collection {
+  min-width: 175px;
+}
+
+.admin-products-table th.col-price {
+  min-width: 95px;
+}
+
+.admin-products-table th.col-priority {
+  min-width: 105px;
+}
+
+.admin-products-table th.col-visibility {
+  min-width: 130px;
+}
+
+.admin-products-table th.col-status {
+  min-width: 115px;
+}
+
+.admin-products-table th.col-actions {
+  min-width: 130px;
+}
+
 .admin-products-table td {
-  padding: 12px 16px;
+  padding: 13px 16px;
   border-bottom: 1px solid #f3ece0;
   vertical-align: middle;
 }
@@ -1489,15 +1519,19 @@ button, input, select, textarea {
   background: #fdfcf9;
 }
 
+.product-cell-identity {
+  vertical-align: middle;
+}
+
 .product-table-identity {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 13px;
 }
 
 .table-thumb {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 10px;
   overflow: hidden;
   background: #f4ede1;
@@ -1505,19 +1539,33 @@ button, input, select, textarea {
   place-items: center;
   flex-shrink: 0;
   border: 1px solid var(--line-subtle);
+  margin-top: 2px;
+  box-shadow: 0 1px 3px rgba(22, 43, 29, 0.05);
 }
 
 .table-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.product-table-identity strong {
+.product-table-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 3px;
+}
+
+.product-table-identity strong,
+.product-table-info strong {
   display: block;
   color: var(--green-deep);
   font-size: 0.92rem;
-  line-height: 1.25;
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .badge-draft {

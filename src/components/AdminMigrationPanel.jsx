@@ -484,13 +484,13 @@ export default function AdminMigrationPanel({
               <table className="admin-products-table">
                 <thead>
                   <tr>
-                    <th>Item</th>
-                    <th>Jardim / Coleção</th>
-                    <th>Valor</th>
-                    <th>Prioridade</th>
-                    <th>Exibição no Site</th>
-                    <th>Status</th>
-                    <th style={{ textAlign: 'right' }}>Ações</th>
+                    <th className="col-item">Item</th>
+                    <th className="col-collection">Jardim / Coleção</th>
+                    <th className="col-price">Valor</th>
+                    <th className="col-priority">Prioridade</th>
+                    <th className="col-visibility">Exibição no Site</th>
+                    <th className="col-status">Status</th>
+                    <th className="col-actions" style={{ textAlign: 'right' }}>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -507,19 +507,21 @@ export default function AdminMigrationPanel({
 
                     return (
                       <tr key={prod.id} className={!isEnabled ? 'row-disabled' : ''}>
-                        <td className="product-table-identity">
-                          <div className="table-thumb">
-                            {imageUrl ? (
-                              <img src={imageUrl} alt="" loading="lazy" />
-                            ) : (
-                              <span>🌿</span>
-                            )}
-                          </div>
-                          <div>
-                            <strong>{prod.name}</strong>
-                            {!isEnabled && (
-                              <span className="badge-draft">Oculto no site</span>
-                            )}
+                        <td className="product-cell-identity">
+                          <div className="product-table-identity">
+                            <div className="table-thumb">
+                              {imageUrl ? (
+                                <img src={imageUrl} alt="" loading="lazy" />
+                              ) : (
+                                <span>🌿</span>
+                              )}
+                            </div>
+                            <div className="product-table-info">
+                              <strong>{prod.name}</strong>
+                              {!isEnabled && (
+                                <span className="badge-draft">Oculto no site</span>
+                              )}
+                            </div>
                           </div>
                         </td>
 
