@@ -533,16 +533,7 @@ button, input, select, textarea {
   box-shadow: 0 0 0 2px var(--gold-glow);
 }
 
-/* Título de Seção "Nossa Curadoria do Sonho" */
-.catalog-section-title {
-  text-align: center;
-  font-family: var(--font-serif);
-  font-size: 1.45rem;
-  font-weight: 600;
-  color: var(--green-deep);
-  margin: 14px 0 16px;
-  letter-spacing: -0.01em;
-}
+
 
 /* ==========================================================================
    CARDS DE PRODUTOS — PLACAS DE HERBÁRIO BOTÂNICO
@@ -2466,13 +2457,6 @@ body {
   box-shadow: none;
 }
 
-.catalog-section-title {
-  margin: 17px 0 12px;
-  color: #152b1c;
-  font-size: clamp(1.65rem, 2.8vw, 2rem);
-  line-height: 1.1;
-  font-weight: 600;
-}
 
 .product-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));

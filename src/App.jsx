@@ -41,6 +41,10 @@ function isTikTokSource(product) {
   return source.includes('tiktok');
 }
 
+function scrollToCatalog() {
+  document.querySelector('.product-grid')?.scrollIntoView({ behavior: 'smooth' });
+}
+
 export default function App() {
   const [firestoreProducts, setFirestoreProducts] = useState([]);
   const [firestoreStatus, setFirestoreStatus] = useState('loading');
@@ -290,7 +294,7 @@ export default function App() {
                       setCategory('all');
                       setSubcategory('all');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🌿 Todas as coleções
@@ -304,7 +308,7 @@ export default function App() {
                         setCategory(cat);
                         setSubcategory('all');
                         setMobileMenuOpen(false);
-                        document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                        scrollToCatalog();
                       }}
                     >
                       {categoryLabels[cat] || labelFromValue(cat)}
@@ -324,7 +328,7 @@ export default function App() {
                       setPriorityFilter('all');
                       setSort('priority');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     ⭐ Todas as prioridades
@@ -335,7 +339,7 @@ export default function App() {
                     onClick={() => {
                       setPriorityFilter('alta');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🍃 Alta prioridade
@@ -346,7 +350,7 @@ export default function App() {
                     onClick={() => {
                       setPriorityFilter('media');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🌸 Média prioridade
@@ -357,7 +361,7 @@ export default function App() {
                     onClick={() => {
                       setPriorityFilter('baixa');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🌰 Baixa prioridade
@@ -368,7 +372,7 @@ export default function App() {
                     onClick={() => {
                       setSort('priceAsc');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     ♡ Menor valor
@@ -379,7 +383,7 @@ export default function App() {
                     onClick={() => {
                       setSort('priceDesc');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     ♢ Maior valor
@@ -390,7 +394,7 @@ export default function App() {
                     onClick={() => {
                       setSort('nameAsc');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     Aa Nome A-Z
@@ -408,7 +412,7 @@ export default function App() {
                     onClick={() => {
                       setSubcategory('all');
                       setMobileMenuOpen(false);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🌿 Todos os jardins
@@ -421,7 +425,7 @@ export default function App() {
                       onClick={() => {
                         setSubcategory(sub);
                         setMobileMenuOpen(false);
-                        document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                        scrollToCatalog();
                       }}
                     >
                       🌱 {labelFromValue(sub)}
@@ -470,7 +474,7 @@ export default function App() {
                     setCategory('all');
                     setSubcategory('all');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   🌿 Todas as coleções
@@ -484,7 +488,7 @@ export default function App() {
                       setCategory(cat);
                       setSubcategory('all');
                       setOpenSubmenu(null);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     {categoryLabels[cat] || labelFromValue(cat)}
@@ -513,7 +517,7 @@ export default function App() {
                   onClick={() => {
                     setPriorityFilter('all');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   ⭐ Todas as prioridades
@@ -524,7 +528,7 @@ export default function App() {
                   onClick={() => {
                     setPriorityFilter('alta');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   🍃 Alta prioridade (Essencial)
@@ -535,7 +539,7 @@ export default function App() {
                   onClick={() => {
                     setPriorityFilter('media');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   🌸 Média prioridade
@@ -546,7 +550,7 @@ export default function App() {
                   onClick={() => {
                     setPriorityFilter('baixa');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   🌰 Baixa prioridade
@@ -569,7 +573,7 @@ export default function App() {
                     onClick={() => {
                       setSort(value);
                       setOpenSubmenu(null);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     {label}
@@ -597,7 +601,7 @@ export default function App() {
                   onClick={() => {
                     setSubcategory('all');
                     setOpenSubmenu(null);
-                    document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    scrollToCatalog();
                   }}
                 >
                   🌿 Todos os jardins
@@ -610,7 +614,7 @@ export default function App() {
                     onClick={() => {
                       setSubcategory(sub);
                       setOpenSubmenu(null);
-                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      scrollToCatalog();
                     }}
                   >
                     🌱 {labelFromValue(sub)}
@@ -746,7 +750,6 @@ export default function App() {
           </Suspense>
         )}
 
-        <h2 className="catalog-section-title">Nossa Curadoria do Sonho</h2>
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}
         {firestoreStatus === 'empty' && !loading && <p className="notice warning">Nenhum presente cadastrado no Firestore.</p>}
