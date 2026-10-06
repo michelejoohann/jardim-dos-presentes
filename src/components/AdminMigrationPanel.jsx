@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../firebase/config.js';
-import { publishStagedProductsToFirestore } from '../services/stagedMigration.js';
+import { auth, db } from '../firebase/config.js';
+import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
 import { deleteProduct, toggleProductEnabled } from '../services/productService.js';
 import ProductEditorModal from './ProductEditorModal.jsx';
@@ -22,7 +22,7 @@ export default function AdminMigrationPanel({
   const [reservations, setReservations] = useState([]);
   const [reservationsLoading, setReservationsLoading] = useState(true);
 
-  // Controle de abas: 'products' | 'messages' | 'migration'
+  // Controle de abas: 'products' | 'messages' | 'backup'
   const [activeTab, setActiveTab] = useState('products');
 
   // Estado do modal de criar / editar presente
@@ -73,23 +73,75 @@ export default function AdminMigrationPanel({
     }
   }
 
-  async function handlePublishStaged() {
-    const confirmed = window.confirm(
-      'Publicar todos os produtos do staging diretamente no Firestore?\n\nSerão gravados 71 itens completos com fotos, prioridades e textos afetivos.'
-    );
-    if (!confirmed) return;
-
-    setBusy(true);
-    setMessage('');
-    setError('');
+  function handleExportBackup() {
     try {
-      const total = await publishStagedProductsToFirestore();
-      setMessage(`🎉 Sucesso! ${total} produtos novos foram gravados na coleção products do Firestore!`);
+      const exportData = JSON.stringify(products, null, 2);
+      const blob = new Blob([exportData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = url;
+      downloadAnchor.download = `jardim-dos-presentes-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      URL.revokeObjectURL(url);
+      setMessage(`📁 Backup exportado com sucesso contendo ${products.length} presentes!`);
     } catch (err) {
-      setError(err?.message || 'A publicação dos produtos não pôde ser concluída.');
-    } finally {
-      setBusy(false);
+      setError('Não foi possível exportar o backup: ' + err.message);
     }
+  }
+
+  async function handleImportBackupFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        setBusy(true);
+        setError('');
+        setMessage('');
+        const content = e.target?.result;
+        const importedList = JSON.parse(content);
+        if (!Array.isArray(importedList) || importedList.length === 0) {
+          throw new Error('O arquivo selecionado não contém uma lista válida de presentes.');
+        }
+
+        const confirmed = window.confirm(
+          `Importar ${importedList.length} presentes do arquivo para o Firestore?\n\nItens existentes com o mesmo ID serão atualizados e novos itens serão criados.`
+        );
+        if (!confirmed) return;
+
+        const BATCH_SIZE = 400;
+        let count = 0;
+        for (let start = 0; start < importedList.length; start += BATCH_SIZE) {
+          const chunk = importedList.slice(start, start + BATCH_SIZE);
+          const batch = writeBatch(db);
+          chunk.forEach(prod => {
+            if (!prod.id && !prod.name) return;
+            const pid = prod.id || String(prod.name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const ref = doc(db, 'products', pid);
+            batch.set(
+              ref,
+              {
+                ...prod,
+                updatedAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+            count += 1;
+          });
+          await batch.commit();
+        }
+        setMessage(`🎉 Sucesso! ${count} presentes foram sincronizados diretamente com o Firestore.`);
+      } catch (err) {
+        setError('Falha ao importar arquivo JSON: ' + (err?.message || 'Arquivo inválido.'));
+      } finally {
+        setBusy(false);
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file);
   }
 
   async function handleCancelGift(productId, productName) {
@@ -355,10 +407,10 @@ export default function AdminMigrationPanel({
         </button>
         <button
           type="button"
-          className={`admin-tab-btn ${activeTab === 'migration' ? 'active' : ''}`}
-          onClick={() => setActiveTab('migration')}
+          className={`admin-tab-btn ${activeTab === 'backup' ? 'active' : ''}`}
+          onClick={() => setActiveTab('backup')}
         >
-          🚀 Carga em Lote / Staging
+          📁 Backup & Dados
         </button>
       </div>
 
@@ -615,23 +667,48 @@ export default function AdminMigrationPanel({
         </div>
       )}
 
-      {/* CONTEÚDO DA ABA 3: CARGA EM LOTE / STAGING */}
-      {activeTab === 'migration' && (
+      {/* CONTEÚDO DA ABA 3: BACKUP & DADOS */}
+      {activeTab === 'backup' && (
         <div className="admin-tab-content">
           <div className="admin-migration-box">
-            <h3>🚀 Publicação do Lote Preparado (71 itens)</h3>
+            <h3>📁 Backup & Carga Externa de Dados (100% Firestore)</h3>
             <p>
-              Use esta ferramenta caso deseje sobrescrever ou republicar o catálogo completo a partir da base estruturada de 71 presentes (com todas as fotos tratadas, textos e categorização).
+              Os presentes do seu Jardim são armazenados <strong>exclusivamente na base de dados (Cloud Firestore)</strong>, garantindo código limpo, seguro e desempenho máximo sem dados embutidos.
             </p>
-            <button
-              type="button"
-              className="primary-button"
-              onClick={handlePublishStaged}
-              disabled={busy}
-              style={{ background: '#b45309', borderColor: '#b45309', marginTop: '12px' }}
-            >
-              {busy ? 'Publicando…' : '🚀 Publicar Novos Produtos no Firestore (71 itens)'}
-            </button>
+
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '16px' }}>
+              <button
+                type="button"
+                className="primary-button"
+                onClick={handleExportBackup}
+                disabled={busy || products.length === 0}
+                style={{ background: '#2d6a4f', borderColor: '#2d6a4f' }}
+              >
+                📥 Baixar Backup JSON ({products.length} presentes)
+              </button>
+
+              <label
+                className="secondary-button"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  cursor: busy ? 'not-allowed' : 'pointer',
+                  margin: 0,
+                }}
+              >
+                📤 Restaurar / Importar Arquivo JSON
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={handleImportBackupFile}
+                  disabled={busy}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            </div>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '10px' }}>
+              Dica: Você pode guardar o arquivo JSON no seu computador como segurança e restaurá-lo a qualquer momento.
+            </p>
           </div>
         </div>
       )}
