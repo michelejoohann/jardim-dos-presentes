@@ -55,6 +55,7 @@ export default function App() {
   const [publicReservations, setPublicReservations] = useState({});
   const [giftingProduct, setGiftingProduct] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -68,8 +69,9 @@ export default function App() {
       // Menus/diálogos de navegação fecham ao clicar fora da própria caixa.
       // Isso também permite clicar no espaço vazio do cabeçalho sem manter
       // um submenu aberto sobre o conteúdo.
-      if (!e.target.closest('.nav-item-dropdown')) {
+      if (!e.target.closest('.nav-item-dropdown') && !e.target.closest('.brand-dropdown-container')) {
         setOpenSubmenu(null);
+        setMobileMenuOpen(false);
       }
 
       // A busca é tratada como uma caixa independente e também recolhe
@@ -230,28 +232,223 @@ export default function App() {
 
       {/* Barra de Topo Estilo Herbarium Vitoriano com Submenus Interativos */}
       <nav className="site-top-bar" aria-label="Navegação superior">
-        <a
-          href="#top"
-          className="site-top-bar-brand"
-          onClick={e => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          title="O Jardim dos Presentes de Michèlé Joohann"
-        >
-          <img
-            src={`${baseUrl}/images/logo-michele-joohann.png`}
-            alt="Logo Michèlé Joohann"
-            className="site-top-bar-logo"
-            width="44"
-            height="44"
-            loading="eager"
-          />
-          <div className="brand-text">
-            <span className="brand-title">O Jardim dos Presentes</span>
-            <span className="brand-author">de Michèlé Joohann</span>
-          </div>
-        </a>
+        <div className="brand-dropdown-container">
+          <a
+            href="#top"
+            className={`site-top-bar-brand ${mobileMenuOpen ? 'mobile-menu-active' : ''}`}
+            onClick={e => {
+              e.preventDefault();
+              if (window.innerWidth <= 768) {
+                setMobileMenuOpen(prev => !prev);
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            title="O Jardim dos Presentes de Michèlé Joohann - Toque para abrir menus no celular"
+            aria-expanded={mobileMenuOpen}
+          >
+            <img
+              src={`${baseUrl}/images/logo-michele-joohann.png`}
+              alt="Logo Michèlé Joohann"
+              className="site-top-bar-logo"
+              width="44"
+              height="44"
+              loading="eager"
+            />
+            <div className="brand-text">
+              <span className="brand-title">O Jardim dos Presentes</span>
+              <span className="brand-author">de Michèlé Joohann</span>
+            </div>
+            <span className="mobile-brand-arrow" aria-hidden="true">
+              {mobileMenuOpen ? '▴' : '▾'}
+            </span>
+          </a>
+
+          {/* Submenus escondidos sob a logo superior esquerda no mobile */}
+          {mobileMenuOpen && (
+            <div className="mobile-submenus-drawer" role="menu">
+              <div className="mobile-drawer-header">
+                <span className="mobile-drawer-title">🌿 Submenus do Jardim</span>
+                <button
+                  type="button"
+                  className="mobile-drawer-close"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Fechar menu"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Coleções */}
+              <div className="mobile-drawer-section">
+                <span className="mobile-drawer-label">Coleções</span>
+                <div className="mobile-drawer-tags">
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${category === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setCategory('all');
+                      setSubcategory('all');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    🌿 Todas as coleções
+                  </button>
+                  {availableCategories.map(cat => (
+                    <button
+                      key={cat}
+                      type="button"
+                      className={`mobile-tag-btn ${category === cat ? 'active' : ''}`}
+                      onClick={() => {
+                        setCategory(cat);
+                        setSubcategory('all');
+                        setMobileMenuOpen(false);
+                        document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      {categoryLabels[cat] || labelFromValue(cat)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ordenação & Prioridades */}
+              <div className="mobile-drawer-section">
+                <span className="mobile-drawer-label">Ordenação & Prioridades</span>
+                <div className="mobile-drawer-tags">
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${priorityFilter === 'all' && sort === 'priority' ? 'active' : ''}`}
+                    onClick={() => {
+                      setPriorityFilter('all');
+                      setSort('priority');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    ⭐ Todas as prioridades
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${priorityFilter === 'alta' ? 'active' : ''}`}
+                    onClick={() => {
+                      setPriorityFilter('alta');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    🍃 Alta prioridade
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${priorityFilter === 'media' ? 'active' : ''}`}
+                    onClick={() => {
+                      setPriorityFilter('media');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    🌸 Média prioridade
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${priorityFilter === 'baixa' ? 'active' : ''}`}
+                    onClick={() => {
+                      setPriorityFilter('baixa');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    🌰 Baixa prioridade
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${sort === 'priceAsc' ? 'active' : ''}`}
+                    onClick={() => {
+                      setSort('priceAsc');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    ♡ Menor valor
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${sort === 'priceDesc' ? 'active' : ''}`}
+                    onClick={() => {
+                      setSort('priceDesc');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    ♢ Maior valor
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${sort === 'nameAsc' ? 'active' : ''}`}
+                    onClick={() => {
+                      setSort('nameAsc');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Aa Nome A-Z
+                  </button>
+                </div>
+              </div>
+
+              {/* Jardins */}
+              <div className="mobile-drawer-section">
+                <span className="mobile-drawer-label">Jardins</span>
+                <div className="mobile-drawer-tags">
+                  <button
+                    type="button"
+                    className={`mobile-tag-btn ${subcategory === 'all' ? 'active' : ''}`}
+                    onClick={() => {
+                      setSubcategory('all');
+                      setMobileMenuOpen(false);
+                      document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    🌿 Todos os jardins
+                  </button>
+                  {availableSubcategories.map(sub => (
+                    <button
+                      key={sub}
+                      type="button"
+                      className={`mobile-tag-btn ${subcategory === sub ? 'active' : ''}`}
+                      onClick={() => {
+                        setSubcategory(sub);
+                        setMobileMenuOpen(false);
+                        document.querySelector('.catalog-section-title')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      🌱 {labelFromValue(sub)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sobre */}
+              <div className="mobile-drawer-section">
+                <span className="mobile-drawer-label">Sobre</span>
+                <p className="mobile-drawer-note">
+                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias afetivas, onde cada presente é cultivado com carinho, significado e história.
+                </p>
+              </div>
+
+              {/* Contato */}
+              <div className="mobile-drawer-section">
+                <span className="mobile-drawer-label">Contato</span>
+                <p className="mobile-drawer-note">
+                  Para falar comigo sobre o Jardim dos Presentes:<br />
+                  <a className="contact-email-link" href="mailto:michelejoohann@gmail.com">michelejoohann@gmail.com</a>
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="site-top-bar-nav">
           {/* Menu Coleções */}
@@ -519,7 +716,10 @@ export default function App() {
       {/* Hero Ultra Compacto (Opção 1) */}
       <header className="hero">
         <h1 className="hero-title">O Jardim dos Presentes</h1>
-        <p className="hero-subtitle">Curadoria Exclusiva de Sonhos: Onde a Magia do Presente se Revela.</p>
+        <p className="hero-subtitle">
+          <span className="hero-subtitle-line">Curadoria Exclusiva de Sonhos:</span>
+          <span className="hero-subtitle-line">Onde a Magia do Presente se Revela.</span>
+        </p>
         
         {/* Selo Medalhão Central: Guirlanda de Galhos e Heras Michèlé Joohann */}
         <div className="hero-emblem" aria-label="Logo Michèlé Joohann">
