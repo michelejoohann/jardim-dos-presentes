@@ -61,12 +61,55 @@ export default function App() {
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
-  const [showAdminPanel, setShowAdminPanel] = useState(() => {
-    if (typeof window === 'undefined') return false;
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    if (typeof window === 'undefined') return 'catalog';
+    const hash = window.location.hash;
+    if (hash === '#admin' || hash.startsWith('#admin/')) return 'admin';
     const params = new URLSearchParams(window.location.search);
-    const adminParam = params.get('admin');
-    return adminParam === 'true' || adminParam === '';
+    const adminParam = params.get('admin') || params.get('page');
+    if (adminParam === 'true' || adminParam === '' || adminParam === 'admin') return 'admin';
+    return 'catalog';
   });
+
+  function navigateTo(route) {
+    setCurrentRoute(route);
+    if (typeof window !== 'undefined') {
+      if (route === 'admin') {
+        if (window.location.hash !== '#admin') {
+          window.location.hash = '#admin';
+        }
+      } else {
+        if (window.location.hash === '#admin' || window.location.hash.startsWith('#admin/')) {
+          history.replaceState(null, '', window.location.pathname);
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  useEffect(() => {
+    function handleLocationChange() {
+      const hash = window.location.hash;
+      if (hash === '#admin' || hash.startsWith('#admin/')) {
+        setCurrentRoute('admin');
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        const adminParam = params.get('admin') || params.get('page');
+        if (adminParam === 'true' || adminParam === '' || adminParam === 'admin') {
+          setCurrentRoute('admin');
+        } else {
+          setCurrentRoute('catalog');
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
 
   useEffect(() => {
     function handlePointerDown(e) {
@@ -215,6 +258,35 @@ export default function App() {
   }, [sourceProducts, search, category, subcategory, priorityFilter, sort]);
 
   const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+
+  if (currentRoute === 'admin') {
+    return (
+      <div className="app-shell admin-page-shell">
+        <div className="foliage-frame foliage-frame-left admin-foliage" aria-hidden="true">
+          <img src={`${baseUrl}/images/foliage-left.png`} alt="" loading="eager" />
+        </div>
+        <div className="foliage-frame foliage-frame-right admin-foliage" aria-hidden="true">
+          <img src={`${baseUrl}/images/foliage-right.png`} alt="" loading="eager" />
+        </div>
+
+        <main className="content admin-page-content">
+          <Suspense fallback={
+            <div className="admin-loading-screen">
+              <p className="notice">Carregando painel de gestão do Jardim…</p>
+            </div>
+          }>
+            <AdminMigrationPanel
+              user={user}
+              firestoreCount={firestoreProducts.length}
+              onNavigateHome={() => navigateTo('catalog')}
+              onClose={() => navigateTo('catalog')}
+              products={firestoreProducts}
+            />
+          </Suspense>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="app-shell">
@@ -705,9 +777,9 @@ export default function App() {
           <button
             type="button"
             className="top-action-icon-btn"
-            title="Painel de Administração"
-            aria-label="Administração"
-            onClick={() => setShowAdminPanel(prev => !prev)}
+            title="Painel de Gestão do Jardim"
+            aria-label="Gestão do Jardim"
+            onClick={() => navigateTo('admin')}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -739,16 +811,6 @@ export default function App() {
       </header>
 
       <main className="content">
-        {showAdminPanel && (
-          <Suspense fallback={<p className="notice">Carregando painel…</p>}>
-            <AdminMigrationPanel
-              user={user}
-              firestoreCount={firestoreProducts.length}
-              onClose={() => setShowAdminPanel(false)}
-              products={firestoreProducts}
-            />
-          </Suspense>
-        )}
 
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}

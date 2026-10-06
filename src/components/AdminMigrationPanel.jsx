@@ -4,7 +4,7 @@ import { auth, db } from '../firebase/config.js';
 import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
 import { deleteProduct, toggleProductEnabled } from '../services/productService.js';
-import ProductEditorModal from './ProductEditorModal.jsx';
+import ProductEditor from './ProductEditor.jsx';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
 
@@ -12,6 +12,7 @@ export default function AdminMigrationPanel({
   user,
   firestoreCount = 0,
   onClose,
+  onNavigateHome,
   products = [],
 }) {
   const [email, setEmail] = useState('');
@@ -247,25 +248,54 @@ export default function AdminMigrationPanel({
     return products.filter(p => p.enabled === false || p.published === false || p.visible === false).length;
   }, [products]);
 
-  // Se não estiver logada como administradora, exibe tela de login
+  const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+
+  // Se estiver criando ou editando um presente, exibe a tela de edição fluída (sem modal)
+  if (isCreating || editingProduct) {
+    return (
+      <ProductEditor
+        product={editingProduct}
+        onBack={() => {
+          setIsCreating(false);
+          setEditingProduct(null);
+        }}
+        onSaved={saved => {
+          setMessage(`✨ Presente "${saved.name}" gravado com sucesso no Firestore!`);
+          setIsCreating(false);
+          setEditingProduct(null);
+        }}
+        onNavigateHome={onNavigateHome || onClose}
+      />
+    );
+  }
+
+  // Se não estiver logada como administradora, exibe tela de login dedicada
   if (!isAdmin) {
     return (
       <section className="admin-panel admin-panel-login" aria-labelledby="admin-title">
         <div className="admin-header-row">
-          <div>
-            <p className="section-kicker">Administração</p>
-            <h2 id="admin-title">Área Administrativa</h2>
-            <p>Entre com a conta da administradora para gerenciar presentes e mensagens com carinho.</p>
+          <div className="admin-brand-header">
+            <img
+              src={`${baseUrl}/images/logo-michele-joohann.png`}
+              alt="Michèlé Joohann"
+              className="admin-header-logo"
+              width="48"
+              height="48"
+            />
+            <div>
+              <p className="section-kicker">Administração do Jardim</p>
+              <h2 id="admin-title">Área Administrativa</h2>
+              <p>Entre com a conta da administradora para gerenciar presentes e mensagens com carinho.</p>
+            </div>
           </div>
-          {onClose && (
+          {(onNavigateHome || onClose) && (
             <button
               type="button"
-              className="secondary-button"
-              onClick={onClose}
-              style={{ whiteSpace: 'nowrap', padding: '6px 14px', fontSize: '0.85rem' }}
-              title="Ocultar painel administrativo"
+              className="secondary-button admin-back-to-store-btn"
+              onClick={onNavigateHome || onClose}
+              title="Voltar para a vitrine pública do catálogo"
             >
-              ✕ Ocultar
+              ← Voltar ao Jardim / Vitrine
             </button>
           )}
         </div>
@@ -308,15 +338,35 @@ export default function AdminMigrationPanel({
     <section className="admin-panel admin-panel-full" aria-labelledby="admin-title">
       {/* CABEÇALHO DO PAINEL GERENCIAL */}
       <div className="admin-header-row">
-        <div>
-          <p className="section-kicker">Painel da Michèlé</p>
-          <h2 id="admin-title">Gestão do Jardim & Catálogo</h2>
-          <p className="admin-subtitle">
-            Gerencie cada presente com amor, leia os votos dos convidados e mantenha seu Jardim impecável.
-          </p>
+        <div className="admin-brand-header">
+          <img
+            src={`${baseUrl}/images/logo-michele-joohann.png`}
+            alt="Michèlé Joohann"
+            className="admin-header-logo"
+            width="52"
+            height="52"
+          />
+          <div>
+            <p className="section-kicker">Painel da Michèlé</p>
+            <h2 id="admin-title">Gestão do Jardim & Catálogo</h2>
+            <p className="admin-subtitle">
+              Gerencie cada presente com amor, leia os votos dos convidados e mantenha seu Jardim impecável.
+            </p>
+          </div>
         </div>
 
         <div className="admin-actions">
+          {(onNavigateHome || onClose) && (
+            <button
+              type="button"
+              className="secondary-button admin-back-to-store-btn"
+              onClick={onNavigateHome || onClose}
+              disabled={busy}
+              title="Voltar para a vitrine pública do catálogo"
+            >
+              ← Voltar ao Jardim / Ver Vitrine
+            </button>
+          )}
           <button
             type="button"
             className="primary-button admin-create-btn"
@@ -334,17 +384,6 @@ export default function AdminMigrationPanel({
           >
             Sair
           </button>
-          {onClose && (
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={onClose}
-              disabled={busy}
-              title="Ocultar painel"
-            >
-              ✕ Ocultar
-            </button>
-          )}
         </div>
       </div>
 
@@ -713,22 +752,6 @@ export default function AdminMigrationPanel({
             </p>
           </div>
         </div>
-      )}
-
-      {/* MODAL DE CRIAÇÃO / EDIÇÃO DE PRESENTE */}
-      {(isCreating || editingProduct) && (
-        <ProductEditorModal
-          product={editingProduct}
-          onClose={() => {
-            setIsCreating(false);
-            setEditingProduct(null);
-          }}
-          onSaved={saved => {
-            setMessage(`✨ Presente "${saved.name}" gravado com sucesso no Firestore!`);
-            setIsCreating(false);
-            setEditingProduct(null);
-          }}
-        />
       )}
     </section>
   );
