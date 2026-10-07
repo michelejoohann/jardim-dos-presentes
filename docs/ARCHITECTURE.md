@@ -2,10 +2,10 @@
 
 ## 1. Visão Geral do Sistema
 
-O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e afetiva que transforma uma lista de desejos em uma experiência visual rica inspirada em um *Herbarium Botânico Vitoriano*. Construída sobre **React 19**, **Vite 7** e **Firebase 12**, a aplicação oferece:
+O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e acolhedora que transforma uma lista de desejos em uma experiência visual rica inspirada em um *Herbarium Botânico Vitoriano*. Construída sobre **React 19**, **Vite 7** e **Firebase 12**, a aplicação oferece:
 
 - **100% Cloud Firestore como Fonte Única da Verdade**: Nenhum dado de produto é armazenado no código-fonte ou em arquivos estáticos da aplicação. Todo o catálogo reside e é atualizado dinamicamente no banco de dados.
-- **Painel Gerencial Completo**: Interface administrativa com autenticação segura, permitindo criação de novos presentes, edição, exclusão, controle de visibilidade (habilitado/desabilitado) e sugestões inteligentes de textos afetivos, prioridades, sonhos e histórias.
+- **Painel Gerencial Completo**: Interface administrativa com autenticação segura, permitindo criação de novos presentes, edição, exclusão, controle de visibilidade (habilitado/desabilitado) e sugestões inteligentes de textos acolhedores, prioridades, sonhos e histórias.
 - **Backup & Restauração Sob Demanda**: Ferramenta de exportação e importação de backups em formato JSON diretamente pelo navegador, mantendo o repositório 100% limpo e desacoplado dos dados.
 - **Experiência Responsiva e Acessível**: Gaveta suspensa tátil de submenus oculta sob a logo superior esquerda no mobile, tipografia equilibrada com quebras harmônicas e espaçamento generoso do medalhão central.
 - **Code-Splitting e Otimização**: Chunks otimizados no Vite com vendor splitting (`vendor-react`, `vendor-firebase`) e carregamento sob demanda (`lazy` + `Suspense`).
@@ -30,7 +30,7 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Amplo"]
         end
 
-        subgraph PublicUI ["Catálogo & Vitrine Afetiva"]
+        subgraph PublicUI ["Catálogo & Vitrine de Presentes"]
             Grid["Grade de Presentes (ProductCard)"]
             GiftModalUI["Modal de Presentear (GiftModal)"]
         end
@@ -66,7 +66,7 @@ graph TB
 
     AdminPanel -- "Autenticação restrita (Admin UID)" --> Auth
     AdminPanel -- "CRUD & Visibilidade (productService)" --> Firestore
-    ProductEditor -- "Sugestões de afeto (giftSuggestions)" --> ProductEditor
+    ProductEditor -- "Sugestões de carinho (giftSuggestions)" --> ProductEditor
     BackupTool -- "Exportar / Importar JSON" --> Firestore
 
     GHRepo --> GHActions
@@ -156,13 +156,13 @@ Cada documento na coleção `products` do Cloud Firestore possui a seguinte estr
 | Campo | Tipo | Descrição | Exemplo |
 |---|---|---|---|
 | `id` | `string` | Identificador único e legível (slug) | `"asas-de-fada-luxo-01"` |
-| `name` | `string` | Nome afetivo e comercial do produto | `"Asas de Fada / Borboleta em Tecido"` |
+| `name` | `string` | Nome carinhoso e comercial do produto | `"Asas de Fada / Borboleta em Tecido"` |
 | `category` | `string` | Categoria principal (Coleção) | `"moda"`, `"casa"`, `"arte"`, `"joias"` |
 | `subcategory` | `string` | Canteiro / Subcategoria | `"acessorios"`, `"fantasia"`, `"decoracao"` |
 | `collection` | `string` | Coleção temática do Jardim | `"Magia das Fadas"`, `"Herbarium"` |
 | `price` | `number \| null` | Valor numérico de referência | `89.90` |
 | `priceLabel` | `string` | Formatação em moeda amigável | `"R$ 89,90"`, `"Consultar na loja"` |
-| `priority` | `string` | Prioridade / urgência afetiva | `"alta"`, `"media"`, `"baixa"` |
+| `priority` | `string` | Nível de prioridade / importância | `"alta"`, `"media"`, `"baixa"` |
 | `enabled` | `boolean` | Flag de visibilidade ativa no site | `true` (visível) ou `false` (oculto) |
 | `published` | `boolean` | Espelhamento de visibilidade para compatibilidade | `true` ou `false` |
 | `visible` | `boolean` | Espelhamento de visibilidade para compatibilidade | `true` ou `false` |
@@ -171,7 +171,7 @@ Cada documento na coleção `products` do Cloud Firestore possui a seguinte estr
 | `store` | `string` | Nome da loja fornecedora | `"SHEIN"`, `"Amazon"`, `"Ateliê"` |
 | `description` | `string` | Descrição técnica ou estética do item | `"Asas artesanais em organza furta-cor..."` |
 | `dream` | `string` | O sonho ou intenção associada ao presente | `"Incorporar o espírito das fadas e a leveza..."` |
-| `story` | `string` | História de afeto ou memória conectada | `"Desde a infância o fascínio por asas e seres mágicos..."` |
+| `story` | `string` | História de carinho ou memória conectada | `"Desde a infância o fascínio por asas e seres mágicos..."` |
 | `meanings` | `string[]` | Tags simbólicas de significado | `["Liberdade", "Magia", "Sonho"]` |
 | `sizes` | `string[]` | Tamanhos ou especificações | `["Único", "Ajustável"]` |
 | `notes` | `string[]` | Observações adicionais | `["Preferência por tons translúcidos"]` |

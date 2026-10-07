@@ -107,7 +107,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
         ) : (
           <>
             <div className="modal-header">
-              <span className="section-kicker">Gesto de Afeto</span>
+              <span className="section-kicker">Gesto de Carinho</span>
               <h2>Presentear este item</h2>
             </div>
 
@@ -197,7 +197,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                   </div>
                 ) : (
                   <p className="anon-note">
-                    🕵️ Seu nome não será revelado. Apenas seu gesto de afeto e a mensagem abaixo serão entregues.
+                    🕵️ Seu nome não será revelado. Apenas seu gesto de carinho e a mensagem abaixo serão entregues.
                   </p>
                 )}
               </div>

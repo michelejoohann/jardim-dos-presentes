@@ -87,7 +87,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
     }
   }
 
-  // Aplica todas as sugestões (prioridade, textos afetivos, sonho, história, coleção)
+  // Aplica todas as sugestões (prioridade, textos carinhosos, sonho, história, coleção)
   function handleApplyAllSuggestions() {
     if (!activeSuggestions) return;
 
@@ -103,7 +103,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
       meanings: prev.meanings ? prev.meanings : activeSuggestions.meanings.join(', '),
     }));
 
-    setAppliedSuggestionNotice('✨ Sugestões afetivas e prioridade aplicadas com sucesso!');
+    setAppliedSuggestionNotice('✨ Sugestões de carinho e prioridade aplicadas com sucesso!');
     setTimeout(() => setAppliedSuggestionNotice(''), 4500);
   }
 
@@ -214,7 +214,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
           <p className="admin-editor-subtitle">
             {isEditing
               ? `Edição fluída em página inteira sem rolagem horizontal. Suas alterações são salvas diretamente no Firestore.`
-              : 'Cadastre com amor e detalhes o item desejado. As sugestões inteligentes ajudam a preencher os textos afetivos.'}
+              : 'Cadastre com amor e detalhes o item desejado. As sugestões inteligentes ajudam a preencher os textos com carinho.'}
           </p>
         </div>
 
@@ -243,7 +243,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
             <span className="admin-card-step">1</span>
             <div>
               <h2>Identificação do Presente</h2>
-              <p>Nome, categoria botânica e coleção afetiva a que pertence.</p>
+              <p>Nome, categoria botânica e coleção especial a que pertence.</p>
             </div>
           </div>
 
@@ -265,7 +265,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
                     type="button"
                     className="editor-suggestion-action-btn"
                     onClick={handleApplyAllSuggestions}
-                    title="Sugerir automaticamente prioridade, sonho, história e textos com IA afetiva"
+                    title="Sugerir automaticamente prioridade, sonho, história e textos inteligentes"
                   >
                     🪄 Sugerir Tudo
                   </button>
@@ -337,7 +337,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
               </label>
 
               <label className="editor-label">
-                <span className="label-text">Nome da Coleção Afetiva</span>
+                <span className="label-text">Nome da Coleção Especial</span>
                 <div className="editor-input-with-action">
                   <input
                     type="text"
@@ -590,12 +590,12 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
           </div>
         </section>
 
-        {/* CARD 4: NARRATIVA AFETIVA & HISTÓRIAS */}
+        {/* CARD 4: NARRATIVA DE CARINHO & HISTÓRIAS */}
         <section className="admin-card-section">
           <div className="admin-card-header">
             <span className="admin-card-step">4</span>
             <div>
-              <h2>Narrativa Afetiva, Sonho & História</h2>
+              <h2>Narrativa de Carinho, Sonho & História</h2>
               <p>Os textos que encantam os convidados e revelam o significado de cada presente no seu coração.</p>
             </div>
           </div>

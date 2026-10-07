@@ -510,7 +510,7 @@ export default function App() {
               <div className="mobile-drawer-section">
                 <span className="mobile-drawer-label">Sobre</span>
                 <p className="mobile-drawer-note">
-                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias afetivas, onde cada presente é cultivado com carinho, significado e história.
+                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias especiais, onde cada presente é cultivado com carinho, significado e história.
                 </p>
               </div>
 
@@ -709,7 +709,7 @@ export default function App() {
             {openSubmenu === 'sobre' && (
               <div className="top-submenu-dropdown top-submenu-about" role="menu">
                 <p className="submenu-about-text">
-                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias afetivas, onde cada presente é cultivado com carinho, significado e história.
+                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias especiais, onde cada presente é cultivado com carinho, significado e história.
                 </p>
               </div>
             )}
@@ -834,7 +834,7 @@ export default function App() {
         {!loading && visibleProducts.length === 0 && <p className="empty-state">Nenhum presente encontrado com esses filtros.</p>}
       </main>
 
-      {/* Rodapé Afetivo com a Logo Michèlé Joohann */}
+      {/* Rodapé Especial com a Logo Michèlé Joohann */}
       <footer className="site-footer">
         <img
           src={`${baseUrl}/images/logo-michele-joohann.png`}

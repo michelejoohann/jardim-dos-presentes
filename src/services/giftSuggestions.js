@@ -1,10 +1,10 @@
 /**
- * Serviço de geração inteligente de sugestões afetivas para presentes.
+ * Serviço de geração inteligente de sugestões acolhedoras para presentes.
  * Com base no nome e palavras-chave do produto, sugere:
  * - Prioridade recomendada (alta, media, baixa) com justificativa
  * - Categoria sugerida
  * - Descrição acolhedora
- * - 🌱 O Sonho (visão afetiva do presente)
+ * - 🌱 O Sonho (visão inspiradora do presente)
  * - 📖 A História (memória / significado)
  * - Tags de significado e coleção
  */
@@ -36,11 +36,11 @@ const KEYWORD_MAP = [
     ],
     category: 'casa',
     subcategory: 'Cozinha',
-    collection: 'Rituais do Café & Afeto',
+    collection: 'Rituais do Café & Aconchego',
     priority: 'alta',
     priorityReason: 'Item diário de bem-estar que acolhe as manhãs e conecta os momentos de pausa.',
     description: (name) => `Um convite diário para desacelerar com ${name}, saborear bons momentos e começar cada manhã com aconchego e perfume de café.`,
-    dream: 'Criar rituais matinais especiais e compartilhar momentos afetuosos ao redor de uma boa xícara com quem mais amamos.',
+    dream: 'Criar rituais matinais especiais e compartilhar momentos carinhosos ao redor de uma boa xícara com quem mais amamos.',
     story: 'O aroma do café quentinho é a nossa forma favorita de celebrar o dia e acolher visitas queridas com um sorriso sincero.',
     meanings: ['Aconchego', 'Hospitalidade', 'Rituais Diários', 'Paz'],
   },
@@ -59,7 +59,7 @@ const KEYWORD_MAP = [
     priorityReason: 'Item de culinária e alimentação essencial para o funcionamento harmônico do lar.',
     description: (name) => `${name} de alta qualidade para preparar refeições deliciosas e nutrir a família e amigos com amor.`,
     dream: 'Reunir pessoas queridas em volta da mesa farta, criando memórias que alimentam a alma e o coração.',
-    story: 'Cozinhar é uma das mais puras linguagens do afeto. Cada refeição preparada aqui será uma celebração da nossa união.',
+    story: 'Cozinhar é uma das mais puras linguagens do amor. Cada refeição preparada aqui será uma celebração da nossa união.',
     meanings: ['Nutrição', 'Partilha', 'Celebração', 'União'],
   },
 
@@ -106,10 +106,10 @@ const KEYWORD_MAP = [
     subcategory: 'Sala de Estar',
     collection: 'Refúgio Vitoriano',
     priority: 'media',
-    priorityReason: 'Compõe a estética afetiva e o conforto social do lar para receber e descansar.',
+    priorityReason: 'Compõe a estética acolhedora e o conforto social do lar para receber e descansar.',
     description: (name) => `${name} selecionado para harmonizar o ambiente com um toque atemporal, acolhedor e sofisticado.`,
     dream: 'Um espaço de convivência caloroso, onde o descanso e as boas conversas encontrem o cenário perfeito.',
-    story: 'Cada detalhe do nosso lar é pensado para contar uma história de harmonia, bom gosto e afeto compartilhado.',
+    story: 'Cada detalhe do nosso lar é pensado para contar uma história de harmonia, bom gosto e carinho compartilhado.',
     meanings: ['Beleza', 'Harmonia', 'Hospitalidade', 'Conforto'],
   },
 
@@ -189,18 +189,18 @@ const KEYWORD_MAP = [
     ],
     category: 'moda',
     subcategory: 'Elegância & Guarda-roupa',
-    collection: 'Elegância Afetiva',
+    collection: 'Elegância & Delicadeza',
     priority: 'baixa',
     priorityReason: 'Um mimo especial de estilo e beleza para momentos comemorativos.',
     description: (name) => `${name} de estilo atemporal e delicado para expressar elegância em momentos especiais.`,
-    dream: 'Celebrar a beleza, a autoestima e os momentos marcantes vestindo peças que carregam afeto e história.',
+    dream: 'Celebrar a beleza, a autoestima e os momentos marcantes vestindo peças que carregam carinho e história.',
     story: 'Uma peça escolhida com carinho para marcar ocasiões inesquecíveis e carregar lembranças felizes.',
-    meanings: ['Autoestima', 'Elegância', 'Celebração', 'Afeto'],
+    meanings: ['Autoestima', 'Elegância', 'Celebração', 'Carinho'],
   },
 ];
 
 /**
- * Analisa o nome do produto e retorna um conjunto completo de sugestões afetivas.
+ * Analisa o nome do produto e retorna um conjunto completo de sugestões acolhedoras.
  * @param {string} rawName - Nome digitado do presente.
  * @param {string} currentCategory - Categoria atualmente selecionada (opcional).
  * @returns {Object} Sugestões de prioridade, textos, sonho, história e tags.
@@ -226,7 +226,7 @@ export function generateGiftSuggestions(rawName = '', currentCategory = '') {
       subcategory: 'Desejos Especiais',
       collection: 'Curadoria do Coração',
       priority: 'media',
-      priorityReason: 'Item de valor afetivo selecionado com carinho para enriquecer o catálogo.',
+      priorityReason: 'Item de valor especial selecionado com carinho para enriquecer o catálogo.',
       description: name
         ? `${name} é um desejo cultivado com carinho, escolhido por sua utilidade, beleza e significado especial para o nosso lar.`
         : 'Um desejo cultivado com carinho para trazer harmonia e aconchego ao nosso dia a dia.',
@@ -234,7 +234,7 @@ export function generateGiftSuggestions(rawName = '', currentCategory = '') {
         ? `Sonho em ter ${name} no nosso cantinho para tornar nossos momentos ainda mais especiais e acolhedores.`
         : 'Sonho em ver este desejo florescer para completar o nosso lar com alegria e conforto.',
       story: name
-        ? `Este presente foi escolhido a dedo por representar um passo importante e uma lembrança afetiva nesta nova fase.`
+        ? `Este presente foi escolhido a dedo por representar um passo importante e uma doce lembrança nesta nova fase.`
         : 'Um presente pensado para marcar esta fase tão especial com significado e gratidão.',
       meanings: ['Carinho', 'Aconchego', 'Gratidão', 'Harmonia'],
     };

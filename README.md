@@ -1,7 +1,7 @@
 # 🌿 Jardim dos Presentes de Michèlé Joohann
 
 > **Desejar. Cultivar. Conquistar. Florescer.** ✨  
-> Um espaço digital e afetivo para transformar desejos em sementes: registrar sonhos, acompanhar o que já foi conquistado e dar significado a cada realização.
+> Um espaço digital e acolhedor para transformar desejos em sementes: registrar sonhos, acompanhar o que já foi conquistado e dar significado a cada realização.
 > 
 > *Direção de Arte: Herbarium Botânico Vitoriano de Luxo com selo medalhão MJ, folhagens silvestres, heras e marcelas.*
 
@@ -31,7 +31,7 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Generoso"]
         end
 
-        subgraph PublicUI ["Catálogo & Vitrine Afetiva"]
+        subgraph PublicUI ["Catálogo & Vitrine Especial"]
             Grid["Grade de Presentes (ProductCard)"]
             Details["Detalhes Expansíveis, Significados & História"]
             GiftModalUI["Modal de Presentear (GiftModal)"]
@@ -68,7 +68,7 @@ graph TB
 
     AdminPanel -- "Autenticação restrita (Admin UID)" --> Auth
     AdminPanel -- "CRUD & Visibilidade (productService)" --> Firestore
-    ProductEditor -- "Sugestões de afeto (giftSuggestions)" --> ProductEditor
+    ProductEditor -- "Sugestões de carinho (giftSuggestions)" --> ProductEditor
     BackupTool -- "Exportar / Importar JSON pelo navegador" --> Firestore
 
     GHRepo --> GHActions
@@ -80,7 +80,7 @@ graph TB
 
 ## 🎨 Identidade Visual & Design Responsivo
 
-O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo sofisticação botânica, afeto e ergonomia móvel:
+O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo sofisticação botânica, carinho e ergonomia móvel:
 
 1. **Moldura Botânica Silvestre**: Ramos de marcela e folhagens botânicas nas laterais que emolduram suavemente a tela sem atrapalhar a leitura.
 2. **Selo Medalhão MJ**: Emblema heráldico central gravado em ouro antigo (`#ad9363`) e verde bosque (`#162a1c`), envolvido por ramagens de hera. Possui espaçamento generoso e equilibrado (`18px` a `22px`), garantindo que não fique grudado no texto.
@@ -111,12 +111,12 @@ Acesso restrito à administradora com credenciais do Firebase Authentication:
 
 ### 1. Gestão Completa de Presentes (CRUD)
 - **✨ + Novo Presente**: Criação de produtos diretamente no Firestore com geração de slug identificador único.
-- **🪄 Sugestões Inteligentes de Afeto**: Ao digitar o nome ou selecionar a categoria do presente, o sistema sugere automaticamente:
-  - Nível de prioridade sugerido (*Alta*, *Média*, *Baixa*) com justificativa afetiva.
-  - Texto afetivo para *"O sonho"*.
+- **🪄 Sugestões Inteligentes de Carinho**: Ao digitar o nome ou selecionar a categoria do presente, o sistema sugere automaticamente:
+  - Nível de prioridade sugerido (*Alta*, *Média*, *Baixa*) com justificativa acolhedora.
+  - Texto carinhoso para *"O sonho"*.
   - Narrativa para *"A história"*.
   - Tags de significados simbólicos sugeridos.
-- **✏️ Edição Dinâmica**: Atualização imediata de links de lojas, fotos, preços e dados afetivos.
+- **✏️ Edição Dinâmica**: Atualização imediata de links de lojas, fotos, preços e dados do presente.
 - **👁️ Controle de Visibilidade**: Botão rápido para alternar entre **Habilitado** (visível no catálogo) e **Desabilitado** (oculto no site, mas preservado no banco).
 - **🗑️ Exclusão Segura**: Remove o item do Firestore e limpa automaticamente eventuais registros de reserva vinculados.
 
@@ -168,11 +168,11 @@ JardimDosPresentes/
 │   │   ├── AdminMigrationPanel.jsx   # Painel da Michèlé (CRUD, recados e ferramenta de backup)
 │   │   ├── GiftModal.jsx             # Modal interativo de presente com dedicatória e anonimato
 │   │   ├── ProductCard.jsx           # Card editorial de presente (status, tags, sonho e links)
-│   │   └── ProductEditorModal.jsx    # Modal de criação/edição com motor de sugestões de afeto
+│   │   └── ProductEditorModal.jsx    # Modal de criação/edição com motor de sugestões de carinho
 │   ├── firebase/
 │   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/
-│   │   ├── giftSuggestions.js        # Motor de sugestões afetivas (prioridade, sonho, história)
+│   │   ├── giftSuggestions.js        # Motor de sugestões acolhedoras (prioridade, sonho, história)
 │   │   ├── productService.js         # Persistência, edição, visibilidade e exclusão no Firestore
 │   │   └── reservationService.js     # Serviços atômicos de reserva pública e privada
 │   ├── styles/
@@ -228,4 +228,4 @@ npm run preview
 
 ## 🌸 Filosofia
 
-O **Jardim dos Presentes** não é uma simples lista de desejos. É um registro poético e afetuoso de aspirações, histórias e memórias — permitindo cultivar a gratidão e celebrar cada sonho que floresce.
+O **Jardim dos Presentes** não é uma simples lista de desejos. É um registro poético e acolhedor de aspirações, histórias e memórias — permitindo cultivar a gratidão e celebrar cada sonho que floresce.
