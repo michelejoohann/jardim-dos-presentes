@@ -1,38 +1,123 @@
 /**
  * Serviço de geração inteligente de sugestões acolhedoras para presentes.
  * Com base no nome e palavras-chave do produto, sugere:
- * - Prioridade recomendada (alta, media, baixa) com justificativa
- * - Categoria sugerida
+ * - Categoria correta (moda, joias, casa, tecnologia, livros, arte, jardim, pets)
+ * - Subcategoria / Jardim específico
+ * - Coleção especial
+ * - Nível de prioridade recomendado com justificativa
  * - Descrição acolhedora
  * - 🌱 O Sonho (visão inspiradora do presente)
  * - 📖 A História (memória / significado)
- * - Tags de significado e coleção
+ * - Tags de significado
  */
 
+/**
+ * Normaliza string removendo acentos e convertendo para minúsculas.
+ */
+function normalizeText(str) {
+  return String(str || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+/**
+ * Verifica se o nome do presente contém a palavra-chave.
+ * Para palavras de 4 letras ou menos (ex: "saia", "top", "anel", "cão", "bule", "bota"),
+ * utiliza correspondência com limites de palavra para evitar falsos positivos
+ * (como "top" dentro de "laptop" ou "anel" dentro de "painel").
+ */
+function containsKeyword(normalizedName, normalizedKw) {
+  if (!normalizedName || !normalizedKw) return false;
+
+  if (normalizedKw.length <= 4) {
+    const escaped = normalizedKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i');
+    return regex.test(normalizedName);
+  }
+
+  return normalizedName.includes(normalizedKw);
+}
+
 const KEYWORD_MAP = [
-  // TECNOLOGIA & HOME OFFICE
+  // 1. VESTUÁRIO & MODA (BLUSAS, SAIAS, VESTIDOS, CASACOS, CALÇADOS, ETC.)
   {
     keywords: [
-      'workstation', 'mesa de trabalho', 'escrivaninha', 'computador', 'notebook', 'laptop',
-      'monitor', 'teclado', 'mouse', 'fone', 'headset', 'alexa', 'echo', 'kindle',
-      'tablet', 'ipad', 'carregador', 'suporte notebook', 'impressora', 'hub', 'câmera',
+      'blusa', 'blusas', 'saia', 'saias', 'minissaia', 'saia midi', 'saia longa',
+      'vestido', 'vestidos', 'vestidinho',
+      'camisa', 'camisas', 'camiseta', 'camisetas', 't-shirt', 'tshirt', 'regata', 'cropped', 'top', 'body', 'camisete', 'polo',
+      'calça', 'calças', 'jeans', 'pantalona', 'pantacourt', 'legging', 'alfaiataria', 'jogger', 'cargo',
+      'short', 'shorts', 'bermuda', 'bermudas',
+      'macacão', 'macaquinho', 'jardineira', 'salopete', 'conjunto',
+      'casaco', 'casacos', 'jaqueta', 'jaquetas', 'blazer', 'cardigan', 'tricot', 'tricô', 'suéter', 'pulôver', 'moletom', 'sobretudo', 'trench coat', 'quimono', 'kimono', 'colete', 'poncho', 'parka',
+      'bota', 'botas', 'coturno', 'coturnos', 'sapato', 'sapatos', 'sandália', 'sandálias', 'rasteira', 'rasteirinha', 'chinelo', 'pantufa', 'salto', 'salto alto', 'scarpin', 'mule', 'tamanco', 'tênis', 'sapatilha', 'mocassim', 'espadrille', 'anabela',
+      'bolsa', 'bolsas', 'mochila', 'mochilas', 'clutch', 'carteira', 'tote bag', 'ecobag', 'necessaire',
+      'cinto', 'cintos', 'luva', 'luvas', 'cachecol', 'echarpe', 'lenço', 'xale',
+      'chapéu', 'chapéus', 'boina', 'boné', 'tiara', 'arquinho',
+      'lingerie', 'pijama', 'pijamas', 'camisola', 'roupão de seda', 'sutiã', 'calcinha', 'meia', 'meias', 'meia-calça',
+      'biquíni', 'biquini', 'maiô', 'canga', 'saída de praia',
+      'celta', 'vitoriano', 'vintage', 'linho', 'seda', 'cetim', 'veludo', 'renda', 'organza', 'chiffon',
     ],
-    category: 'tecnologia',
-    subcategory: 'Escritório',
-    collection: 'Escritório dos Sonhos',
+    category: 'moda',
+    subcategory: 'Guarda-Roupa & Estilo',
+    collection: 'Elegância & Delicadeza',
     priority: 'alta',
-    priorityReason: 'Item fundamental para o foco profissional, estudos e produtividade no dia a dia.',
-    description: (name) => `${name} pensado para transformar a rotina de trabalho e estudos em uma experiência fluida, confortável e inspiradora.`,
-    dream: 'Ter um refúgio acolhedor e funcional, onde o foco e a criatividade fluam com serenidade e os projetos se tornem realidade.',
-    story: 'Mais do que uma ferramenta, representa a dedicação aos nossos passos profissionais e o amor por um espaço bem estruturado.',
-    meanings: ['Foco', 'Crescimento', 'Inspiração', 'Produtividade'],
+    priorityReason: 'Peça de estilo e expressão pessoal escolhida para vestir momentos especiais e elevar a autoestima.',
+    description: (name) => `${name} de estilo delicado e atemporal para compor looks únicos e expressar elegância no dia a dia.`,
+    dream: 'Celebrar a beleza, a autoestima e os momentos marcantes vestindo peças que carregam carinho e história.',
+    story: 'Uma peça escolhida com carinho para marcar ocasiões inesquecíveis e vestir a nossa melhor versão.',
+    meanings: ['Autoestima', 'Elegância', 'Beleza', 'Expressão'],
   },
 
-  // CAFÉ & RITUAIS MATINAIS
+  // 2. JOIAS & PRECIOSIDADES
   {
     keywords: [
-      'cafeteira', 'café', 'nespresso', 'prensa francesa', 'moedor', 'chaleira', 'bule',
-      'xícara', 'caneca', 'garrafa térmica', 'copo térmico',
+      'joia', 'jóia', 'joias', 'jóias', 'semijoia', 'semijóia', 'semijoias', 'bijuteria',
+      'anel', 'anéis', 'aliança', 'solitário',
+      'brinco', 'brincos', 'argola', 'argolas', 'ear cuff', 'earcuff', 'piercing',
+      'colar', 'colares', 'choker', 'gargantilha', 'corrente', 'pingente', 'escapulário', 'medalha', 'medalhão',
+      'pulseira', 'pulseiras', 'bracelete', 'braceletes', 'tornozeleira',
+      'relógio', 'relogio', 'relógios',
+      'prata', 'prata 925', 'ouro', 'ouro 18k', 'ouro branco', 'ouro rosé', 'platina',
+      'pérola', 'pérolas', 'esmeralda', 'rubi', 'safira', 'diamante', 'zircônia', 'ametista', 'turmalina', 'topázio',
+    ],
+    category: 'joias',
+    subcategory: 'Porta-Joias & Preciosidades',
+    collection: 'Brilho & Memórias',
+    priority: 'media',
+    priorityReason: 'Símbolo duradouro de carinho, celebração e luz para guardar no coração e usar em ocasiões especiais.',
+    description: (name) => `${name} em detalhes finos para iluminar o visual e eternizar momentos inesquecíveis.`,
+    dream: 'Carregar um símbolo de luz, delicadeza e beleza que atravesse o tempo com significado eterno.',
+    story: 'Adornos preciosos guardam memórias queridas e se tornam parte inesquecível da nossa caminhada.',
+    meanings: ['Brilho', 'Eternidade', 'Preciosidade', 'Lembrança'],
+  },
+
+  // 3. BELEZA & AUTOCUIDADO
+  {
+    keywords: [
+      'perfume', 'colônia', 'colonia', 'body splash', 'hidratante', 'óleo corporal',
+      'skincare', 'sérum', 'serum', 'maquiagem', 'batom', 'gloss', 'rímel', 'rimel',
+      'paleta de sombra', 'blush', 'pincel de maquiagem', 'creme facial', 'sabonete artesanal',
+      'shampoo', 'condicionador', 'máscara capilar', 'secador', 'babyliss', 'escova secadora', 'chapinha',
+    ],
+    category: 'moda',
+    subcategory: 'Autocuidado & Beleza',
+    collection: 'Rituais de Beleza',
+    priority: 'media',
+    priorityReason: 'Cuidados diários para nutrir o bem-estar, a autoestima e renovar as energias.',
+    description: (name) => `${name} para enriquecer os rituais de autocuidado e realçar a beleza e o amor-próprio.`,
+    dream: 'Reservar momentos diários de pausa para me cuidar com carinho, leveza e bem-estar.',
+    story: 'O autocuidado é uma demonstração de amor e respeito à nossa própria trajetória.',
+    meanings: ['Autocuidado', 'Bem-Estar', 'Beleza', 'Autoestima'],
+  },
+
+  // 4. CAFÉ & RITUAIS MATINAIS
+  {
+    keywords: [
+      'cafeteira', 'café', 'nespresso', 'prensa francesa', 'moedor de café', 'moedor café',
+      'chaleira', 'chaleira elétrica', 'bule', 'xícara', 'xicara', 'xícaras', 'caneca', 'canecas',
+      'garrafa térmica', 'copo térmico',
     ],
     category: 'casa',
     subcategory: 'Cozinha',
@@ -45,12 +130,14 @@ const KEYWORD_MAP = [
     meanings: ['Aconchego', 'Hospitalidade', 'Rituais Diários', 'Paz'],
   },
 
-  // COZINHA & MESA POSTA
+  // 5. COZINHA & MESA POSTA
   {
     keywords: [
-      'air fryer', 'fritadeira', 'liquidificador', 'batedeira', 'panela', 'faqueiro',
-      'talher', 'prato', 'aparelho de jantar', 'taça', 'copo', 'travessa', 'tábua',
-      'bowl', 'assadeira', 'fogão', 'micro-ondas', 'forno', 'torradeira', 'grill',
+      'air fryer', 'fritadeira', 'liquidificador', 'batedeira', 'jogo de panelas', 'panela', 'panelas',
+      'faqueiro', 'talher', 'talheres', 'prato', 'pratos', 'aparelho de jantar', 'taça', 'taças',
+      'copo', 'copos', 'travessa', 'tábua de corte', 'tabua', 'bowl', 'assadeira', 'fogão', 'micro-ondas', 'microondas',
+      'forno', 'torradeira', 'grill', 'sanduicheira', 'mixer', 'processador', 'porta tempero', 'escorredor', 'refratário',
+      'toalha de mesa',
     ],
     category: 'casa',
     subcategory: 'Cozinha',
@@ -63,11 +150,12 @@ const KEYWORD_MAP = [
     meanings: ['Nutrição', 'Partilha', 'Celebração', 'União'],
   },
 
-  // DORMITÓRIO & CONFORTO (CAMA, BANHO, ACONCHEGO)
+  // 6. DORMITÓRIO & CONFORTO (CAMA, BANHO, DESCANSO)
   {
     keywords: [
-      'lençol', 'lençóis', 'edredom', 'cobertor', 'manta', 'travesseiro', 'colchão',
-      'cama', 'fronhas', 'toalha', 'roupão', 'almofada', 'ninho',
+      'saia de cama', 'jogo de cama', 'lençol', 'lençóis', 'edredom', 'cobertor', 'cobertores', 'manta', 'mantas',
+      'travesseiro', 'travesseiros', 'colchão', 'cama', 'fronhas', 'fronha', 'toalha de banho', 'toalha de rosto',
+      'jogo de toalhas', 'roupão de banho', 'almofada', 'almofadas', 'pillow top',
     ],
     category: 'casa',
     subcategory: 'Quarto',
@@ -80,10 +168,11 @@ const KEYWORD_MAP = [
     meanings: ['Descanso', 'Acolhimento', 'Serenidade', 'Renovação'],
   },
 
-  // ILUMINAÇÃO & ATMOSFERA
+  // 7. ILUMINAÇÃO & ATMOSFERA
   {
     keywords: [
-      'luminária', 'abajur', 'arandela', 'vela', 'difusor', 'pendente', 'lâmpada', 'lustre',
+      'luminária', 'abajur', 'arandela', 'vela aromática', 'velas aromáticas', 'vela', 'velas',
+      'difusor de aromas', 'difusor', 'pendente', 'lâmpada', 'lustre', 'fita led',
     ],
     category: 'casa',
     subcategory: 'Iluminação & Atmosfera',
@@ -96,11 +185,12 @@ const KEYWORD_MAP = [
     meanings: ['Luz', 'Tranquilidade', 'Intimidade', 'Harmonia'],
   },
 
-  // SALA, MOBILIÁRIO & DECORAÇÃO
+  // 8. SALA, MOBILIÁRIO & DECORAÇÃO
   {
     keywords: [
-      'sofá', 'poltrona', 'cadeira', 'mesa de centro', 'tapete', 'cortina', 'espelho',
-      'estante', 'aparador', 'buffet', 'rack', 'painel', 'quadro', 'escultura', 'vaso',
+      'sofá', 'poltrona', 'poltronas', 'cadeira', 'cadeiras', 'mesa de centro', 'mesa de jantar', 'mesa lateral',
+      'tapete', 'tapetes', 'cortina', 'cortinas', 'espelho', 'espelhos', 'estante', 'aparador', 'buffet',
+      'rack', 'painel tv', 'quadro decorativo', 'quadro', 'escultura', 'vaso decorativo', 'centro de mesa',
     ],
     category: 'casa',
     subcategory: 'Sala de Estar',
@@ -113,11 +203,30 @@ const KEYWORD_MAP = [
     meanings: ['Beleza', 'Harmonia', 'Hospitalidade', 'Conforto'],
   },
 
-  // LIVROS & CULTURA
+  // 9. TECNOLOGIA & HOME OFFICE
   {
     keywords: [
-      'livro', 'livros', 'box', 'biografia', 'romance', 'filosofia', 'bíblia', 'leitura',
-      'clássico', 'edição especial', 'capa dura', 'literatura',
+      'workstation', 'mesa de trabalho', 'escrivaninha', 'computador', 'computadores', 'notebook', 'laptop', 'macbook',
+      'monitor', 'monitores', 'teclado', 'mouse', 'mousepad', 'fone de ouvido', 'fone', 'headset', 'headphone', 'airpods',
+      'alexa', 'echo dot', 'echo show', 'echo', 'kindle', 'tablet', 'ipad', 'carregador', 'power bank',
+      'suporte notebook', 'impressora', 'hub usb', 'hub', 'câmera', 'webcam', 'microfone',
+    ],
+    category: 'tecnologia',
+    subcategory: 'Escritório',
+    collection: 'Escritório dos Sonhos',
+    priority: 'alta',
+    priorityReason: 'Item fundamental para o foco profissional, estudos e produtividade no dia a dia.',
+    description: (name) => `${name} pensado para transformar a rotina de trabalho e estudos em uma experiência fluida, confortável e inspiradora.`,
+    dream: 'Ter um refúgio acolhedor e funcional, onde o foco e a criatividade fluam com serenidade e os projetos se tornem realidade.',
+    story: 'Mais do que uma ferramenta, representa a dedicação aos nossos passos profissionais e o amor por um espaço bem estruturado.',
+    meanings: ['Foco', 'Crescimento', 'Inspiração', 'Produtividade'],
+  },
+
+  // 10. LIVROS & CULTURA
+  {
+    keywords: [
+      'livro', 'livros', 'box de livros', 'box', 'biografia', 'romance', 'filosofia', 'bíblia', 'leitura',
+      'clássico', 'edição especial', 'capa dura', 'literatura', 'poesia', 'caderno', 'planner', 'journal', 'moleskine', 'caneta tinteiro',
     ],
     category: 'livros',
     subcategory: 'Biblioteca Particular',
@@ -130,11 +239,11 @@ const KEYWORD_MAP = [
     meanings: ['Sabedoria', 'Inspiração', 'Memória', 'Imaginação'],
   },
 
-  // ARTE, ESPIRITUALIDADE & AROMAS
+  // 11. ARTE, ESPIRITUALIDADE & AROMAS
   {
     keywords: [
-      'incensário', 'cristal', 'oratório', 'terço', 'tarot', 'arte', 'pintura', 'símbolo',
-      'óleo essencial', 'aroma', 'espiritualidade', 'altar',
+      'incensário', 'incenso', 'cristal', 'cristais', 'oratório', 'terço', 'tarot', 'tarô',
+      'pintura', 'símbolo', 'óleo essencial', 'aroma', 'espiritualidade', 'altar', 'sino dos ventos', 'japamala', 'mandala',
     ],
     category: 'arte',
     subcategory: 'Altar & Espiritualidade',
@@ -147,11 +256,12 @@ const KEYWORD_MAP = [
     meanings: ['Espiritualidade', 'Sensibilidade', 'Paz Interior', 'Gratidão'],
   },
 
-  // JARDIM & BOTÂNICA
+  // 12. JARDIM & BOTÂNICA
   {
     keywords: [
-      'planta', 'orquídea', 'samambaia', 'vaso de cerâmica', 'cachepot', 'regador',
-      'tesoura de poda', 'adubo', 'jardim', 'horta', 'flores',
+      'planta', 'plantas', 'orquídea', 'samambaia', 'suculenta', 'suculentas', 'cacto',
+      'vaso de cerâmica', 'cachepot', 'cachepô', 'regador', 'tesoura de poda', 'adubo', 'jardim', 'horta', 'flores',
+      'semente', 'sementes', 'terrário',
     ],
     category: 'jardim',
     subcategory: 'Jardim Secreto',
@@ -164,11 +274,11 @@ const KEYWORD_MAP = [
     meanings: ['Vitalidade', 'Paciência', 'Vida', 'Renovação'],
   },
 
-  // PETS
+  // 13. PETS
   {
     keywords: [
-      'cachorro', 'gato', 'pet', 'caminha pet', 'coleira', 'comedouro', 'arranhador',
-      'brinquedo pet', 'tapete higiênico', 'ração',
+      'cachorro', 'cão', 'gato', 'gatos', 'pet', 'pets', 'caminha pet', 'coleira', 'comedouro',
+      'bebedouro pet', 'arranhador', 'brinquedo pet', 'tapete higiênico', 'ração',
     ],
     category: 'pets',
     subcategory: 'Mimos de Pet',
@@ -180,75 +290,180 @@ const KEYWORD_MAP = [
     story: 'Nossos bichinhos são parte da família. Cada gesto de cuidado com eles é um abraço no coração do nosso lar.',
     meanings: ['Amor Incondicional', 'Alegria', 'Lealdade', 'Cuidado'],
   },
-
-  // VESTUÁRIO & JOIAS
-  {
-    keywords: [
-      'vestido', 'camisa', 'calça', 'casaco', 'bota', 'sapato', 'bolsa', 'mochila',
-      'colar', 'brinco', 'anel', 'pulseira', 'joia', 'prata', 'ouro', 'relógio',
-    ],
-    category: 'moda',
-    subcategory: 'Elegância & Guarda-roupa',
-    collection: 'Elegância & Delicadeza',
-    priority: 'baixa',
-    priorityReason: 'Um mimo especial de estilo e beleza para momentos comemorativos.',
-    description: (name) => `${name} de estilo atemporal e delicado para expressar elegância em momentos especiais.`,
-    dream: 'Celebrar a beleza, a autoestima e os momentos marcantes vestindo peças que carregam carinho e história.',
-    story: 'Uma peça escolhida com carinho para marcar ocasiões inesquecíveis e carregar lembranças felizes.',
-    meanings: ['Autoestima', 'Elegância', 'Celebração', 'Carinho'],
-  },
 ];
 
 /**
+ * Fallbacks inteligentes por categoria quando o nome não coincide com nenhuma palavra-chave específica.
+ * Evita que itens desconhecidos de Casa caiam arbitrariamente em Cozinha/Café.
+ */
+const CATEGORY_FALLBACKS = {
+  moda: {
+    category: 'moda',
+    subcategory: 'Guarda-Roupa & Estilo',
+    collection: 'Elegância & Delicadeza',
+    priority: 'alta',
+    priorityReason: 'Peça especial selecionada para o guarda-roupa e ocasiões marcantes.',
+    description: (name) => `${name} escolhido com carinho para enriquecer o estilo pessoal com elegância e conforto.`,
+    dream: 'Celebrar momentos felizes vestindo peças que expressam a minha essência.',
+    story: 'Uma peça escolhida com carinho para marcar momentos especiais com autenticidade.',
+    meanings: ['Elegância', 'Autoestima', 'Estilo', 'Beleza'],
+  },
+  joias: {
+    category: 'joias',
+    subcategory: 'Porta-Joias & Preciosidades',
+    collection: 'Brilho & Memórias',
+    priority: 'media',
+    priorityReason: 'Item precioso selecionado com carinho para eternizar momentos.',
+    description: (name) => `${name} de acabamento refinado para iluminar ocasiões especiais com brilho e significado.`,
+    dream: 'Carregar um símbolo de delicadeza e beleza duradoura.',
+    story: 'Joias especiais guardam memórias queridas que atravessam o tempo.',
+    meanings: ['Brilho', 'Eternidade', 'Preciosidade', 'Memória'],
+  },
+  casa: {
+    category: 'casa',
+    subcategory: 'Decoração & Conforto',
+    collection: 'Refúgio Vitoriano',
+    priority: 'media',
+    priorityReason: 'Item selecionado para trazer harmonia, aconchego e beleza ao lar.',
+    description: (name) => `${name} escolhido para compor o nosso lar com harmonia, conforto e encanto.`,
+    dream: 'Tornar nosso lar um espaço cada vez mais acolhedor, belo e cheio de vida.',
+    story: 'Cada detalhe do nosso cantinho é pensado para contar uma história de paz e união.',
+    meanings: ['Harmonia', 'Aconchego', 'Conforto', 'Beleza'],
+  },
+  tecnologia: {
+    category: 'tecnologia',
+    subcategory: 'Escritório & Estudos',
+    collection: 'Escritório dos Sonhos',
+    priority: 'alta',
+    priorityReason: 'Item de tecnologia e produtividade para aprimorar os estudos e projetos.',
+    description: (name) => `${name} para trazer eficiência, conforto e fluidez às atividades diárias.`,
+    dream: 'Ter um espaço de trabalho e estudos moderno, ágil e inspirador.',
+    story: 'Uma conquista importante para apoiar projetos, estudos e realizações.',
+    meanings: ['Foco', 'Produtividade', 'Crescimento', 'Inspiração'],
+  },
+  livros: {
+    category: 'livros',
+    subcategory: 'Biblioteca Particular',
+    collection: 'Páginas que Iluminam',
+    priority: 'media',
+    priorityReason: 'Obra especial para enriquecer a mente, a alma e a imaginação.',
+    description: (name) => `${name} para enriquecer a biblioteca com sabedoria, reflexões e encanto.`,
+    dream: 'Cultivar uma biblioteca repleta de memórias, inspiração e boas leituras.',
+    story: 'Livros especiais são tesouros que guardamos para a vida inteira.',
+    meanings: ['Sabedoria', 'Inspiração', 'Memória', 'Imaginação'],
+  },
+  arte: {
+    category: 'arte',
+    subcategory: 'Altar & Espiritualidade',
+    collection: 'Serenidade & Alma',
+    priority: 'media',
+    priorityReason: 'Peça sensível para inspirar paz interior, gratidão e equilíbrio no lar.',
+    description: (name) => `${name} carregado de beleza e sensibilidade para abençoar as energias do lar.`,
+    dream: 'Viver em um espaço cercado de arte, harmonia e boas energias.',
+    story: 'A arte e a espiritualidade nos conectam com o sagrado do cotidiano.',
+    meanings: ['Espiritualidade', 'Paz Interior', 'Sensibilidade', 'Harmonia'],
+  },
+  jardim: {
+    category: 'jardim',
+    subcategory: 'Jardim Secreto',
+    collection: 'Herbarium Vivo',
+    priority: 'media',
+    priorityReason: 'Elemento botânico para conectar a rotina com a natureza e o cultivo paciente.',
+    description: (name) => `${name} para trazer o frescor e a vitalidade das plantas para o nosso dia a dia.`,
+    dream: 'Ver a vida florescer em cada detalhe verde do nosso jardim.',
+    story: 'Cultivar a natureza nos ensina a ter paciência e apreciar a beleza de cada estação.',
+    meanings: ['Vitalidade', 'Natureza', 'Paciência', 'Vida'],
+  },
+  pets: {
+    category: 'pets',
+    subcategory: 'Mimos de Pet',
+    collection: 'Patas & Coração',
+    priority: 'media',
+    priorityReason: 'Item dedicado ao bem-estar e diversão dos nossos companheiros fiéis.',
+    description: (name) => `${name} escolhido com amor para o carinho, saúde e alegria do pet.`,
+    dream: 'Proporcionar o melhor cuidado para quem enche o lar de amor incondicional.',
+    story: 'Nossos companheiros de quatro patas tornam nossos dias muito mais felizes.',
+    meanings: ['Amor Incondicional', 'Cuidado', 'Alegria', 'Lealdade'],
+  },
+};
+
+/**
  * Analisa o nome do produto e retorna um conjunto completo de sugestões acolhedoras.
+ * Prioriza o reconhecimento específico por palavras-chave com base na maior especificidade.
+ *
  * @param {string} rawName - Nome digitado do presente.
  * @param {string} currentCategory - Categoria atualmente selecionada (opcional).
- * @returns {Object} Sugestões de prioridade, textos, sonho, história e tags.
+ * @returns {Object} Sugestões de categoria, prioridade, textos, sonho, história e tags.
  */
 export function generateGiftSuggestions(rawName = '', currentCategory = '') {
   const name = String(rawName).trim();
-  const lower = name.toLowerCase();
+  const normalizedName = normalizeText(name);
 
-  // Procura pelo match mais específico nas palavras-chave
-  let matched = KEYWORD_MAP.find(entry => {
-    return entry.keywords.some(kw => lower.includes(kw));
-  });
+  // Procura pelo match com a palavra-chave mais específica (maior comprimento)
+  let bestMatch = null;
+  let bestKeywordLength = 0;
 
-  // Se não encontrou por palavra-chave mas possui categoria selecionada
-  if (!matched && currentCategory && currentCategory !== 'all') {
-    matched = KEYWORD_MAP.find(entry => entry.category === currentCategory);
+  if (normalizedName) {
+    for (const entry of KEYWORD_MAP) {
+      for (const kw of entry.keywords) {
+        const normKw = normalizeText(kw);
+        if (containsKeyword(normalizedName, normKw)) {
+          if (normKw.length > bestKeywordLength) {
+            bestMatch = entry;
+            bestKeywordLength = normKw.length;
+          }
+        }
+      }
+    }
   }
 
-  // Fallback inteligente customizado com o nome do produto
-  if (!matched) {
+  // Se encontrou match por palavra-chave no nome do presente
+  if (bestMatch) {
     return {
-      category: currentCategory || 'casa',
-      subcategory: 'Desejos Especiais',
-      collection: 'Curadoria do Coração',
-      priority: 'media',
-      priorityReason: 'Item de valor especial selecionado com carinho para enriquecer o catálogo.',
-      description: name
-        ? `${name} é um desejo cultivado com carinho, escolhido por sua utilidade, beleza e significado especial para o nosso lar.`
-        : 'Um desejo cultivado com carinho para trazer harmonia e aconchego ao nosso dia a dia.',
-      dream: name
-        ? `Sonho em ter ${name} no nosso cantinho para tornar nossos momentos ainda mais especiais e acolhedores.`
-        : 'Sonho em ver este desejo florescer para completar o nosso lar com alegria e conforto.',
-      story: name
-        ? `Este presente foi escolhido a dedo por representar um passo importante e uma doce lembrança nesta nova fase.`
-        : 'Um presente pensado para marcar esta fase tão especial com significado e gratidão.',
-      meanings: ['Carinho', 'Aconchego', 'Gratidão', 'Harmonia'],
+      category: bestMatch.category,
+      subcategory: bestMatch.subcategory,
+      collection: bestMatch.collection,
+      priority: bestMatch.priority,
+      priorityReason: bestMatch.priorityReason,
+      description: typeof bestMatch.description === 'function' ? bestMatch.description(name || 'este item') : bestMatch.description,
+      dream: bestMatch.dream,
+      story: bestMatch.story,
+      meanings: bestMatch.meanings,
     };
   }
 
+  // Se não houve match por palavra-chave, mas há categoria válida selecionada
+  if (currentCategory && CATEGORY_FALLBACKS[currentCategory]) {
+    const fallback = CATEGORY_FALLBACKS[currentCategory];
+    return {
+      category: fallback.category,
+      subcategory: fallback.subcategory,
+      collection: fallback.collection,
+      priority: fallback.priority,
+      priorityReason: fallback.priorityReason,
+      description: typeof fallback.description === 'function' ? fallback.description(name || 'este item') : fallback.description,
+      dream: fallback.dream,
+      story: fallback.story,
+      meanings: fallback.meanings,
+    };
+  }
+
+  // Fallback geral neutro (Desejos Especiais do Jardim)
   return {
-    category: matched.category,
-    subcategory: matched.subcategory,
-    collection: matched.collection,
-    priority: matched.priority,
-    priorityReason: matched.priorityReason,
-    description: matched.description(name || 'este item'),
-    dream: matched.dream,
-    story: matched.story,
-    meanings: matched.meanings,
+    category: 'casa',
+    subcategory: 'Desejos Especiais',
+    collection: 'Curadoria do Coração',
+    priority: 'media',
+    priorityReason: 'Item especial selecionado com carinho para enriquecer o catálogo.',
+    description: name
+      ? `${name} é um desejo cultivado com carinho, escolhido por sua utilidade, beleza e significado especial para o nosso lar.`
+      : 'Um desejo cultivado com carinho para trazer harmonia e aconchego ao nosso dia a dia.',
+    dream: name
+      ? `Sonho em conquistar ${name} para tornar nossos momentos ainda mais especiais e acolhedores.`
+      : 'Sonho em ver este desejo florescer para completar a nossa vida com alegria e conforto.',
+    story: name
+      ? `Este presente foi escolhido a dedo por representar um passo importante e uma doce lembrança nesta fase especial.`
+      : 'Um presente pensado para marcar esta fase tão especial com significado e gratidão.',
+    meanings: ['Carinho', 'Aconchego', 'Gratidão', 'Harmonia'],
   };
 }

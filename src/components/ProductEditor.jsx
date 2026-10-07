@@ -94,13 +94,13 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
     setFormData(prev => ({
       ...prev,
       category: activeSuggestions.category || prev.category,
-      subcategory: prev.subcategory || activeSuggestions.subcategory,
-      collection: prev.collection || activeSuggestions.collection,
+      subcategory: activeSuggestions.subcategory || prev.subcategory,
+      collection: activeSuggestions.collection || prev.collection,
       priority: activeSuggestions.priority || prev.priority,
       description: activeSuggestions.description || prev.description,
       dream: activeSuggestions.dream || prev.dream,
       story: activeSuggestions.story || prev.story,
-      meanings: prev.meanings ? prev.meanings : activeSuggestions.meanings.join(', '),
+      meanings: activeSuggestions.meanings?.length ? activeSuggestions.meanings.join(', ') : prev.meanings,
     }));
 
     setAppliedSuggestionNotice('✨ Sugestões de carinho e prioridade aplicadas com sucesso!');
@@ -288,6 +288,9 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
                 </div>
                 <div className="suggestion-pill-preview">
                   <span className="suggestion-tag">
+                    Categoria: <strong>{DEFAULT_CATEGORIES.find(c => c.value === activeSuggestions.category)?.label || activeSuggestions.category}</strong>
+                  </span>
+                  <span className="suggestion-tag">
                     Prioridade: <strong>{activeSuggestions.priority === 'alta' ? '⭐ Alta' : activeSuggestions.priority === 'media' ? '🌸 Média' : '🌰 Baixa'}</strong>
                   </span>
                   <span className="suggestion-tag">
@@ -304,14 +307,26 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
             <div className="editor-grid-3">
               <label className="editor-label">
                 <span className="label-text">Coleção / Categoria *</span>
-                <select
-                  value={formData.category}
-                  onChange={e => handleChange('category', e.target.value)}
-                >
-                  {DEFAULT_CATEGORIES.map(cat => (
-                    <option key={cat.value} value={cat.value}>{cat.label}</option>
-                  ))}
-                </select>
+                <div className="editor-input-with-action">
+                  <select
+                    value={formData.category}
+                    onChange={e => handleChange('category', e.target.value)}
+                  >
+                    {DEFAULT_CATEGORIES.map(cat => (
+                      <option key={cat.value} value={cat.value}>{cat.label}</option>
+                    ))}
+                  </select>
+                  {activeSuggestions?.category && formData.category !== activeSuggestions.category && (
+                    <button
+                      type="button"
+                      className="editor-mini-action"
+                      onClick={() => handleApplySingle('category')}
+                      title={`Sugerir categoria "${DEFAULT_CATEGORIES.find(c => c.value === activeSuggestions.category)?.label || activeSuggestions.category}"`}
+                    >
+                      🪄
+                    </button>
+                  )}
+                </div>
               </label>
 
               <label className="editor-label">
