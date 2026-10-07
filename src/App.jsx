@@ -11,6 +11,7 @@ const GiftModal = lazy(() => import('./components/GiftModal.jsx'));
 const categoryLabels = {
   casa: '🏡 Casa',
   moda: '👗 Vestuário',
+  calcados: '👠 Calçados',
   beleza: '✨ Beleza & Autocuidado',
   joias: '💍 Joias',
   livros: '📚 Livros',
@@ -21,6 +22,7 @@ const categoryLabels = {
 };
 
 function labelFromValue(value) {
+  if (String(value).trim().toLowerCase() === 'calcados') return 'Calçados';
   return value
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -192,15 +194,21 @@ export default function App() {
     return firestoreProducts.filter(product => !isTikTokSource(product));
   }, [firestoreProducts]);
 
-  const availableCategories = useMemo(
-    () => [...new Set(sourceProducts.map(product => product.category).filter(Boolean))].sort(),
-    [sourceProducts]
-  );
+  const availableCategories = useMemo(() => {
+    const cats = new Set(sourceProducts.map(product => product.category).filter(Boolean));
+    if (sourceProducts.some(p => p.category === 'calcados' || p.subcategory?.toLowerCase() === 'calcados')) {
+      cats.add('calcados');
+    }
+    return [...cats].sort();
+  }, [sourceProducts]);
 
   const availableSubcategories = useMemo(() => {
     const productsInCategory = category === 'all'
       ? sourceProducts
-      : sourceProducts.filter(product => product.category === category);
+      : sourceProducts.filter(product =>
+          product.category === category ||
+          (category === 'calcados' && (product.category === 'calcados' || product.subcategory?.toLowerCase() === 'calcados'))
+        );
     return [...new Set(productsInCategory.map(product => product.subcategory).filter(Boolean))].sort();
   }, [sourceProducts, category]);
 
@@ -208,7 +216,9 @@ export default function App() {
     const term = search.trim().toLocaleLowerCase('pt-BR');
     const filtered = sourceProducts.filter(product => {
       if (product.enabled === false || product.published === false || product.visible === false) return false;
-      const matchesCategory = category === 'all' || product.category === category;
+      const matchesCategory = category === 'all'
+        || product.category === category
+        || (category === 'calcados' && (product.category === 'calcados' || product.subcategory?.toLowerCase() === 'calcados'));
       const matchesSubcategory = subcategory === 'all' || product.subcategory === subcategory;
       const matchesPriority = priorityFilter === 'all' || (() => {
         const p = String(product.priority || product.prioridade || '').trim().toLowerCase();

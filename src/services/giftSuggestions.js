@@ -1,7 +1,7 @@
 /**
  * Serviço de geração inteligente de sugestões acolhedoras para presentes.
  * Com base no nome e palavras-chave do produto, sugere:
- * - Categoria correta (moda, beleza, joias, casa, tecnologia, livros, arte, jardim, pets)
+ * - Categoria correta (moda, calcados, beleza, joias, casa, tecnologia, livros, arte, jardim, pets)
  * - Subcategoria / Jardim específico
  * - Coleção especial
  * - Nível de prioridade recomendado com justificativa
@@ -41,7 +41,7 @@ function containsKeyword(normalizedName, normalizedKw) {
 }
 
 const KEYWORD_MAP = [
-  // 1. VESTUÁRIO & MODA (BLUSAS, SAIAS, VESTIDOS, CASACOS, CALÇADOS, ETC.)
+  // 1. VESTUÁRIO & MODA (BLUSAS, SAIAS, VESTIDOS, CASACOS, ETC.)
   {
     keywords: [
       'blusa', 'blusas', 'saia', 'saias', 'minissaia', 'saia midi', 'saia longa',
@@ -51,13 +51,12 @@ const KEYWORD_MAP = [
       'short', 'shorts', 'bermuda', 'bermudas',
       'macacão', 'macaquinho', 'jardineira', 'salopete', 'conjunto',
       'casaco', 'casacos', 'jaqueta', 'jaquetas', 'blazer', 'cardigan', 'tricot', 'tricô', 'suéter', 'pulôver', 'moletom', 'sobretudo', 'trench coat', 'quimono', 'kimono', 'colete', 'poncho', 'parka',
-      'bota', 'botas', 'coturno', 'coturnos', 'sapato', 'sapatos', 'sandália', 'sandálias', 'rasteira', 'rasteirinha', 'chinelo', 'pantufa', 'salto', 'salto alto', 'scarpin', 'mule', 'tamanco', 'tênis', 'sapatilha', 'mocassim', 'espadrille', 'anabela',
       'bolsa', 'bolsas', 'mochila', 'mochilas', 'clutch', 'carteira', 'tote bag', 'ecobag', 'necessaire',
       'cinto', 'cintos', 'luva', 'luvas', 'cachecol', 'echarpe', 'lenço', 'xale',
       'chapéu', 'chapéus', 'boina', 'boné', 'tiara', 'arquinho',
       'lingerie', 'pijama', 'pijamas', 'camisola', 'roupão de seda', 'sutiã', 'calcinha', 'meia', 'meias', 'meia-calça',
       'biquíni', 'biquini', 'maiô', 'canga', 'saída de praia',
-      'celta', 'vitoriano', 'vintage', 'linho', 'seda', 'cetim', 'veludo', 'renda', 'organza', 'chiffon',
+      'roupa vintage', 'vestido vintage', 'vestido vitoriano', 'vestuário vitoriano', 'roupa celta', 'linho', 'seda', 'cetim', 'veludo', 'renda', 'organza', 'chiffon',
     ],
     category: 'moda',
     subcategory: 'Guarda-Roupa & Estilo',
@@ -68,6 +67,81 @@ const KEYWORD_MAP = [
     dream: 'Celebrar a beleza, a autoestima e os momentos marcantes vestindo peças que carregam carinho e história.',
     story: 'Uma peça escolhida com carinho para marcar ocasiões inesquecíveis e vestir a nossa melhor versão.',
     meanings: ['Autoestima', 'Elegância', 'Beleza', 'Expressão'],
+  },
+
+  // 2. CALÇADOS — SAPATILHAS, RASTEIRAS & CONFORTO LEVE
+  {
+    keywords: [
+      'sapatilha', 'sapatilhas', 'sapatilha de bico fino', 'sapatilha bico fino',
+      'rasteira', 'rasteirinha', 'rasteirinhas', 'rasteiras',
+      'chinelo', 'chinelos', 'pantufa', 'pantufas',
+      'mule', 'mules', 'tamanco', 'tamancos',
+      'espadrille', 'espadrilles', 'babuche',
+    ],
+    category: 'calcados',
+    subcategory: 'Sapatilhas & Rasteirinhas',
+    collection: 'Passos Leves & Caminhadas',
+    priority: 'alta',
+    priorityReason: 'Calçado delicado e extremamente confortável para caminhar com leveza e serenidade na rotina.',
+    description: (name) => `${name} de toque delicado para trazer maciez, leveza e graça a cada passo do dia a dia.`,
+    dream: 'Sentir a leveza nos pés em cada caminhada, com calçados que unem encanto campestre e conforto absoluto.',
+    story: 'Caminhar leve é uma arte. Sapatilhas delicadas trazem uma doçura especial aos passos mais simples do cotidiano.',
+    meanings: ['Leveza', 'Conforto', 'Delicadeza', 'Graça'],
+  },
+
+  // 3. CALÇADOS — BOTAS & COTURNOS
+  {
+    keywords: [
+      'bota', 'botas', 'coturno', 'coturnos',
+      'bota cano curto', 'bota cano longo', 'bota cano medio', 'bota chelsea',
+      'chelsea', 'galocha', 'over the knee', 'bota montaria',
+    ],
+    category: 'calcados',
+    subcategory: 'Botas & Coturnos',
+    collection: 'Passos Firmes & Inverno',
+    priority: 'alta',
+    priorityReason: 'Calçado marcante, acolhedor e resistente para caminhar com firmeza, personalidade e aconchego.',
+    description: (name) => `${name} combinando estilo marcante, conforto e aconchego para acompanhar os passos em dias especiais e viagens.`,
+    dream: 'Caminhar com confiança e firmeza, compondo visuais autênticos e acolhedores em qualquer estação.',
+    story: 'Botas especiais marcam caminhos inesquecíveis e nos acompanham em grandes jornadas e aventuras.',
+    meanings: ['Firmeza', 'Estilo', 'Aconchego', 'Personalidade'],
+  },
+
+  // 4. CALÇADOS — SANDÁLIAS, SALTOS & CELEBRAÇÕES
+  {
+    keywords: [
+      'sandália', 'sandálias', 'sandalia', 'sandalias',
+      'salto', 'salto alto', 'salto fino', 'salto bloco',
+      'scarpin', 'scarpins', 'anabela', 'sandália de salto', 'sandalia de salto',
+      'papete', 'papetes', 'sandália anabela', 'sandalia anabela',
+    ],
+    category: 'calcados',
+    subcategory: 'Sandálias & Saltos',
+    collection: 'Elegância & Celebrações',
+    priority: 'media',
+    priorityReason: 'Peça elegante para iluminar celebrações, encontros especiais e momentos marcantes.',
+    description: (name) => `${name} desenhada com elegância para compor ocasiões especiais com sofisticação e charme singular.`,
+    dream: 'Celebrar datas e momentos inesquecíveis vestindo passos elegantes e cheios de encanto.',
+    story: 'Calçados de celebração guardam a memória dos dias mais felizes e das danças mais bonitas da vida.',
+    meanings: ['Elegância', 'Celebração', 'Charme', 'Sofisticação'],
+  },
+
+  // 5. CALÇADOS — TÊNIS & SAPATOS COTIDIANOS
+  {
+    keywords: [
+      'tênis', 'tenis', 'sneaker', 'sneakers',
+      'sapato', 'sapatos', 'sapato feminino',
+      'mocassim', 'mocassins', 'oxford', 'loafer', 'lofer', 'dockside',
+    ],
+    category: 'calcados',
+    subcategory: 'Tênis & Conforto',
+    collection: 'Passos Urbanos & Conforto',
+    priority: 'alta',
+    priorityReason: 'Calçado anatômico e versátil para garantir bem-estar e liberdade de movimento todos os dias.',
+    description: (name) => `${name} pensado para unir estilo contemporâneo, versatilidade e o máximo de conforto para o dia a dia.`,
+    dream: 'Ter liberdade para caminhar, explorar e viver o dia com os pés leves e descansados.',
+    story: 'Um bom calçado cotidiano é o parceiro fiel de quem valoriza o bem-estar e o ritmo tranquilo da vida.',
+    meanings: ['Liberdade', 'Bem-Estar', 'Versatilidade', 'Conforto'],
   },
 
   // 2. JOIAS & PRECIOSIDADES
@@ -326,7 +400,7 @@ const KEYWORD_MAP = [
   {
     keywords: [
       'livro', 'livros', 'box de livros', 'box', 'biografia', 'romance', 'filosofia', 'bíblia', 'leitura',
-      'clássico', 'edição especial', 'capa dura', 'literatura', 'poesia', 'caderno', 'planner', 'journal', 'moleskine', 'caneta tinteiro',
+      'livro clássico', 'livros clássicos', 'clássico literário', 'edição especial', 'capa dura', 'literatura', 'poesia', 'caderno', 'planner', 'journal', 'moleskine', 'caneta tinteiro',
     ],
     category: 'livros',
     subcategory: 'Biblioteca Particular',
@@ -418,6 +492,17 @@ const CATEGORY_FALLBACKS = {
     dream: 'Celebrar momentos felizes vestindo peças que expressam a minha essência.',
     story: 'Uma peça escolhida com carinho para marcar momentos especiais com autenticidade.',
     meanings: ['Elegância', 'Autoestima', 'Estilo', 'Beleza'],
+  },
+  calcados: {
+    category: 'calcados',
+    subcategory: 'Calçados & Passos Leves',
+    collection: 'Passos Leves & Elegância',
+    priority: 'alta',
+    priorityReason: 'Calçado selecionado para proporcionar conforto, beleza e leveza a cada passo.',
+    description: (name) => `${name} escolhido para caminhar com elegância, conforto e serenidade em todos os momentos.`,
+    dream: 'Caminhar com conforto e confiança vestindo calçados que cuidam dos pés e expressam a nossa personalidade.',
+    story: 'Bons sapatos nos levam a lugares mágicos e acompanham histórias queridas ao longo da vida.',
+    meanings: ['Conforto', 'Elegância', 'Passos Leves', 'Caminhos'],
   },
   joias: {
     category: 'joias',
