@@ -11,6 +11,7 @@ const GiftModal = lazy(() => import('./components/GiftModal.jsx'));
 const categoryLabels = {
   casa: '🏡 Casa',
   moda: '👗 Vestuário',
+  beleza: '✨ Beleza & Autocuidado',
   joias: '💍 Joias',
   livros: '📚 Livros',
   tecnologia: '💻 Tecnologia',

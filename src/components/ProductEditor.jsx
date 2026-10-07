@@ -6,6 +6,7 @@ const DEFAULT_CATEGORIES = [
   { value: 'casa', label: '🏡 Casa' },
   { value: 'tecnologia', label: '💻 Tecnologia' },
   { value: 'moda', label: '👗 Vestuário' },
+  { value: 'beleza', label: '✨ Beleza & Autocuidado' },
   { value: 'joias', label: '💍 Joias' },
   { value: 'livros', label: '📚 Livros' },
   { value: 'arte', label: '🎨 Arte e espiritualidade' },

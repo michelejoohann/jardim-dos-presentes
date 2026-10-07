@@ -1,7 +1,7 @@
 /**
  * Serviço de geração inteligente de sugestões acolhedoras para presentes.
  * Com base no nome e palavras-chave do produto, sugere:
- * - Categoria correta (moda, joias, casa, tecnologia, livros, arte, jardim, pets)
+ * - Categoria correta (moda, beleza, joias, casa, tecnologia, livros, arte, jardim, pets)
  * - Subcategoria / Jardim específico
  * - Coleção especial
  * - Nível de prioridade recomendado com justificativa
@@ -93,23 +93,123 @@ const KEYWORD_MAP = [
     meanings: ['Brilho', 'Eternidade', 'Preciosidade', 'Lembrança'],
   },
 
-  // 3. BELEZA & AUTOCUIDADO
+  // 3. BELEZA — ÓLEOS & HIDRATAÇÃO CORPORAL
   {
     keywords: [
-      'perfume', 'colônia', 'colonia', 'body splash', 'hidratante', 'óleo corporal',
-      'skincare', 'sérum', 'serum', 'maquiagem', 'batom', 'gloss', 'rímel', 'rimel',
-      'paleta de sombra', 'blush', 'pincel de maquiagem', 'creme facial', 'sabonete artesanal',
-      'shampoo', 'condicionador', 'máscara capilar', 'secador', 'babyliss', 'escova secadora', 'chapinha',
+      'óleo corporal', 'oleo corporal', 'óleo de banho', 'oleo de banho', 'óleo corporal iluminador', 'oleo corporal iluminador',
+      'óleo vegetal', 'oleo vegetal', 'óleo bifásico', 'oleo bifasico', 'body oil',
+      'hidratante corporal', 'hidratante para o corpo', 'loção corporal', 'locao corporal', 'body lotion',
+      'manteiga corporal', 'manteiga de karité', 'manteiga de cacau', 'body butter',
+      'creme corporal', 'creme para o corpo', 'creme para as mãos', 'creme de mãos', 'creme para os pés',
+      'esfoliante corporal', 'esfoliante', 'body scrub',
+      'sais de banho', 'espuma de banho', 'banho de espuma',
+      'sabonete líquido', 'sabonete liquido', 'sabonete em barra', 'sabonete artesanal',
+      'óleo iluminador', 'oleo iluminador', 'óleo', 'oleo',
     ],
-    category: 'moda',
-    subcategory: 'Autocuidado & Beleza',
-    collection: 'Rituais de Beleza',
+    category: 'beleza',
+    subcategory: 'Óleos & Hidratação Corporal',
+    collection: 'Elixir & Toque de Seda',
+    priority: 'alta',
+    priorityReason: 'Cuidado nutritivo diário que envolve a pele em maciez, hidratação profunda e perfume suave.',
+    description: (name) => `${name} para transformar o banho e o pós-banho em um ritual relaxante de hidratação, toque sedoso e renovação.`,
+    dream: 'Criar momentos diários de carinho e pausa para nutrir a pele com toques suaves e bem-estar.',
+    story: 'Cuidar do corpo com delicadeza e óleos nutritivos é um gesto diário de amor-próprio e respeito à nossa história.',
+    meanings: ['Nutrição', 'Toque de Seda', 'Autocuidado', 'Bem-Estar'],
+  },
+
+  // 4. BELEZA — ILUMINAÇÃO & MAQUIAGEM
+  {
+    keywords: [
+      'iluminador', 'iluminadores', 'iluminador líquido', 'iluminador liquido',
+      'iluminador em pó', 'iluminador em po', 'iluminador corporal', 'iluminador facial',
+      'iluminador bastão', 'iluminador bastao', 'iluminador stick',
+      'paleta de iluminadores', 'pó iluminador', 'po iluminador',
+      'shimmer', 'glow', 'brilho labial', 'bronzer', 'blush', 'paleta de blush',
+      'batom', 'gloss', 'lip tint', 'lip oil', 'lip balm', 'balm labial',
+      'rímel', 'rimel', 'máscara de cílios', 'mascara de cilios',
+      'delineador', 'lápis de olho', 'lapis de olho', 'lápis labial',
+      'paleta de sombra', 'paleta de sombras', 'sombra para olhos', 'sombra de olhos', 'sombras',
+      'base líquida', 'base liquida', 'corretivo', 'pó compacto', 'po compacto', 'pó translúcido', 'po translucido',
+      'primer', 'bruma fixadora', 'fixador de maquiagem', 'bruma iluminadora',
+      'pincel de maquiagem', 'pincéis de maquiagem', 'pinceis de maquiagem', 'kit de pincéis', 'esponja de maquiagem',
+      'maquiagem', 'make', 'tatuagem facial', 'sardas', 'glitter',
+    ],
+    category: 'beleza',
+    subcategory: 'Iluminação & Maquiagem',
+    collection: 'Brilho Botânico & Realce',
     priority: 'media',
-    priorityReason: 'Cuidados diários para nutrir o bem-estar, a autoestima e renovar as energias.',
-    description: (name) => `${name} para enriquecer os rituais de autocuidado e realçar a beleza e o amor-próprio.`,
-    dream: 'Reservar momentos diários de pausa para me cuidar com carinho, leveza e bem-estar.',
-    story: 'O autocuidado é uma demonstração de amor e respeito à nossa própria trajetória.',
-    meanings: ['Autocuidado', 'Bem-Estar', 'Beleza', 'Autoestima'],
+    priorityReason: 'Realça a luminosidade natural, a expressão e o brilho autêntico em momentos especiais.',
+    description: (name) => `${name} para iluminar os traços naturais, trazendo viço radiante, frescor e um toque de poesia à expressão.`,
+    dream: 'Realçar a beleza natural com sutileza e luz, celebrando a confiança e a alegria de brilhar.',
+    story: 'A verdadeira beleza é aquela que ilumina com autenticidade a luz única e o encanto de quem somos.',
+    meanings: ['Luminosidade', 'Realce', 'Brilho', 'Autoestima'],
+  },
+
+  // 5. BELEZA — ALQUIMIA FACIAL & SKINCARE
+  {
+    keywords: [
+      'hidratante facial', 'creme facial', 'gel hidratante facial', 'hidratante',
+      'skincare', 'skin care', 'rotina de skincare',
+      'sérum', 'serum', 'sérum facial', 'serum facial',
+      'ácido hialurônico', 'acido hialuronico', 'ácido glicólico', 'acido glicolico', 'ácido salicílico', 'acido salicilico',
+      'vitamina c', 'niacinamida', 'retinol', 'peptídeos',
+      'protetor solar', 'filtro solar', 'protetor solar facial',
+      'tônico facial', 'tonico facial', 'tônico adstringente',
+      'água termal', 'agua termal', 'água micelar', 'agua micelar',
+      'cleansing oil', 'óleo de limpeza', 'oleo de limpeza', 'gel de limpeza facial', 'gel de limpeza', 'espuma de limpeza',
+      'máscara facial', 'mascara facial', 'máscara de argila', 'argila verde', 'argila branca',
+      'creme para olhos', 'creme de olhos', 'contorno dos olhos',
+      'gua sha', 'guasha', 'rolo de jade', 'roller facial',
+    ],
+    category: 'beleza',
+    subcategory: 'Alquimia Facial & Skincare',
+    collection: 'Pele Radiante & Serenidade',
+    priority: 'alta',
+    priorityReason: 'Cuidado diário essencial para a saúde, viço e proteção revitalizante da pele.',
+    description: (name) => `${name} formulado para nutrir, equilibrar e revitalizar a pele com suavidade, frescor e luminosidade.`,
+    dream: 'Cultivar uma rotina de cuidados revigorante que traga frescor saudável, serenidade e descanso para a pele.',
+    story: 'Cada gota de cuidado facial é um ritual de reconexão e carinho que renova a pele e a nossa energia.',
+    meanings: ['Vitalidade', 'Revitalização', 'Pele Radiante', 'Autocuidado'],
+  },
+
+  // 6. BELEZA — PERFUMARIA & ESSÊNCIAS
+  {
+    keywords: [
+      'perfume', 'perfumes', 'eau de parfum', 'eau de toilette', 'parfum', 'cologne',
+      'colônia', 'colonia', 'body splash', 'body mist',
+      'fragrância', 'fragrancia', 'óleo perfumado', 'oleo perfumado', 'perfume de cabelo',
+    ],
+    category: 'beleza',
+    subcategory: 'Perfumaria & Essências',
+    collection: 'Perfume das Pétalas',
+    priority: 'media',
+    priorityReason: 'Assinatura olfativa inesquecível que desperta sensações, memórias queridas e sofisticação.',
+    description: (name) => `${name} com notas envolventes para vestir a pele com uma fragrância delicada e inesquecível.`,
+    dream: 'Deixar um rastro sutil de perfume e presença por onde passar, guardando memórias de dias felizes.',
+    story: 'Os perfumes têm a magia de eternizar momentos e despertar sentimentos carinhosos com uma única borrifada.',
+    meanings: ['Presença', 'Memória Olfativa', 'Encanto', 'Sofisticação'],
+  },
+
+  // 7. BELEZA — CABELOS & TRATAMENTO CAPILAR
+  {
+    keywords: [
+      'óleo capilar', 'oleo capilar', 'reparador de pontas', 'óleo extraordinário', 'oleo extraordinario',
+      'leave-in', 'leave in', 'creme para pentear', 'finalizador capilar',
+      'máscara capilar', 'mascara capilar', 'creme de tratamento capilar',
+      'shampoo', 'xampu', 'condicionador', 'co-wash',
+      'cronograma capilar', 'ampola capilar', 'tônico capilar', 'tonico capilar',
+      'protetor térmico', 'protetor termico',
+      'secador', 'secador de cabelo', 'babyliss', 'modelador de cachos', 'escova secadora', 'chapinha', 'prancha de cabelo',
+    ],
+    category: 'beleza',
+    subcategory: 'Cabelos & Tratamento Capilar',
+    collection: 'Coroa das Deusas',
+    priority: 'media',
+    priorityReason: 'Tratamento dedicado para manter os fios saudáveis, brilhantes, sedosos e cheios de vitalidade.',
+    description: (name) => `${name} para nutrir profundamente os fios, proporcionando brilho intenso, maciez e movimento natural.`,
+    dream: 'Cuidar dos cabelos com carinho para que reflitam saúde, beleza e a nossa melhor expressão.',
+    story: 'Cuidar dos cabelos é um ritual relaxante que renova a autoestima e celebra a nossa beleza singular.',
+    meanings: ['Brilho', 'Vitalidade', 'Sedosidade', 'Autoestima'],
   },
 
   // 4. CAFÉ & RITUAIS MATINAIS
@@ -297,6 +397,17 @@ const KEYWORD_MAP = [
  * Evita que itens desconhecidos de Casa caiam arbitrariamente em Cozinha/Café.
  */
 const CATEGORY_FALLBACKS = {
+  beleza: {
+    category: 'beleza',
+    subcategory: 'Óleos & Hidratação Corporal',
+    collection: 'Elixir & Toque de Seda',
+    priority: 'alta',
+    priorityReason: 'Cuidados diários para nutrir o bem-estar, a maciez e a autoestima com toques suaves.',
+    description: (name) => `${name} escolhido para enriquecer os rituais de beleza e autocuidado, trazendo luminosidade e bem-estar.`,
+    dream: 'Reservar momentos diários de pausa para me cuidar com carinho, leveza e fragrâncias acolhedoras.',
+    story: 'O autocuidado diário é uma celebração de carinho, respeito e renovação constante da nossa essência.',
+    meanings: ['Autocuidado', 'Bem-Estar', 'Luminosidade', 'Autoestima'],
+  },
   moda: {
     category: 'moda',
     subcategory: 'Guarda-Roupa & Estilo',
