@@ -76,6 +76,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
   const modalElement = (
     <div className="modal-backdrop" onClick={busy ? undefined : onClose} role="dialog" aria-modal="true">
       <div className="modal-card" onClick={event => event.stopPropagation()}>
+        <div className="modal-drag-handle" aria-hidden="true" />
         <button
           type="button"
           className="modal-close-button"
@@ -100,9 +101,22 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                 ? 'Seu presente e sua mensagem foram enviados em segredo para a Michèlé.'
                 : `Obrigado pelo carinho, ${name || 'amigo(a)'}! Sua mensagem foi enviada para a Michèlé.`}
             </p>
-            <button type="button" className="primary-button" onClick={onClose}>
-              Voltar ao Jardim
-            </button>
+            <div className="modal-success-actions">
+              {product.url && intent === 'reserved' && (
+                <a
+                  href={product.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="modal-store-btn"
+                  title="Abrir página de compra na loja oficial em nova aba"
+                >
+                  Ir para a loja comprar agora 🔗 ↗
+                </a>
+              )}
+              <button type="button" className="primary-button" onClick={onClose}>
+                Voltar ao Jardim
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -123,6 +137,17 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                 <h3>{product.name}</h3>
                 <p>{product.priceLabel || 'Consultar valor na loja'}</p>
                 {product.collection && <small>{product.collection}</small>}
+                {product.url && (
+                  <a
+                    href={product.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="modal-inline-store-link"
+                    title="Abrir página oficial do produto em nova aba"
+                  >
+                    🔗 Acessar página de compra na loja oficial ↗
+                  </a>
+                )}
               </div>
             </div>
 
@@ -183,6 +208,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                         onChange={event => setName(event.target.value)}
                         placeholder="Ex: Tia Maria, Pedro & Amanda…"
                         required={!isAnonymous}
+                        autoComplete="name"
                       />
                     </label>
                     <label>
@@ -192,6 +218,8 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
                         value={email}
                         onChange={event => setEmail(event.target.value)}
                         placeholder="Para a Michèlé te agradecer"
+                        autoComplete="email"
+                        inputMode="email"
                       />
                     </label>
                   </div>

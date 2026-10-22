@@ -106,6 +106,21 @@ export default function ProductCard({
             </p>
           )}
 
+          {product.url && (
+            <p className="product-meta product-store-meta">
+              <strong>Onde comprar:</strong>{' '}
+              <a
+                href={product.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="product-inline-store-link"
+                title="Abrir página oficial de compra do produto em nova aba"
+              >
+                🔗 Acessar página de compra na loja oficial ↗
+              </a>
+            </p>
+          )}
+
           {notes.length > 0 && (
             <details className="story-details">
               <summary>📝 Observações importantes</summary>
@@ -156,9 +171,9 @@ export default function ProductCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="store-link-button"
-                title="Abrir página oficial do produto na loja"
+                title="Abrir página oficial de compra do produto na loja"
               >
-                Ver loja ↗
+                🔗 Ver na loja ↗
               </a>
             )}
 

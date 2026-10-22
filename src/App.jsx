@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './firebase/config.js';
@@ -55,8 +55,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('all');
-  const [subcategory, setSubcategory] = useState('all');
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [sort, setSort] = useState('priority');
   const [publicReservations, setPublicReservations] = useState({});
@@ -114,12 +113,75 @@ export default function App() {
     };
   }, []);
 
+  // Intercepta o botão "Voltar" (físico ou gesto) no celular quando o modal de presente estiver aberto,
+  // fechando o modal e mantendo o usuário na página do catálogo no mesmo ponto em que estava.
+  const isClosingModalByPopstateRef = useRef(false);
+
+  useEffect(() => {
+    if (!giftingProduct || typeof window === 'undefined') return;
+
+    const modalKey = 'gift-modal-' + Date.now();
+    isClosingModalByPopstateRef.current = false;
+
+    window.history.pushState({ modalKey }, '');
+
+    function handleModalPopState() {
+      // O usuário pressionou o botão "Voltar" ou fez o gesto de swipe no celular
+      isClosingModalByPopstateRef.current = true;
+      setGiftingProduct(null);
+    }
+
+    window.addEventListener('popstate', handleModalPopState);
+
+    return () => {
+      window.removeEventListener('popstate', handleModalPopState);
+      // Se fechou pela interface (botão ✕, backdrop, ESC, cancelar ou concluir) e não pelo botão voltar:
+      if (!isClosingModalByPopstateRef.current && window.history.state?.modalKey === modalKey) {
+        window.history.back();
+      }
+      isClosingModalByPopstateRef.current = false;
+    };
+  }, [Boolean(giftingProduct)]);
+
+  // Intercepta o botão "Voltar" no celular quando a gaveta de filtros mobile estiver aberta,
+  // recolhendo a gaveta em vez de sair do site.
+  const isClosingDrawerByPopstateRef = useRef(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || typeof window === 'undefined') return;
+
+    const drawerKey = 'filters-drawer-' + Date.now();
+    isClosingDrawerByPopstateRef.current = false;
+
+    window.history.pushState({ drawerKey }, '');
+
+    function handleDrawerPopState() {
+      isClosingDrawerByPopstateRef.current = true;
+      setMobileMenuOpen(false);
+    }
+
+    window.addEventListener('popstate', handleDrawerPopState);
+
+    return () => {
+      window.removeEventListener('popstate', handleDrawerPopState);
+      if (!isClosingDrawerByPopstateRef.current && window.history.state?.drawerKey === drawerKey) {
+        window.history.back();
+      }
+      isClosingDrawerByPopstateRef.current = false;
+    };
+  }, [mobileMenuOpen]);
+
   useEffect(() => {
     function handlePointerDown(e) {
       // Menus/diálogos de navegação fecham ao clicar fora da própria caixa.
       // Isso também permite clicar no espaço vazio do cabeçalho sem manter
       // um submenu aberto sobre o conteúdo.
-      if (!e.target.closest('.nav-item-dropdown') && !e.target.closest('.brand-dropdown-container')) {
+      if (
+        !e.target.closest('.nav-item-dropdown') &&
+        !e.target.closest('.top-action-filter-btn') &&
+        !e.target.closest('.mobile-submenus-drawer') &&
+        !e.target.closest('.category-chip-more')
+      ) {
         setOpenSubmenu(null);
         setMobileMenuOpen(false);
       }
@@ -189,6 +251,13 @@ export default function App() {
     }
   }
 
+  function handleOpenGift(product) {
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+    setGiftingProduct(product);
+  }
+
   const sourceProducts = useMemo(() => {
     // Firestore é a fonte única da verdade para os presentes
     return firestoreProducts.filter(product => !isTikTokSource(product));
@@ -202,24 +271,30 @@ export default function App() {
     return [...cats].sort();
   }, [sourceProducts]);
 
-  const availableSubcategories = useMemo(() => {
-    const productsInCategory = category === 'all'
-      ? sourceProducts
-      : sourceProducts.filter(product =>
-          product.category === category ||
-          (category === 'calcados' && (product.category === 'calcados' || product.subcategory?.toLowerCase() === 'calcados'))
-        );
-    return [...new Set(productsInCategory.map(product => product.subcategory).filter(Boolean))].sort();
-  }, [sourceProducts, category]);
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    for (const p of sourceProducts) {
+      if (p.enabled === false || p.published === false || p.visible === false) continue;
+      if (p.category) {
+        counts[p.category] = (counts[p.category] || 0) + 1;
+      }
+      if (p.subcategory?.toLowerCase() === 'calcados' && p.category !== 'calcados') {
+        counts['calcados'] = (counts['calcados'] || 0) + 1;
+      }
+    }
+    return counts;
+  }, [sourceProducts]);
 
   const visibleProducts = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR');
     const filtered = sourceProducts.filter(product => {
       if (product.enabled === false || product.published === false || product.visible === false) return false;
-      const matchesCategory = category === 'all'
-        || product.category === category
-        || (category === 'calcados' && (product.category === 'calcados' || product.subcategory?.toLowerCase() === 'calcados'));
-      const matchesSubcategory = subcategory === 'all' || product.subcategory === subcategory;
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => {
+        if (cat === 'calcados') {
+          return product.category === 'calcados' || product.subcategory?.toLowerCase() === 'calcados';
+        }
+        return product.category === cat;
+      });
       const matchesPriority = priorityFilter === 'all' || (() => {
         const p = String(product.priority || product.prioridade || '').trim().toLowerCase();
         if (priorityFilter === 'alta') return p === 'alta' || p === 'essencial' || p === 'obra fundamental';
@@ -228,7 +303,7 @@ export default function App() {
         return true;
       })();
       const searchable = `${product.name} ${product.collection || ''} ${product.description || ''} ${product.dream || ''} ${product.story || ''}`.toLocaleLowerCase('pt-BR');
-      return matchesCategory && matchesSubcategory && matchesPriority && searchable.includes(term);
+      return matchesCategory && matchesPriority && searchable.includes(term);
     });
 
     const priorityWeights = {
@@ -266,7 +341,36 @@ export default function App() {
     if (sort === 'priceDesc') return [...filtered].sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
     if (sort === 'nameAsc') return [...filtered].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
     return filtered;
-  }, [sourceProducts, search, category, subcategory, priorityFilter, sort]);
+  }, [sourceProducts, search, selectedCategories, priorityFilter, sort]);
+
+  function toggleCategory(cat) {
+    setSelectedCategories(prev => {
+      if (prev.includes(cat)) {
+        return prev.filter(c => c !== cat);
+      }
+      return [...prev, cat];
+    });
+  }
+
+  function togglePriority(priority) {
+    setPriorityFilter(prev => (prev === priority ? 'all' : priority));
+  }
+
+  function clearAllFilters() {
+    setSelectedCategories([]);
+    setPriorityFilter('all');
+    setSort('priority');
+    setSearch('');
+  }
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    count += selectedCategories.length;
+    if (priorityFilter !== 'all') count++;
+    if (sort !== 'priority') count++;
+    if (search.trim()) count++;
+    return count;
+  }, [selectedCategories, priorityFilter, sort, search]);
 
   const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
@@ -322,17 +426,12 @@ export default function App() {
         <div className="brand-dropdown-container">
           <a
             href="#top"
-            className={`site-top-bar-brand ${mobileMenuOpen ? 'mobile-menu-active' : ''}`}
+            className="site-top-bar-brand"
             onClick={e => {
               e.preventDefault();
-              if (window.innerWidth <= 768) {
-                setMobileMenuOpen(prev => !prev);
-              } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            title="O Jardim dos Presentes de Michèlé Joohann - Toque para abrir menus no celular"
-            aria-expanded={mobileMenuOpen}
+            title="O Jardim dos Presentes de Michèlé Joohann - Início"
           >
             <img
               src={`${baseUrl}/images/logo-michele-joohann.png`}
@@ -346,216 +445,172 @@ export default function App() {
               <span className="brand-title">O Jardim dos Presentes</span>
               <span className="brand-author">de Michèlé Joohann</span>
             </div>
-            <span className="mobile-brand-arrow" aria-hidden="true">
-              {mobileMenuOpen ? '▴' : '▾'}
-            </span>
           </a>
 
           {/* Submenus escondidos sob a logo superior esquerda no mobile */}
           {mobileMenuOpen && (
-            <div className="mobile-submenus-drawer" role="menu">
-              <div className="mobile-drawer-header">
-                <span className="mobile-drawer-title">🌿 Submenus do Jardim</span>
-                <button
-                  type="button"
-                  className="mobile-drawer-close"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Fechar menu"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Coleções */}
-              <div className="mobile-drawer-section">
-                <span className="mobile-drawer-label">Coleções</span>
-                <div className="mobile-drawer-tags">
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${category === 'all' ? 'active' : ''}`}
-                    onClick={() => {
-                      setCategory('all');
-                      setSubcategory('all');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🌿 Todas as coleções
-                  </button>
-                  {availableCategories.map(cat => (
+            <>
+              <div
+                className="mobile-drawer-backdrop"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-hidden="true"
+              />
+              <div className="mobile-submenus-drawer" role="menu">
+                <div className="mobile-drawer-header">
+                  <span className="mobile-drawer-title">🌿 Filtros do Jardim</span>
+                  <div className="mobile-drawer-header-actions">
+                    {activeFilterCount > 0 && (
+                      <button
+                        type="button"
+                        className="mobile-drawer-clear-btn"
+                        onClick={clearAllFilters}
+                      >
+                        Limpar ({activeFilterCount})
+                      </button>
+                    )}
                     <button
-                      key={cat}
                       type="button"
-                      className={`mobile-tag-btn ${category === cat ? 'active' : ''}`}
-                      onClick={() => {
-                        setCategory(cat);
-                        setSubcategory('all');
-                        setMobileMenuOpen(false);
-                        scrollToCatalog();
-                      }}
+                      className="mobile-drawer-close"
+                      onClick={() => setMobileMenuOpen(false)}
+                      aria-label="Fechar menu"
                     >
-                      {categoryLabels[cat] || labelFromValue(cat)}
+                      ✕
                     </button>
-                  ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Ordenação & Prioridades */}
-              <div className="mobile-drawer-section">
-                <span className="mobile-drawer-label">Ordenação & Prioridades</span>
-                <div className="mobile-drawer-tags">
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${priorityFilter === 'all' && sort === 'priority' ? 'active' : ''}`}
-                    onClick={() => {
-                      setPriorityFilter('all');
-                      setSort('priority');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    ⭐ Todas as prioridades
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${priorityFilter === 'alta' ? 'active' : ''}`}
-                    onClick={() => {
-                      setPriorityFilter('alta');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🍃 Alta prioridade
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${priorityFilter === 'media' ? 'active' : ''}`}
-                    onClick={() => {
-                      setPriorityFilter('media');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🌸 Média prioridade
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${priorityFilter === 'baixa' ? 'active' : ''}`}
-                    onClick={() => {
-                      setPriorityFilter('baixa');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🌰 Baixa prioridade
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${sort === 'priceAsc' ? 'active' : ''}`}
-                    onClick={() => {
-                      setSort('priceAsc');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    ♡ Menor valor
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${sort === 'priceDesc' ? 'active' : ''}`}
-                    onClick={() => {
-                      setSort('priceDesc');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    ♢ Maior valor
-                  </button>
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${sort === 'nameAsc' ? 'active' : ''}`}
-                    onClick={() => {
-                      setSort('nameAsc');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    Aa Nome A-Z
-                  </button>
-                </div>
-              </div>
-
-              {/* Jardins */}
-              <div className="mobile-drawer-section">
-                <span className="mobile-drawer-label">Jardins</span>
-                <div className="mobile-drawer-tags">
-                  <button
-                    type="button"
-                    className={`mobile-tag-btn ${subcategory === 'all' ? 'active' : ''}`}
-                    onClick={() => {
-                      setSubcategory('all');
-                      setMobileMenuOpen(false);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🌿 Todos os jardins
-                  </button>
-                  {availableSubcategories.map(sub => (
+                {/* Coleções */}
+                <div className="mobile-drawer-section">
+                  <span className="mobile-drawer-label">Coleções (selecione uma ou mais)</span>
+                  <div className="mobile-drawer-tags">
                     <button
-                      key={sub}
                       type="button"
-                      className={`mobile-tag-btn ${subcategory === sub ? 'active' : ''}`}
-                      onClick={() => {
-                        setSubcategory(sub);
-                        setMobileMenuOpen(false);
-                        scrollToCatalog();
-                      }}
+                      className={`mobile-tag-btn ${selectedCategories.length === 0 ? 'active' : ''}`}
+                      onClick={() => setSelectedCategories([])}
                     >
-                      🌱 {labelFromValue(sub)}
+                      🌿 Todas as coleções
                     </button>
-                  ))}
+                    {availableCategories.map(cat => (
+                      <button
+                        key={cat}
+                        type="button"
+                        className={`mobile-tag-btn ${selectedCategories.includes(cat) ? 'active' : ''}`}
+                        onClick={() => toggleCategory(cat)}
+                      >
+                        {selectedCategories.includes(cat) ? '✓ ' : ''}{categoryLabels[cat] || labelFromValue(cat)} ({categoryCounts[cat] || 0})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ordenação & Prioridades */}
+                <div className="mobile-drawer-section">
+                  <span className="mobile-drawer-label">Prioridades</span>
+                  <div className="mobile-drawer-tags">
+                    <button
+                      type="button"
+                      className={`mobile-tag-btn ${priorityFilter === 'all' ? 'active' : ''}`}
+                      onClick={() => setPriorityFilter('all')}
+                    >
+                      ⭐ Todas
+                    </button>
+                    <button
+                      type="button"
+                      className={`mobile-tag-btn priority-alta ${priorityFilter === 'alta' ? 'active' : ''}`}
+                      onClick={() => togglePriority('alta')}
+                    >
+                      {priorityFilter === 'alta' ? '✓ ' : ''}🍃 Alta prioridade
+                    </button>
+                    <button
+                      type="button"
+                      className={`mobile-tag-btn priority-media ${priorityFilter === 'media' ? 'active' : ''}`}
+                      onClick={() => togglePriority('media')}
+                    >
+                      {priorityFilter === 'media' ? '✓ ' : ''}🌸 Média prioridade
+                    </button>
+                    <button
+                      type="button"
+                      className={`mobile-tag-btn priority-baixa ${priorityFilter === 'baixa' ? 'active' : ''}`}
+                      onClick={() => togglePriority('baixa')}
+                    >
+                      {priorityFilter === 'baixa' ? '✓ ' : ''}🌰 Baixa prioridade
+                    </button>
+                  </div>
+
+                  <span className="mobile-drawer-label" style={{ marginTop: '14px' }}>Organizar presentes</span>
+                  <div className="mobile-drawer-tags">
+                    {[
+                      ['priority', '⭐ Maior prioridade'],
+                      ['priorityAsc', '🌱 Menor prioridade'],
+                      ['priceAsc', '♡ Menor valor'],
+                      ['priceDesc', '♢ Maior valor'],
+                      ['nameAsc', 'Aa Nome A-Z'],
+                    ].map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`mobile-tag-btn ${sort === value ? 'active' : ''}`}
+                        onClick={() => setSort(value)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ação Conclusiva Fixa no Rodapé da Gaveta */}
+                <div className="mobile-drawer-footer">
+                  <button
+                    type="button"
+                    className="mobile-drawer-apply-btn"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      scrollToCatalog();
+                    }}
+                  >
+                    Ver {visibleProducts.length} presente{visibleProducts.length !== 1 ? 's' : ''} {activeFilterCount > 0 ? `(${activeFilterCount} filtros)` : ''}
+                  </button>
+                </div>
+
+                {/* Sobre */}
+                <div className="mobile-drawer-section">
+                  <span className="mobile-drawer-label">Sobre</span>
+                  <p className="mobile-drawer-note">
+                    <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias especiais, onde cada presente é cultivado com carinho, significado e história.
+                  </p>
+                </div>
+
+                {/* Contato */}
+                <div className="mobile-drawer-section">
+                  <span className="mobile-drawer-label">Contato</span>
+                  <p className="mobile-drawer-note">
+                    Para falar comigo sobre o Jardim dos Presentes:<br />
+                    <a className="contact-email-link" href="mailto:michelejoohann@gmail.com">michelejoohann@gmail.com</a>
+                  </p>
                 </div>
               </div>
-
-              {/* Sobre */}
-              <div className="mobile-drawer-section">
-                <span className="mobile-drawer-label">Sobre</span>
-                <p className="mobile-drawer-note">
-                  <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias especiais, onde cada presente é cultivado com carinho, significado e história.
-                </p>
-              </div>
-
-              {/* Contato */}
-              <div className="mobile-drawer-section">
-                <span className="mobile-drawer-label">Contato</span>
-                <p className="mobile-drawer-note">
-                  Para falar comigo sobre o Jardim dos Presentes:<br />
-                  <a className="contact-email-link" href="mailto:michelejoohann@gmail.com">michelejoohann@gmail.com</a>
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
+          </>
+        )}
+      </div>
 
         <div className="site-top-bar-nav">
           {/* Menu Coleções */}
           <div className="nav-item-dropdown">
             <button
               type="button"
-              className={`top-nav-link ${category !== 'all' ? 'active' : ''}`}
+              className={`top-nav-link ${selectedCategories.length > 0 ? 'active' : ''}`}
               onClick={() => setOpenSubmenu(prev => prev === 'colecoes' ? null : 'colecoes')}
               aria-expanded={openSubmenu === 'colecoes'}
             >
-              Coleções <span className="nav-arrow" aria-hidden="true">▾</span>
+              Coleções {selectedCategories.length > 0 ? `(${selectedCategories.length})` : ''} <span className="nav-arrow" aria-hidden="true">▾</span>
             </button>
             {openSubmenu === 'colecoes' && (
               <div className="top-submenu-dropdown" role="menu">
                 <button
                   type="button"
-                  className={`submenu-item ${category === 'all' ? 'active' : ''}`}
+                  className={`submenu-item ${selectedCategories.length === 0 ? 'active' : ''}`}
                   onClick={() => {
-                    setCategory('all');
-                    setSubcategory('all');
+                    setSelectedCategories([]);
                     setOpenSubmenu(null);
                     scrollToCatalog();
                   }}
@@ -566,15 +621,14 @@ export default function App() {
                   <button
                     key={cat}
                     type="button"
-                    className={`submenu-item ${category === cat ? 'active' : ''}`}
+                    className={`submenu-item ${selectedCategories.includes(cat) ? 'active' : ''}`}
                     onClick={() => {
-                      setCategory(cat);
-                      setSubcategory('all');
+                      toggleCategory(cat);
                       setOpenSubmenu(null);
                       scrollToCatalog();
                     }}
                   >
-                    {categoryLabels[cat] || labelFromValue(cat)}
+                    {selectedCategories.includes(cat) ? '✓ ' : ''}{categoryLabels[cat] || labelFromValue(cat)} ({categoryCounts[cat] || 0})
                   </button>
                 ))}
               </div>
@@ -609,34 +663,34 @@ export default function App() {
                   type="button"
                   className={`submenu-item priority-alta ${priorityFilter === 'alta' ? 'active' : ''}`}
                   onClick={() => {
-                    setPriorityFilter('alta');
+                    togglePriority('alta');
                     setOpenSubmenu(null);
                     scrollToCatalog();
                   }}
                 >
-                  🍃 Alta prioridade (Essencial)
+                  {priorityFilter === 'alta' ? '✓ ' : ''}🍃 Alta prioridade (Essencial)
                 </button>
                 <button
                   type="button"
                   className={`submenu-item priority-media ${priorityFilter === 'media' ? 'active' : ''}`}
                   onClick={() => {
-                    setPriorityFilter('media');
+                    togglePriority('media');
                     setOpenSubmenu(null);
                     scrollToCatalog();
                   }}
                 >
-                  🌸 Média prioridade
+                  {priorityFilter === 'media' ? '✓ ' : ''}🌸 Média prioridade
                 </button>
                 <button
                   type="button"
                   className={`submenu-item priority-baixa ${priorityFilter === 'baixa' ? 'active' : ''}`}
                   onClick={() => {
-                    setPriorityFilter('baixa');
+                    togglePriority('baixa');
                     setOpenSubmenu(null);
                     scrollToCatalog();
                   }}
                 >
-                  🌰 Baixa prioridade
+                  {priorityFilter === 'baixa' ? '✓ ' : ''}🌰 Baixa prioridade
                 </button>
 
                 <div className="submenu-divider" aria-hidden="true"></div>
@@ -660,47 +714,6 @@ export default function App() {
                     }}
                   >
                     {label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Menu Jardins */}
-          <div className="nav-item-dropdown">
-            <button
-              type="button"
-              className={`top-nav-link ${subcategory !== 'all' ? 'active' : ''}`}
-              onClick={() => setOpenSubmenu(prev => prev === 'jardins' ? null : 'jardins')}
-              aria-expanded={openSubmenu === 'jardins'}
-            >
-              Jardins <span className="nav-arrow" aria-hidden="true">▾</span>
-            </button>
-            {openSubmenu === 'jardins' && (
-              <div className="top-submenu-dropdown" role="menu">
-                <button
-                  type="button"
-                  className={`submenu-item ${subcategory === 'all' ? 'active' : ''}`}
-                  onClick={() => {
-                    setSubcategory('all');
-                    setOpenSubmenu(null);
-                    scrollToCatalog();
-                  }}
-                >
-                  🌿 Todos os jardins
-                </button>
-                {availableSubcategories.map(sub => (
-                  <button
-                    key={sub}
-                    type="button"
-                    className={`submenu-item ${subcategory === sub ? 'active' : ''}`}
-                    onClick={() => {
-                      setSubcategory(sub);
-                      setOpenSubmenu(null);
-                      scrollToCatalog();
-                    }}
-                  >
-                    🌱 {labelFromValue(sub)}
                   </button>
                 ))}
               </div>
@@ -772,18 +785,38 @@ export default function App() {
               </button>
             </div>
           ) : (
-            <button
-              type="button"
-              className="top-action-icon-btn"
-              title="Buscar presentes"
-              aria-label="Abrir busca"
-              onClick={() => setSearchVisible(true)}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
+            <>
+              <button
+                type="button"
+                className={`top-action-icon-btn top-action-filter-btn ${activeFilterCount > 0 ? 'has-active-filters' : ''} ${mobileMenuOpen ? 'menu-open' : ''}`}
+                title="Filtrar presentes e coleções"
+                aria-label="Abrir filtros e coleções"
+                aria-expanded={mobileMenuOpen}
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                {activeFilterCount > 0 && (
+                  <span className="top-filter-count-badge" aria-label={`${activeFilterCount} filtros ativos`}>
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className="top-action-icon-btn"
+                title="Buscar presentes"
+                aria-label="Abrir busca"
+                onClick={() => setSearchVisible(true)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </>
           )}
           <button
             type="button"
@@ -822,6 +855,125 @@ export default function App() {
       </header>
 
       <main className="content">
+        {/* Carrossel Tátil de Coleções & Resumo de Filtros */}
+        {!loading && firestoreStatus !== 'unavailable' && (
+          <section className="catalog-filters-strip" aria-label="Navegação rápida por coleções">
+            <div className="category-chips-scroll" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selectedCategories.length === 0}
+                className={`category-chip ${selectedCategories.length === 0 ? 'active' : ''}`}
+                onClick={() => setSelectedCategories([])}
+              >
+                <span className="chip-icon">🌿</span>
+                <span className="chip-text">Todas</span>
+              </button>
+
+              {availableCategories.map(cat => {
+                const labelWithEmoji = categoryLabels[cat] || labelFromValue(cat);
+                const isSelected = selectedCategories.includes(cat);
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    className={`category-chip ${isSelected ? 'active' : ''}`}
+                    onClick={() => toggleCategory(cat)}
+                  >
+                    <span className="chip-text">
+                      {isSelected ? '✓ ' : ''}{labelWithEmoji} ({categoryCounts[cat] || 0})
+                    </span>
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                className="category-chip category-chip-more"
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Mais filtros de ordenação e prioridades"
+                title="Abrir mais filtros"
+              >
+                <span className="chip-icon">⚙</span>
+                <span className="chip-text">Mais filtros…</span>
+                {activeFilterCount > selectedCategories.length && (
+                  <span className="chip-sub-badge">+{activeFilterCount - selectedCategories.length}</span>
+                )}
+              </button>
+            </div>
+
+            {/* Resumo de filtros ativos com botões rápidos para remover */}
+            {activeFilterCount > 0 && (
+              <div className="active-filters-bar">
+                <span className="active-filters-title">Filtros ativos:</span>
+                <div className="active-filters-chips">
+                  {selectedCategories.map(cat => (
+                    <span key={cat} className="active-filter-badge">
+                      {categoryLabels[cat] || labelFromValue(cat)}
+                      <button
+                        type="button"
+                        className="remove-filter-btn"
+                        onClick={() => toggleCategory(cat)}
+                        aria-label={`Remover coleção ${categoryLabels[cat] || labelFromValue(cat)}`}
+                        title="Remover coleção"
+                      >×</button>
+                    </span>
+                  ))}
+                  {priorityFilter !== 'all' && (
+                    <span className="active-filter-badge">
+                      ⭐ {priorityFilter === 'alta' ? 'Alta prioridade' : priorityFilter === 'media' ? 'Média prioridade' : 'Baixa prioridade'}
+                      <button
+                        type="button"
+                        className="remove-filter-btn"
+                        onClick={() => setPriorityFilter('all')}
+                        aria-label="Remover prioridade"
+                        title="Remover prioridade"
+                      >×</button>
+                    </span>
+                  )}
+                  {sort !== 'priority' && (
+                    <span className="active-filter-badge">
+                      ↕ {
+                        sort === 'priorityAsc' ? 'Menor prioridade' :
+                        sort === 'priceAsc' ? 'Menor valor' :
+                        sort === 'priceDesc' ? 'Maior valor' :
+                        sort === 'nameAsc' ? 'Nome A-Z' : 'Ordem original'
+                      }
+                      <button
+                        type="button"
+                        className="remove-filter-btn"
+                        onClick={() => setSort('priority')}
+                        aria-label="Restaurar ordenação padrão"
+                        title="Restaurar ordenação padrão"
+                      >×</button>
+                    </span>
+                  )}
+                  {search.trim() && (
+                    <span className="active-filter-badge">
+                      🔍 &quot;{search.trim()}&quot;
+                      <button
+                        type="button"
+                        className="remove-filter-btn"
+                        onClick={() => setSearch('')}
+                        aria-label="Remover busca"
+                        title="Remover busca"
+                      >×</button>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    className="clear-all-btn"
+                    onClick={clearAllFilters}
+                  >
+                    Limpar todos
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
 
         {loading && <p className="notice">Conectando ao Jardim…</p>}
@@ -836,7 +988,7 @@ export default function App() {
               product={product}
               reservation={publicReservations[product.id]}
               currentVisitorUid={user?.uid}
-              onOpenGift={setGiftingProduct}
+              onOpenGift={handleOpenGift}
               onCancelReservation={handleCancelReservation}
             />
           ))}
