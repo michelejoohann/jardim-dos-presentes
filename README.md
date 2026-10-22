@@ -18,10 +18,11 @@ O **Jardim dos Presentes** é construído sobre uma arquitetura moderna e desaco
 ```mermaid
 graph TB
     subgraph Client ["🖥️ Cliente / Navegador"]
-        subgraph TopNav ["Barra Superior & Navegação Integrada"]
-            Brand["Marca & Logo (Michèlé Joohann)"]
-            MobileSubmenus["Gaveta Tátil de Submenus (Mobile)"]
-            DesktopSubmenus["Submenus Flutuantes (Desktop: Coleções, Ordenação, Jardins, etc.)"]
+        subgraph TopNav ["Barra Superior Fixa (Sticky) & Ações Rápidas"]
+            Brand["Logo Brand MJ (Rolagem ao Topo)"]
+            FilterBtn["Botão Filtros com Badge Dinâmico"]
+            MobileDrawer["Gaveta Tátil de Filtros (Mobile)"]
+            DesktopNav["Menus Flutuantes (Desktop: Coleções, Ordenação)"]
             SearchBtn["Busca Retrátil Integrada"]
             AdminBtn["Acesso Rápido Admin"]
         end
@@ -31,10 +32,17 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Generoso"]
         end
 
+        subgraph FilterStrip ["Navegação Reativa por Coleções"]
+            CategoryChips["Carrossel Tátil de Chips (Contadores ao Vivo)"]
+            ActiveFiltersBar["Resumo de Filtros Ativos (Remoção Rápida)"]
+        end
+
         subgraph PublicUI ["Catálogo & Vitrine Especial"]
             Grid["Grade de Presentes (ProductCard)"]
+            StoreLink["Links Diretos de Compra na Loja Oficial (🔗)"]
             Details["Detalhes Expansíveis, Significados & História"]
             GiftModalUI["Modal de Presentear (GiftModal)"]
+            HistorySync["Controle de Histórico Mobile (Popstate / Botão Voltar)"]
         end
 
         subgraph AdminUI ["Painel Gerencial Completo (?admin=true)"]
@@ -56,11 +64,17 @@ graph TB
         GHPages["GitHub Pages CDN"]
     end
 
-    Brand -- "Mobile: Toque expande submenus" --> MobileSubmenus
-    DesktopSubmenus --> PublicUI
-    MobileSubmenus --> PublicUI
+    Brand -- "Toque: Rolagem suave ao topo" --> Client
+    FilterBtn -- "Toque: Abre/Fecha gaveta mobile" --> MobileDrawer
+    DesktopNav --> FilterStrip
+    MobileDrawer --> FilterStrip
+    FilterStrip --> PublicUI
     TopNav --> PublicUI
     HeroSection --> PublicUI
+
+    GiftModalUI <--> HistorySync
+    MobileDrawer <--> HistorySync
+    HistorySync -- "Botão Voltar: Fecha modal/gaveta e mantém catálogo" --> PublicUI
 
     PublicUI -- "onSnapshot (tempo real)" --> Firestore
     PublicUI -- "Sessão Anônima" --> Auth
@@ -82,26 +96,31 @@ graph TB
 
 O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo sofisticação botânica, carinho e ergonomia móvel:
 
-1. **Moldura Botânica Silvestre**: Ramos de marcela e folhagens botânicas nas laterais que emolduram suavemente a tela sem atrapalhar a leitura.
-2. **Selo Medalhão MJ**: Emblema heráldico central gravado em ouro antigo (`#ad9363`) e verde bosque (`#162a1c`), envolvido por ramagens de hera. Possui espaçamento generoso e equilibrado (`18px` a `22px`), garantindo que não fique grudado no texto.
-3. **Tipografia do Hero Balanceada**: A frase de curadoria é disposta em duas linhas harmônicas quebradas no dois-pontos (`:`), preservando o ritmo estético em qualquer resolução:
+1. **Barra Superior Fixa (`sticky`) com Ações Rápidas**:
+   - A barra superior permanece acessível durante toda a navegação e rolagem da página com efeito *glassmorphism* suave.
+   - **Logotipo Independente**: Tocar na logo realiza rolagem suave ao topo (`window.scrollTo`), sem abrir menus acidentalmente.
+   - **Botão Dedicado de Filtros**: Ícone de filtro circular com badge dourado em ouro antigo indicando a quantidade de filtros ativos em tempo real.
+2. **Navegação Reativa por Coleções & Filtros Multi-Seleção**:
+   - **Carrossel Tátil de Chips**: Faixa horizontal deslizante acima do catálogo com contadores dinâmicos de presentes em cada coleção (`Coleção (N)`).
+   - **Seleção Cumulativa**: Possibilidade de selecionar múltiplas coleções simultaneamente.
+   - **Alternância Rápida (Toggle)**: Clicar em uma coleção já ativa a desmarca; ao desmarcar todas, o catálogo volta automaticamente a exibir todas as opções.
+   - **Barra de Resumo de Filtros**: Badges destacados para cada filtro ativo com botões rápidos de exclusão individual ou "Limpar todos".
+3. **Controle Inteligente de Histórico no Celular (`popstate`)**:
+   - Ao abrir o modal de presente (`GiftModal`) ou a gaveta de filtros no celular, a pilha do navegador é sincronizada.
+   - Pressionar o **botão físico "Voltar"** ou fazer o **gesto de swipe** no celular fecha a janela e **mantém o visitante no catálogo** na mesma altura de rolagem, sem sair do site.
+4. **Moldura Botânica Silvestre & Selo Medalhão MJ**:
+   - Ramos de marcela e folhagens botânicas nas laterais que emolduram suavemente a tela sem atrapalhar a leitura.
+   - Emblema heráldico central gravado em ouro antigo (`#ad9363`) e verde bosque (`#162a1c`), envolvido por ramagens de hera com espaçamento generoso.
+5. **Tipografia do Hero Balanceada**: A frase de curadoria é disposta em duas linhas harmônicas quebradas no dois-pontos (`:`), preservando o ritmo estético em qualquer resolução:
    - *Curadoria Exclusiva de Sonhos:*
    - *Onde a Magia do Presente se Revela.*
-4. **Submenus Responsivos na Logo do Topo**:
-   - No celular/mobile (`<= 768px`), os submenus ficam discretamente integrados à logo no canto superior esquerdo (com um indicador sutil `▾`/`▴`).
-   - Ao tocar na logo, abre-se uma gaveta suspensa elegante no estilo *Herbarium Vitoriano* com acesso rápido a:
-     - 🌿 **Coleções**
-     - ⭐ **Ordenação & Prioridades**
-     - 🌱 **Jardins**
-     - 📖 **Sobre**
-     - ✉️ **Contato**
-   - No desktop, a navegação clássica flutuante permanece acessível no centro do cabeçalho.
-5. **Cards Editoriais de Presente**:
+6. **Cards Editoriais de Presente**:
    - Fotografia ou ícone botânico emoldurado.
    - Badge de status (*Disponível*, *Reservado*, *Floresceu 🌸*).
    - Seção poética *"O sonho"*.
+   - **Link Direto para Loja Oficial**: Botão com ícone de link (`🔗`) para acessar a página de compra na loja oficial em nova aba segura (`target="_blank"` e `rel="noopener noreferrer"`).
    - Gaveta de detalhes colapsável: tags de significados, tamanho desejado, prioridade, decisão de compra, valores e histórias.
-   - Botão **🎁 Presentear** com fluxo de anonimato e dedicatória.
+   - Botão **🎁 Presentear** com fluxo de anonimato, mensagem de carinho, opção de compra na loja oficial e dedicatória.
 
 ---
 

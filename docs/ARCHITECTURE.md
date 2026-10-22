@@ -7,7 +7,10 @@ O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e acolhedo
 - **100% Cloud Firestore como Fonte Única da Verdade**: Nenhum dado de produto é armazenado no código-fonte ou em arquivos estáticos da aplicação. Todo o catálogo reside e é atualizado dinamicamente no banco de dados.
 - **Painel Gerencial Completo**: Interface administrativa com autenticação segura, permitindo criação de novos presentes, edição, exclusão, controle de visibilidade (habilitado/desabilitado) e sugestões inteligentes de textos acolhedores, prioridades, sonhos e histórias.
 - **Backup & Restauração Sob Demanda**: Ferramenta de exportação e importação de backups em formato JSON diretamente pelo navegador, mantendo o repositório 100% limpo e desacoplado dos dados.
-- **Experiência Responsiva e Acessível**: Gaveta suspensa tátil de submenus oculta sob a logo superior esquerda no mobile, tipografia equilibrada com quebras harmônicas e espaçamento generoso do medalhão central.
+- **Navegação Superior Fixa & Ações Ergonômicas**: Barra de navegação `sticky` com efeito *glassmorphism* botânico sempre acessível durante a rolagem. Contém logotipo da marca com rolagem suave ao topo (`window.scrollTo`), botão circular de filtros com badge numérico em ouro antigo indicando filtros ativos, busca retrátil e acesso administrativo.
+- **Filtragem Reativa Multi-Coleção**: Navegação horizontal tátil por chips de coleções com contadores de itens em tempo real, seleção cumulativa (múltiplas coleções simultâneas), alternância para desselecionar e barra de resumo com remoção rápida individual ou total.
+- **Controle de Histórico no Celular (`popstate`)**: Sincronização da pilha de histórico do navegador (`window.history.pushState` / `popstate`) com o modal de presentes (`GiftModal`) e gaveta de filtros. Ao pressionar o botão físico "Voltar" ou realizar o gesto de swipe no celular, a janela/gaveta é fechada e o visitante permanece exatamente no catálogo, sem sair do site.
+- **Links Diretos para Lojas Oficiais**: Botões e links contextuais com ícone de link (`🔗`) para compra direta na loja oficial (abertos com segurança em nova aba via `target="_blank"` e `rel="noopener noreferrer"`).
 - **Code-Splitting e Otimização**: Chunks otimizados no Vite com vendor splitting (`vendor-react`, `vendor-firebase`) e carregamento sob demanda (`lazy` + `Suspense`).
 
 ---
@@ -17,10 +20,11 @@ O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e acolhedo
 ```mermaid
 graph TB
     subgraph Client ["🖥️ Cliente / Navegador"]
-        subgraph TopNav ["Navegação Superior & Responsiva"]
-            Brand["Logo Brand (Michèlé Joohann)"]
-            MobileDrawer["Gaveta Tátil de Submenus (Mobile)"]
-            DesktopNav["Menus de Topo (Desktop: Coleções, Ordenação, Jardins, etc.)"]
+        subgraph TopNav ["Navegação Superior Fixa (Sticky) & Responsiva"]
+            Brand["Logo Brand MJ (Rolagem ao Topo)"]
+            FilterActionBtn["Botão Filtros com Badge Dinâmico"]
+            MobileDrawer["Gaveta Tátil de Filtros (Mobile)"]
+            DesktopNav["Menus de Topo (Desktop: Coleções, Ordenação)"]
             SearchBtn["Busca Retrátil Integrada"]
             AdminBtn["Acesso Rápido Admin"]
         end
@@ -30,9 +34,16 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Amplo"]
         end
 
+        subgraph FilterSystem ["Sistema Reativo de Filtros"]
+            CategoryChips["Carrossel Tátil de Chips (Contadores ao Vivo)"]
+            ActiveFiltersBar["Barra de Filtros Ativos (Remoção Rápida)"]
+        end
+
         subgraph PublicUI ["Catálogo & Vitrine de Presentes"]
             Grid["Grade de Presentes (ProductCard)"]
+            DirectBuyLink["Links de Compra na Loja Oficial (🔗)"]
             GiftModalUI["Modal de Presentear (GiftModal)"]
+            HistorySync["Sincronizador de Histórico (Popstate / Botão Voltar)"]
         end
 
         subgraph AdminUI ["Painel Administrativo (?admin=true)"]
@@ -54,11 +65,18 @@ graph TB
         GHPages["GitHub Pages CDN"]
     end
 
-    Brand -- "Mobile: Toque expande submenus" --> MobileDrawer
-    DesktopNav --> PublicUI
-    MobileDrawer --> PublicUI
+    Brand -- "Clique: Rolagem suave ao topo" --> Client
+    FilterActionBtn -- "Toque: Abre/Fecha gaveta mobile" --> MobileDrawer
+    DesktopNav --> FilterSystem
+    MobileDrawer --> FilterSystem
+    CategoryChips --> PublicUI
+    ActiveFiltersBar --> PublicUI
     SearchBtn --> PublicUI
     AdminBtn --> AdminPanel
+
+    GiftModalUI <--> HistorySync
+    MobileDrawer <--> HistorySync
+    HistorySync -- "Botão Voltar: Fecha modal/gaveta e mantém catálogo" --> PublicUI
 
     PublicUI -- "Listener em tempo real (onSnapshot)" --> Firestore
     PublicUI -- "Sessão anônima de visitante" --> Auth
@@ -191,3 +209,32 @@ As regras declaradas em `firestore.rules` asseguram:
 2. **Escrita Administrativa Exclusiva**: Apenas a conta autenticada correspondente ao `ADMIN_UID` (`7G4v3hEMtaVzI8MUDsXjVCNXGJz1`) possui permissão para executar `create`, `update` ou `delete` na coleção `products`.
 3. **Privacidade das Dedicatórias**: A coleção `privateReservations` (que guarda nomes, e-mails e mensagens confidenciais dos convidados) pode ser criada por qualquer visitante no momento do presente, mas **somente a administradora autenticada pode ler e listar** as mensagens.
 4. **Isolamento de Código**: Nenhum dado confidencial ou lista de produtos estática trafega no repositório. O banco de dados é a autoridade máxima e única.
+---
+
+## 7. Arquitetura de Navegação Mobile & Controle de Histórico (`popstate`)
+
+Em aplicações de página única (SPA), abrir modais ou gavetas sem atualizar a pilha de histórico do navegador faz com que o botão "Voltar" (físico ou por gesto no Android e iOS) feche a aba ou saia do site. Para proporcionar uma experiência verdadeiramente nativa, a aplicação implementa **sincronização de histórico atômica**:
+
+1. **Empilhamento de Estado (`pushState`)**:
+   - Ao abrir o modal de presente (`giftingProduct`) ou a gaveta de filtros (`mobileMenuOpen`), um identificador único com carimbo temporal (`gift-modal-${Date.now()}` / `filters-drawer-${Date.now()}`) é inserido no histórico via `window.history.pushState`.
+2. **Interceptação do Evento `popstate`**:
+   - Um listener dedicado escuta o evento `popstate`. Se disparado pelo gesto de voltar ou botão físico do dispositivo, a flag `isClosingByPopstateRef` é ativada e o modal/gaveta é fechado imediatamente.
+   - O usuário permanece **exatamente na mesma altura de rolagem do catálogo**, sem qualquer salto visual ou recarregamento.
+3. **Fechamento Programático Seguro**:
+   - Caso o usuário feche a interface via botão **✕**, clique no backdrop, botão **Cancelar**, tecla **ESC** ou conclusão do fluxo ("Voltar ao Jardim"), a rotina de limpeza do efeito verifica se o estado ativo do histórico ainda pertence ao modal (`window.history.state?.modalKey === modalKey`) e executa `window.history.back()`.
+   - Essa verificação impede o acúmulo de entradas órfãs na pilha de navegação, mantendo o histórico sempre limpo.
+
+---
+
+## 8. Sistema de Filtros Reativo & Multi-Coleção
+
+1. **Seleção Cumulativa**:
+   - O estado `selectedCategories` aceita um array de coleções (`[]`). Quando múltiplas coleções são selecionadas, o catálogo exibe qualquer presente pertencente a pelo menos uma das coleções ativas (`selectedCategories.includes(product.category)`).
+2. **Alternância para Desselecionar**:
+   - Clicar em um chip ou botão de categoria já selecionada o desativa. Quando a última categoria for desmarcada, a aplicação retorna automaticamente ao estado de "Todas as coleções".
+3. **Contadores Dinâmicos de Itens**:
+   - Um `useMemo` dedicado calcula em tempo real o número de presentes disponíveis para cada coleção (`categoryCounts`), exibindo `Coleção (N)` em cada chip.
+4. **Resumo Visual & Ações Rápidas**:
+   - A barra `.active-filters-bar` exibe badges destacados para cada filtro ativo (coleções, prioridade, ordenação e busca por texto), com botões de remoção individual e o botão "Limpar todos".
+   - O botão de filtro na barra superior exibe um badge numérico (`.top-filter-count-badge`) dourado sempre que houver 1 ou mais filtros aplicados.
+
