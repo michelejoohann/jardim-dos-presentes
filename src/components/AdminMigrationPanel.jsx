@@ -273,36 +273,24 @@ export default function AdminMigrationPanel({
   if (!isAdmin) {
     return (
       <section className="admin-panel admin-panel-login" aria-labelledby="admin-title">
-        <div className="admin-header-row">
-          <div className="admin-brand-header">
-            <img
-              src={`${baseUrl}/images/logo-michele-joohann.png`}
-              alt="Michèlé Joohann"
-              className="admin-header-logo"
-              width="48"
-              height="48"
-            />
-            <div>
-              <p className="section-kicker">Administração do Jardim</p>
-              <h2 id="admin-title">Área Administrativa</h2>
-              <p>Entre com a conta da administradora para gerenciar presentes e mensagens com carinho.</p>
-            </div>
-          </div>
-          {(onNavigateHome || onClose) && (
-            <button
-              type="button"
-              className="secondary-button admin-back-to-store-btn"
-              onClick={onNavigateHome || onClose}
-              title="Voltar para a vitrine pública do catálogo"
-            >
-              ← Voltar ao Jardim / Vitrine
-            </button>
-          )}
+        <div className="admin-login-header">
+          <img
+            src={`${baseUrl}/images/logo-michele-joohann.png`}
+            alt="Michèlé Joohann"
+            className="admin-login-logo"
+            width="64"
+            height="64"
+          />
+          <span className="section-kicker">Administração do Jardim</span>
+          <h2 id="admin-title">Área Administrativa</h2>
+          <p className="admin-login-subtitle">
+            Entre com as credenciais da administradora para gerenciar os presentes com carinho.
+          </p>
         </div>
 
-        <form className="admin-login" onSubmit={handleLogin}>
-          <label>
-            E-mail de Acesso
+        <form className="admin-login-form" onSubmit={handleLogin}>
+          <label className="admin-login-field">
+            <span>E-mail de Acesso</span>
             <input
               type="email"
               value={email}
@@ -312,8 +300,8 @@ export default function AdminMigrationPanel({
               placeholder="seu-email@exemplo.com"
             />
           </label>
-          <label>
-            Senha
+          <label className="admin-login-field">
+            <span>Senha</span>
             <input
               type="password"
               value={password}
@@ -323,10 +311,21 @@ export default function AdminMigrationPanel({
               placeholder="••••••••"
             />
           </label>
-          <button type="submit" disabled={busy}>
+          <button type="submit" className="admin-login-submit" disabled={busy}>
             {busy ? 'Entrando…' : 'Entrar como administradora 🔑'}
           </button>
         </form>
+
+        {(onNavigateHome || onClose) && (
+          <button
+            type="button"
+            className="admin-login-back-btn"
+            onClick={onNavigateHome || onClose}
+            title="Voltar para a vitrine pública do catálogo"
+          >
+            ← Voltar ao Jardim / Vitrine
+          </button>
+        )}
 
         {message && <p className="notice success">{message}</p>}
         {error && <p className="notice error" role="alert">{error}</p>}

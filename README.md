@@ -32,11 +32,6 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Generoso"]
         end
 
-        subgraph FilterStrip ["Navegação Reativa por Coleções"]
-            CategoryChips["Carrossel Tátil de Chips (Contadores ao Vivo)"]
-            ActiveFiltersBar["Resumo de Filtros Ativos (Remoção Rápida)"]
-        end
-
         subgraph PublicUI ["Catálogo & Vitrine Especial"]
             Grid["Grade de Presentes (ProductCard)"]
             StoreLink["Links Diretos de Compra na Loja Oficial (🔗)"]
@@ -46,6 +41,7 @@ graph TB
         end
 
         subgraph AdminUI ["Painel Gerencial Completo (?admin=true)"]
+            AdminLogin["Login Centralizado e 100% Responsivo"]
             AdminPanel["Painel da Michèlé (AdminMigrationPanel)"]
             ProductEditor["Criar / Editar com Sugestões (ProductEditorModal)"]
             BackupTool["Backup & Restauração JSON Dinâmico"]
@@ -66,9 +62,8 @@ graph TB
 
     Brand -- "Toque: Rolagem suave ao topo" --> Client
     FilterBtn -- "Toque: Abre/Fecha gaveta mobile" --> MobileDrawer
-    DesktopNav --> FilterStrip
-    MobileDrawer --> FilterStrip
-    FilterStrip --> PublicUI
+    DesktopNav --> PublicUI
+    MobileDrawer --> PublicUI
     TopNav --> PublicUI
     HeroSection --> PublicUI
 
@@ -80,6 +75,7 @@ graph TB
     PublicUI -- "Sessão Anônima" --> Auth
     GiftModalUI -- "Criação de reserva atômica" --> Firestore
 
+    AdminLogin -- "Autenticação segura" --> Auth
     AdminPanel -- "Autenticação restrita (Admin UID)" --> Auth
     AdminPanel -- "CRUD & Visibilidade (productService)" --> Firestore
     ProductEditor -- "Sugestões de carinho (giftSuggestions)" --> ProductEditor
@@ -96,15 +92,15 @@ graph TB
 
 O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo sofisticação botânica, carinho e ergonomia móvel:
 
-1. **Barra Superior Fixa (`sticky`) com Ações Rápidas**:
+1. **Barra Superior Fixa (`sticky`) com Filtros Unificados**:
    - A barra superior permanece acessível durante toda a navegação e rolagem da página com efeito *glassmorphism* suave.
    - **Logotipo Independente**: Tocar na logo realiza rolagem suave ao topo (`window.scrollTo`), sem abrir menus acidentalmente.
    - **Botão Dedicado de Filtros**: Ícone de filtro circular com badge dourado em ouro antigo indicando a quantidade de filtros ativos em tempo real.
-2. **Navegação Reativa por Coleções & Filtros Multi-Seleção**:
-   - **Carrossel Tátil de Chips**: Faixa horizontal deslizante acima do catálogo com contadores dinâmicos de presentes em cada coleção (`Coleção (N)`).
-   - **Seleção Cumulativa**: Possibilidade de selecionar múltiplas coleções simultaneamente.
+   - **Filtros Integrados**: O acesso a coleções, prioridades e ordenações fica concentrado no topo (menus flutuantes no desktop e gaveta suspensa no celular), mantendo o catálogo limpo e sem barras redundantes.
+2. **Seleção Cumulativa de Coleções & Alternância Rápida**:
+   - **Multi-Seleção**: Possibilidade de selecionar múltiplas coleções simultaneamente no menu/gaveta.
    - **Alternância Rápida (Toggle)**: Clicar em uma coleção já ativa a desmarca; ao desmarcar todas, o catálogo volta automaticamente a exibir todas as opções.
-   - **Barra de Resumo de Filtros**: Badges destacados para cada filtro ativo com botões rápidos de exclusão individual ou "Limpar todos".
+   - **Contadores em Tempo Real**: Cada coleção exibe a quantidade exata de itens disponíveis (`Coleção (N)`).
 3. **Controle Inteligente de Histórico no Celular (`popstate`)**:
    - Ao abrir o modal de presente (`GiftModal`) ou a gaveta de filtros no celular, a pilha do navegador é sincronizada.
    - Pressionar o **botão físico "Voltar"** ou fazer o **gesto de swipe** no celular fecha a janela e **mantém o visitante no catálogo** na mesma altura de rolagem, sem sair do site.
@@ -121,6 +117,9 @@ O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo 
    - **Link Direto para Loja Oficial**: Botão com ícone de link (`🔗`) para acessar a página de compra na loja oficial em nova aba segura (`target="_blank"` e `rel="noopener noreferrer"`).
    - Gaveta de detalhes colapsável: tags de significados, tamanho desejado, prioridade, decisão de compra, valores e histórias.
    - Botão **🎁 Presentear** com fluxo de anonimato, mensagem de carinho, opção de compra na loja oficial e dedicatória.
+7. **Tela de Login Administrativa 100% Responsiva**:
+   - Card centralizado e focado, com hierarquia vertical harmoniosa.
+   - Selo heráldico da marca no topo, campos de formulário empilhados de largura total (touch-friendly) e botão seguro de retorno ao catálogo.
 
 ---
 

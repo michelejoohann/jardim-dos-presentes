@@ -7,10 +7,11 @@ O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e acolhedo
 - **100% Cloud Firestore como Fonte Única da Verdade**: Nenhum dado de produto é armazenado no código-fonte ou em arquivos estáticos da aplicação. Todo o catálogo reside e é atualizado dinamicamente no banco de dados.
 - **Painel Gerencial Completo**: Interface administrativa com autenticação segura, permitindo criação de novos presentes, edição, exclusão, controle de visibilidade (habilitado/desabilitado) e sugestões inteligentes de textos acolhedores, prioridades, sonhos e histórias.
 - **Backup & Restauração Sob Demanda**: Ferramenta de exportação e importação de backups em formato JSON diretamente pelo navegador, mantendo o repositório 100% limpo e desacoplado dos dados.
-- **Navegação Superior Fixa & Ações Ergonômicas**: Barra de navegação `sticky` com efeito *glassmorphism* botânico sempre acessível durante a rolagem. Contém logotipo da marca com rolagem suave ao topo (`window.scrollTo`), botão circular de filtros com badge numérico em ouro antigo indicando filtros ativos, busca retrátil e acesso administrativo.
-- **Filtragem Reativa Multi-Coleção**: Navegação horizontal tátil por chips de coleções com contadores de itens em tempo real, seleção cumulativa (múltiplas coleções simultâneas), alternância para desselecionar e barra de resumo com remoção rápida individual ou total.
+- **Navegação Superior Fixa & Filtros Unificados**: Barra de navegação `sticky` com efeito *glassmorphism* botânico sempre acessível durante a rolagem. Concentra o logotipo da marca com rolagem suave ao topo (`window.scrollTo`), botão circular de filtros com badge numérico em ouro antigo indicando filtros ativos, busca retrátil e acesso administrativo. A vitrine permanece limpa e sem barras redundantes de chips.
+- **Filtragem Reativa Multi-Coleção**: Menus flutuantes no desktop e gaveta suspensa tátil no celular com contadores de itens em tempo real (`categoryCounts`), seleção cumulativa (múltiplas coleções simultâneas), alternância para desselecionar e contagem de filtros ativos.
 - **Controle de Histórico no Celular (`popstate`)**: Sincronização da pilha de histórico do navegador (`window.history.pushState` / `popstate`) com o modal de presentes (`GiftModal`) e gaveta de filtros. Ao pressionar o botão físico "Voltar" ou realizar o gesto de swipe no celular, a janela/gaveta é fechada e o visitante permanece exatamente no catálogo, sem sair do site.
 - **Links Diretos para Lojas Oficiais**: Botões e links contextuais com ícone de link (`🔗`) para compra direta na loja oficial (abertos com segurança em nova aba via `target="_blank"` e `rel="noopener noreferrer"`).
+- **Tela de Login Administrativa 100% Responsiva**: Interface de acesso restrito com hierarquia vertical, inputs empilhados de largura total (touch-friendly) e cartão centralizado adaptável para qualquer resolução móvel ou desktop.
 - **Code-Splitting e Otimização**: Chunks otimizados no Vite com vendor splitting (`vendor-react`, `vendor-firebase`) e carregamento sob demanda (`lazy` + `Suspense`).
 
 ---
@@ -34,11 +35,6 @@ graph TB
             Medallion["Medalhão Central MJ com Respiro Amplo"]
         end
 
-        subgraph FilterSystem ["Sistema Reativo de Filtros"]
-            CategoryChips["Carrossel Tátil de Chips (Contadores ao Vivo)"]
-            ActiveFiltersBar["Barra de Filtros Ativos (Remoção Rápida)"]
-        end
-
         subgraph PublicUI ["Catálogo & Vitrine de Presentes"]
             Grid["Grade de Presentes (ProductCard)"]
             DirectBuyLink["Links de Compra na Loja Oficial (🔗)"]
@@ -47,6 +43,7 @@ graph TB
         end
 
         subgraph AdminUI ["Painel Administrativo (?admin=true)"]
+            AdminLogin["Tela de Login Responsiva"]
             AdminPanel["Gestão Geral (AdminMigrationPanel)"]
             ProductEditor["Criar / Editar com Sugestões (ProductEditorModal)"]
             BackupTool["Backup & Restauração JSON Dinâmico"]
@@ -67,12 +64,10 @@ graph TB
 
     Brand -- "Clique: Rolagem suave ao topo" --> Client
     FilterActionBtn -- "Toque: Abre/Fecha gaveta mobile" --> MobileDrawer
-    DesktopNav --> FilterSystem
-    MobileDrawer --> FilterSystem
-    CategoryChips --> PublicUI
-    ActiveFiltersBar --> PublicUI
+    DesktopNav --> PublicUI
+    MobileDrawer --> PublicUI
     SearchBtn --> PublicUI
-    AdminBtn --> AdminPanel
+    AdminBtn --> AdminLogin
 
     GiftModalUI <--> HistorySync
     MobileDrawer <--> HistorySync
@@ -82,6 +77,7 @@ graph TB
     PublicUI -- "Sessão anônima de visitante" --> Auth
     GiftModalUI -- "Reserva pública e privada (writeBatch)" --> Firestore
 
+    AdminLogin -- "Autenticação segura (email/senha)" --> Auth
     AdminPanel -- "Autenticação restrita (Admin UID)" --> Auth
     AdminPanel -- "CRUD & Visibilidade (productService)" --> Firestore
     ProductEditor -- "Sugestões de carinho (giftSuggestions)" --> ProductEditor
@@ -226,15 +222,30 @@ Em aplicações de página única (SPA), abrir modais ou gavetas sem atualizar a
 
 ---
 
-## 8. Sistema de Filtros Reativo & Multi-Coleção
+## 8. Sistema de Filtros Reativo & Multi-Coleção na Barra Superior
 
-1. **Seleção Cumulativa**:
+1. **Unificação na Barra Superior**:
+   - Os controles de filtragem e busca estão integrados à barra superior fixa (`.site-top-bar`), eliminando barras secundárias ou faixas de chips redundantes sobre o catálogo e maximizando a área útil da vitrine.
+2. **Seleção Cumulativa**:
    - O estado `selectedCategories` aceita um array de coleções (`[]`). Quando múltiplas coleções são selecionadas, o catálogo exibe qualquer presente pertencente a pelo menos uma das coleções ativas (`selectedCategories.includes(product.category)`).
-2. **Alternância para Desselecionar**:
-   - Clicar em um chip ou botão de categoria já selecionada o desativa. Quando a última categoria for desmarcada, a aplicação retorna automaticamente ao estado de "Todas as coleções".
-3. **Contadores Dinâmicos de Itens**:
-   - Um `useMemo` dedicado calcula em tempo real o número de presentes disponíveis para cada coleção (`categoryCounts`), exibindo `Coleção (N)` em cada chip.
-4. **Resumo Visual & Ações Rápidas**:
-   - A barra `.active-filters-bar` exibe badges destacados para cada filtro ativo (coleções, prioridade, ordenação e busca por texto), com botões de remoção individual e o botão "Limpar todos".
-   - O botão de filtro na barra superior exibe um badge numérico (`.top-filter-count-badge`) dourado sempre que houver 1 ou mais filtros aplicados.
+3. **Alternância para Desselecionar**:
+   - Clicar em uma categoria já selecionada a desativa. Quando a última categoria for desmarcada, a aplicação retorna automaticamente ao estado de "Todas as coleções".
+4. **Contadores Dinâmicos de Itens**:
+   - Um `useMemo` dedicado calcula em tempo real o número de presentes disponíveis para cada coleção (`categoryCounts`), exibindo `Coleção (N)` nos menus suspensos e na gaveta mobile.
+5. **Indicador Visual na Barra Superior**:
+   - O botão de filtro na barra superior exibe um badge numérico (`.top-filter-count-badge`) dourado sempre que houver 1 ou mais filtros aplicados, e a gaveta mobile oferece botão direto de "Limpar".
+
+---
+
+## 9. Arquitetura e Responsividade da Tela de Login Administrativo
+
+Para garantir acessibilidade ergonômica total em smartphones e telas estreitas:
+
+1. **Card Centralizado e Focado**:
+   - O componente `.admin-panel-login` utiliza layout vertical centrado com `max-width: 440px` e largura flexível `100%`, prevenindo colisões ou sobreposição de colunas em telas de qualquer tamanho.
+2. **Hierarquia Vertical Fluida**:
+   - **Cabeçalho**: Selo heráldico circular MJ centralizado, acompanhado do kicker em borgonha e título com tipografia clássica serifada.
+   - **Formulário**: Inputs de e-mail e senha empilhados verticalmente com altura mínima de toque (`min-height: 48px`), preenchimento confortável e largura de 100%.
+   - **Ações**: Botão primário de submissão com gradiente botânico e botão secundário inferior para retorno seguro à vitrine pública.
+
 
