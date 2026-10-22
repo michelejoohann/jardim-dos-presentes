@@ -2,6 +2,8 @@
 
 > **Regra do Usuário:** **NENHUM** item desta lista deve ser inserido no código-fonte da aplicação (`src/data/officialCatalog.js`). Todos os itens devem ser cadastrados/importados diretamente no **Firebase Firestore** (coleção `products`) apenas quando o usuário der a ordem explícita para publicar.
 >
+> **Nota de Limpeza:** As imagens temporárias locais de staging que ficavam em `public/images/` foram completamente removidas do repositório. O Firestore agora consome 100% das imagens via URLs diretas das lojas/CDNs.
+>
 > **Novos Campos do Firebase:**
 > - `prioridade` / `priority`: `"alta"` | `"media"` | `"baixa"` (padrão: `"media"`; exibe badge e permite ordenação no site)
 > - `visibilidade` / `visible`: `true` (visível no catálogo) | `false` (oculto do site para visitantes)

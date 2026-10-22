@@ -13,7 +13,7 @@ O **Jardim dos Presentes** é construído sobre uma arquitetura moderna e desaco
 
 > [!IMPORTANT]
 > **Base de Dados como Fonte Única da Verdade:**  
-> Nenhum dado de produto é armazenado no código-fonte ou em arquivos estáticos no repositório. O catálogo completo é armazenado, consultado e gerenciado **exclusivamente no Cloud Firestore**, garantindo que a aplicação seja ultra leve, segura, dinâmica e sempre atualizada em tempo real.
+> Nenhum dado ou imagem de produto é armazenado no código-fonte ou em arquivos estáticos no repositório (todas as fotos de produtos são servidas via URLs de CDNs oficiais cadastradas no Firestore). O catálogo completo é armazenado, consultado e gerenciado **exclusivamente no Cloud Firestore**, garantindo que a aplicação seja ultra leve, segura, dinâmica e sempre atualizada em tempo real.
 
 ```mermaid
 graph TB

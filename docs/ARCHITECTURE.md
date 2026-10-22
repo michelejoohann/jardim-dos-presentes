@@ -4,7 +4,7 @@
 
 O **Jardim dos Presentes** é uma aplicação web moderna, responsiva e acolhedora que transforma uma lista de desejos em uma experiência visual rica inspirada em um *Herbarium Botânico Vitoriano*. Construída sobre **React 19**, **Vite 7** e **Firebase 12**, a aplicação oferece:
 
-- **100% Cloud Firestore como Fonte Única da Verdade**: Nenhum dado de produto é armazenado no código-fonte ou em arquivos estáticos da aplicação. Todo o catálogo reside e é atualizado dinamicamente no banco de dados.
+- **100% Cloud Firestore como Fonte Única da Verdade**: Nenhum dado ou imagem de produto é armazenado no código-fonte ou em arquivos estáticos da aplicação (todas as fotos de produtos são servidas via URLs de CDNs oficiais cadastradas no Firestore). Todo o catálogo reside e é atualizado dinamicamente no banco de dados.
 - **Painel Gerencial Completo**: Interface administrativa com autenticação segura, permitindo criação de novos presentes, edição, exclusão, controle de visibilidade (habilitado/desabilitado) e sugestões inteligentes de textos acolhedores, prioridades, sonhos e histórias.
 - **Backup & Restauração Sob Demanda**: Ferramenta de exportação e importação de backups em formato JSON diretamente pelo navegador, mantendo o repositório 100% limpo e desacoplado dos dados.
 - **Navegação Superior Fixa & Filtros Unificados**: Barra de navegação `sticky` com efeito *glassmorphism* botânico sempre acessível durante a rolagem. Concentra o logotipo da marca com rolagem suave ao topo (`window.scrollTo`), botão circular de filtros com badge numérico em ouro antigo indicando filtros ativos, busca retrátil e acesso administrativo. A vitrine permanece limpa e sem barras redundantes de chips.
