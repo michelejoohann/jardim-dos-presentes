@@ -8,6 +8,81 @@ import ProductEditor from './ProductEditor.jsx';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
 
+/**
+ * Traduz e formata erros de autenticação do Firebase para mensagens amigáveis,
+ * acolhedoras e compreensíveis em português, com dicas úteis para erros comuns de digitação.
+ */
+function formatAuthError(err, enteredEmail = '') {
+  if (!err) return '';
+
+  const code = (err?.code || '').toLowerCase();
+  const rawMessage = (err?.message || '').toLowerCase();
+  const cleanEmail = String(enteredEmail || '').trim();
+
+  // Erro de usuário autenticado sem privilégio administrativo
+  if (err?.message === 'Esta conta não possui credenciais de administradora.' || code === 'auth/unauthorized-admin') {
+    return 'Esta conta não possui autorização de administradora do Jardim.';
+  }
+
+  // Detecta se o e-mail digitado parece ter esquecido o ponto no provedor (ex: @gmailcom)
+  const atIndex = cleanEmail.indexOf('@');
+  const domainPart = atIndex !== -1 ? cleanEmail.slice(atIndex + 1).trim() : '';
+  const isMissingDomainDot = domainPart && !domainPart.includes('.');
+  const suggestedDomain = domainPart.toLowerCase().startsWith('gmail')
+    ? 'gmail.com'
+    : domainPart.toLowerCase().startsWith('hotmail')
+      ? 'hotmail.com'
+      : domainPart.toLowerCase().startsWith('outlook')
+        ? 'outlook.com'
+        : `${domainPart}.com`;
+
+  // Código auth/invalid-email
+  if (code.includes('invalid-email') || rawMessage.includes('auth/invalid-email')) {
+    if (isMissingDomainDot) {
+      return `O e-mail parece estar incompleto (faltou o ponto no provedor: use @${suggestedDomain} em vez de @${domainPart}). Por favor, revise o endereço digitado.`;
+    }
+    return 'O formato do e-mail digitado parece inválido. Exemplo correto: seu-nome@exemplo.com.';
+  }
+
+  // Códigos auth/invalid-credential, auth/wrong-password, auth/user-not-found
+  if (
+    code.includes('invalid-credential') ||
+    code.includes('invalid-login-credentials') ||
+    code.includes('wrong-password') ||
+    code.includes('user-not-found') ||
+    rawMessage.includes('auth/invalid-credential') ||
+    rawMessage.includes('auth/wrong-password') ||
+    rawMessage.includes('auth/user-not-found')
+  ) {
+    if (isMissingDomainDot) {
+      return `E-mail ou senha incorretos. Note que o e-mail "${cleanEmail}" parece estar sem o ponto no provedor (ex: @${suggestedDomain}). Por favor, confira a digitação.`;
+    }
+    return 'E-mail ou senha incorretos. Por favor, confira os dados digitados e tente novamente com carinho.';
+  }
+
+  // Muitas tentativas consecutivas
+  if (code.includes('too-many-requests') || rawMessage.includes('auth/too-many-requests')) {
+    return 'Muitas tentativas de acesso seguidas. Por segurança, aguarde alguns minutinhos antes de tentar novamente.';
+  }
+
+  // Sem conexão com a internet
+  if (code.includes('network-request-failed') || rawMessage.includes('auth/network-request-failed')) {
+    return 'Não foi possível conectar ao servidor. Por favor, verifique sua conexão com a internet e tente novamente.';
+  }
+
+  // Conta desativada
+  if (code.includes('user-disabled') || rawMessage.includes('auth/user-disabled')) {
+    return 'Este acesso de administradora foi temporariamente desativado.';
+  }
+
+  // Mensagem customizada interna que não seja erro cru do Firebase
+  if (err?.message && !err.message.includes('Firebase:')) {
+    return err.message;
+  }
+
+  return 'Não foi possível entrar no momento. Por favor, confira seus dados e tente novamente.';
+}
+
 export default function AdminMigrationPanel({
   user,
   firestoreCount = 0,
@@ -59,8 +134,9 @@ export default function AdminMigrationPanel({
     setBusy(true);
     setMessage('');
     setError('');
+    const cleanEmail = email.trim();
     try {
-      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
       if (credential.user.uid !== ADMIN_UID) {
         await signOut(auth);
         throw new Error('Esta conta não possui credenciais de administradora.');
@@ -68,11 +144,12 @@ export default function AdminMigrationPanel({
       setPassword('');
       setMessage('Acesso administrativo confirmado com sucesso! Seja bem-vinda, Michèlé.');
     } catch (err) {
-      setError(err?.message || 'Não foi possível entrar no painel administrativo.');
+      setError(formatAuthError(err, cleanEmail));
     } finally {
       setBusy(false);
     }
   }
+
 
   function handleExportBackup() {
     try {
@@ -294,7 +371,10 @@ export default function AdminMigrationPanel({
             <input
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => {
+                setEmail(e.target.value);
+                if (error) setError('');
+              }}
               required
               autoComplete="username"
               placeholder="seu-email@exemplo.com"
@@ -305,7 +385,10 @@ export default function AdminMigrationPanel({
             <input
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={e => {
+                setPassword(e.target.value);
+                if (error) setError('');
+              }}
               required
               autoComplete="current-password"
               placeholder="••••••••"
@@ -327,8 +410,17 @@ export default function AdminMigrationPanel({
           </button>
         )}
 
-        {message && <p className="notice success">{message}</p>}
-        {error && <p className="notice error" role="alert">{error}</p>}
+        {message && (
+          <p className="notice success" role="status">
+            {message}
+          </p>
+        )}
+        {error && (
+          <p className="notice error admin-login-error" role="alert">
+            <span className="notice-icon" aria-hidden="true">⚠️</span>
+            <span>{error}</span>
+          </p>
+        )}
       </section>
     );
   }

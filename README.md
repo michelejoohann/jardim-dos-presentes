@@ -117,9 +117,10 @@ O projeto adota uma atmosfera de **herbário clássico do século XIX**, unindo 
    - **Link Direto para Loja Oficial**: Botão com ícone de link (`🔗`) para acessar a página de compra na loja oficial em nova aba segura (`target="_blank"` e `rel="noopener noreferrer"`).
    - Gaveta de detalhes colapsável: tags de significados, tamanho desejado, prioridade, decisão de compra, valores e histórias.
    - Botão **🎁 Presentear** com fluxo de anonimato, mensagem de carinho, opção de compra na loja oficial e dedicatória.
-7. **Tela de Login Administrativa 100% Responsiva**:
+7. **Tela de Login Administrativa 100% Responsiva & Amigável**:
    - Card centralizado e focado, com hierarquia vertical harmoniosa.
    - Selo heráldico da marca no topo, campos de formulário empilhados de largura total (touch-friendly) e botão seguro de retorno ao catálogo.
+   - Mensagens de erro de autenticação humanizadas em português, com detecção inteligente de erros comuns de digitação (como esquecer o ponto no provedor de e-mail, ex: `@gmail.com`) e limpeza automática de espaços (`trim`).
 
 ---
 

@@ -1401,6 +1401,21 @@ button, input, select, textarea {
   box-shadow: 0 4px 12px rgba(173, 147, 99, 0.2) !important;
 }
 
+.admin-login-error {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  text-align: left !important;
+  line-height: 1.45 !important;
+  font-size: 0.88rem !important;
+}
+
+.admin-login-error .notice-icon {
+  font-size: 1.1rem !important;
+  line-height: 1.25 !important;
+  flex-shrink: 0 !important;
+}
+
 @media (max-width: 480px) {
   .admin-panel-login {
     margin: 16px auto !important;
