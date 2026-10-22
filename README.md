@@ -188,7 +188,7 @@ JardimDosPresentes/
 │   │   ├── AdminMigrationPanel.jsx   # Painel da Michèlé (CRUD, recados e ferramenta de backup)
 │   │   ├── GiftModal.jsx             # Modal interativo de presente com dedicatória e anonimato
 │   │   ├── ProductCard.jsx           # Card editorial de presente (status, tags, sonho e links)
-│   │   └── ProductEditorModal.jsx    # Modal de criação/edição com motor de sugestões de carinho
+│   │   └── ProductEditor.jsx         # Editor fluído em tela cheia com enquadramento de foto e sugestões
 │   ├── firebase/
 │   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/
