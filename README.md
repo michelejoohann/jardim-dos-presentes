@@ -136,6 +136,7 @@ Acesso restrito à administradora com credenciais do Firebase Authentication:
   - Narrativa para *"A história"*.
   - Tags de significados simbólicos sugeridos.
 - **✏️ Edição Dinâmica**: Atualização imediata de links de lojas, fotos, preços e dados do presente.
+- **📐 Enquadramento & Ponto Focal de Imagem**: Controle visual interativo com matriz 3x3 de ponto focal (topo, centro, base, cantos), atalhos inteligentes para peças verticais (vestuário, calçados de salto alto, luminárias) e seletor de modo de preenchimento (*Preencher Card / Cover* ou *Foto Inteira Sem Cortes / Contain*), com ajuste por clique direto na foto de prévia ao vivo.
 - **👁️ Controle de Visibilidade**: Botão rápido para alternar entre **Habilitado** (visível no catálogo) e **Desabilitado** (oculto no site, mas preservado no banco).
 - **🗑️ Exclusão Segura**: Remove o item do Firestore e limpa automaticamente eventuais registros de reserva vinculados.
 

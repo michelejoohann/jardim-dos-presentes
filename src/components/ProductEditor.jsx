@@ -15,6 +15,32 @@ const DEFAULT_CATEGORIES = [
   { value: 'pets', label: '🐾 Pets' },
 ];
 
+export const POSITION_PRESETS = [
+  { value: 'left top', label: 'Superior Esquerdo', shortLabel: 'Sup. Esq', icon: '↖' },
+  { value: 'top', label: 'Superior / Topo', shortLabel: 'Topo', icon: '⬆' },
+  { value: 'right top', label: 'Superior Direito', shortLabel: 'Sup. Dir', icon: '↗' },
+  { value: 'left', label: 'Esquerda', shortLabel: 'Esquerda', icon: '⬅' },
+  { value: 'center', label: 'Centro (Padrão)', shortLabel: 'Centro', icon: '⏺' },
+  { value: 'right', label: 'Direita', shortLabel: 'Direita', icon: '➡' },
+  { value: 'left bottom', label: 'Inferior Esquerdo', shortLabel: 'Inf. Esq', icon: '↙' },
+  { value: 'bottom', label: 'Inferior / Base', shortLabel: 'Base', icon: '⬇' },
+  { value: 'right bottom', label: 'Inferior Direito', shortLabel: 'Inf. Dir', icon: '↘' },
+];
+
+export const POSITION_LABELS = {
+  'top': '⬆️ Topo (Superior)',
+  'center top': '⬆️ Topo (Superior)',
+  'bottom': '⬇️ Base (Inferior)',
+  'center bottom': '⬇️ Base (Inferior)',
+  'center': '⏺️ Centro (Padrão)',
+  'left': '⬅️ Esquerda',
+  'right': '➡️ Direita',
+  'left top': '↖️ Superior Esquerdo',
+  'right top': '↗️ Superior Direito',
+  'left bottom': '↙️ Inferior Esquerdo',
+  'right bottom': '↘️ Inferior Direito',
+};
+
 export default function ProductEditor({ product, onBack, onSaved, onNavigateHome }) {
   const isEditing = Boolean(product?.id);
   const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
@@ -28,6 +54,8 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
     priceLabel: product?.priceLabel || '',
     priority: product?.priority || product?.prioridade || 'alta',
     imageUrl: product?.imageUrl || product?.image || '',
+    imagePosition: product?.imagePosition || 'center',
+    imageFit: product?.imageFit || 'cover',
     url: product?.url || '',
     store: product?.store || '',
     description: product?.description || '',
@@ -117,6 +145,30 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
     } else if (activeSuggestions[field]) {
       handleChange(field, activeSuggestions[field]);
     }
+  }
+
+  // Permite clicar diretamente na imagem de prévia para definir o ponto focal de forma interativa
+  function handlePreviewMediaClick(e) {
+    if (!processedPreviewImage || previewImageError) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const relY = (e.clientY - rect.top) / rect.height;
+    const relX = (e.clientX - rect.left) / rect.width;
+
+    let vPos = 'center';
+    if (relY < 0.33) vPos = 'top';
+    else if (relY > 0.67) vPos = 'bottom';
+
+    let hPos = 'center';
+    if (relX < 0.33) hPos = 'left';
+    else if (relX > 0.67) hPos = 'right';
+
+    let newPos = 'center';
+    if (vPos === 'center' && hPos === 'center') newPos = 'center';
+    else if (vPos === 'center') newPos = hPos;
+    else if (hPos === 'center') newPos = vPos;
+    else newPos = `${hPos} ${vPos}`;
+
+    handleChange('imagePosition', newPos);
   }
 
   async function submitForm() {
@@ -518,6 +570,96 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
                 </span>
               </label>
 
+              {/* SELEÇÃO DO ENQUADRAMENTO DA IMAGEM */}
+              <div className="editor-framing-control">
+                <div className="framing-header">
+                  <span className="label-text">📐 Enquadramento da Imagem</span>
+                  <span className="framing-current-badge">
+                    {POSITION_LABELS[formData.imagePosition || 'center'] || '⏺️ Centro (Padrão)'}
+                  </span>
+                </div>
+                <p className="editor-hint">
+                  Defina o ponto focal do corte ou selecione o modo sem cortes para a foto caber inteira.
+                </p>
+
+                {/* MODO DE AJUSTE: COBRIR VS CONTER */}
+                <div className="framing-fit-row">
+                  <span className="framing-sublabel">Modo de Exibição:</span>
+                  <div className="framing-fit-buttons" role="radiogroup" aria-label="Modo de Exibição da Imagem">
+                    <button
+                      type="button"
+                      className={`framing-fit-btn ${(!formData.imageFit || formData.imageFit === 'cover') ? 'active' : ''}`}
+                      onClick={() => handleChange('imageFit', 'cover')}
+                      title="Preenche todo o card, focando na região escolhida abaixo"
+                    >
+                      🖼️ Preencher Card (Cover)
+                    </button>
+                    <button
+                      type="button"
+                      className={`framing-fit-btn ${formData.imageFit === 'contain' ? 'active' : ''}`}
+                      onClick={() => handleChange('imageFit', 'contain')}
+                      title="Exibe a foto inteira sem cortar nenhuma borda, com moldura e fundo suave"
+                    >
+                      🔲 Foto Inteira (Sem Cortes)
+                    </button>
+                  </div>
+                </div>
+
+                {/* MATRIZ VISUAL 3x3 DE PONTO FOCAL */}
+                <div className="framing-matrix-wrapper">
+                  <span className="framing-sublabel">Ponto Focal / Alinhamento do Corte:</span>
+                  <div className="framing-matrix" role="radiogroup" aria-label="Ponto focal da imagem">
+                    {POSITION_PRESETS.map(pos => {
+                      const isActive = (formData.imagePosition || 'center') === pos.value;
+                      return (
+                        <button
+                          key={pos.value}
+                          type="button"
+                          className={`framing-matrix-cell ${isActive ? 'active' : ''}`}
+                          onClick={() => handleChange('imagePosition', pos.value)}
+                          title={`Alinhar foto: ${pos.label}`}
+                          aria-label={`Foco ${pos.label}`}
+                          aria-pressed={isActive}
+                        >
+                          <span className="matrix-icon">{pos.icon}</span>
+                          <span className="matrix-text">{pos.shortLabel}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* ATALHOS MAIS FREQUENTES */}
+                <div className="framing-quick-actions">
+                  <span className="framing-sublabel">Atalhos mais usados:</span>
+                  <div className="framing-chips">
+                    <button
+                      type="button"
+                      className={`framing-chip ${formData.imagePosition === 'top' ? 'active' : ''}`}
+                      onClick={() => handleChange('imagePosition', 'top')}
+                      title="Foco no topo da imagem: ideal para vestidos, calçados altos ou luminárias"
+                    >
+                      ⬆️ Topo (Roupas & Salto)
+                    </button>
+                    <button
+                      type="button"
+                      className={`framing-chip ${(!formData.imagePosition || formData.imagePosition === 'center') ? 'active' : ''}`}
+                      onClick={() => handleChange('imagePosition', 'center')}
+                    >
+                      ⏺️ Centro (Padrão)
+                    </button>
+                    <button
+                      type="button"
+                      className={`framing-chip ${formData.imagePosition === 'bottom' ? 'active' : ''}`}
+                      onClick={() => handleChange('imagePosition', 'bottom')}
+                      title="Foco na base da imagem"
+                    >
+                      ⬇️ Base (Detalhes Inferiores)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <label className="editor-label">
                 <span className="label-text">Link da Loja / Compra (URL)</span>
                 <input
@@ -555,18 +697,28 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
             <div className="editor-live-preview-box">
               <div className="preview-header-row">
                 <span className="label-text">Prévia ao Vivo na Vitrine</span>
-                <span className="preview-pill">Como os convidados vêem</span>
+                <span className="preview-pill" title="Enquadramento ativo">
+                  {POSITION_LABELS[formData.imagePosition || 'center'] || 'Centro'} · {formData.imageFit === 'contain' ? 'Sem Cortes' : 'Preenchido'}
+                </span>
               </div>
 
               <div className="admin-live-card-wrapper">
                 <article className="product-card admin-mock-card">
-                  <div className="product-media">
+                  <div
+                    className={`product-media ${formData.imageFit === 'contain' ? 'media-contain' : ''} is-clickable-preview`}
+                    onClick={handlePreviewMediaClick}
+                    title="Toque ou clique em qualquer região da foto para ajustar o foco do enquadramento"
+                  >
                     {processedPreviewImage && !previewImageError ? (
                       <img
                         src={processedPreviewImage}
                         alt={formData.name || 'Prévia'}
                         loading="lazy"
                         onError={() => setPreviewImageError(true)}
+                        style={{
+                          objectPosition: formData.imagePosition || 'center',
+                          objectFit: formData.imageFit || 'cover',
+                        }}
                       />
                     ) : (
                       <span className="product-icon" aria-hidden="true">🌿</span>

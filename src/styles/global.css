@@ -2945,6 +2945,229 @@ html, body {
   border-top: 1px solid var(--line-golden);
 }
 
+/* ==========================================================================
+   ENQUADRAMENTO DE IMAGEM NO EDITOR ADMINISTRATIVO
+   ========================================================================== */
+
+.editor-framing-control {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(247, 241, 230, 0.65);
+  border: 1px solid rgba(165, 137, 84, 0.35);
+  border-radius: 16px;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+.framing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.framing-current-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid var(--gold-antique);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--green-deep);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.framing-sublabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--green-deep);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.framing-fit-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.framing-fit-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.framing-fit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(165, 137, 84, 0.35);
+  background: #ffffff;
+  color: #3b3225;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.framing-fit-btn:hover {
+  border-color: var(--gold-antique);
+  background: #fdfaf5;
+}
+
+.framing-fit-btn.active {
+  border-color: var(--gold-antique);
+  background: linear-gradient(135deg, #1f3625 0%, #15251a 100%);
+  color: #fcf9f2;
+  box-shadow: 0 3px 10px rgba(18, 33, 22, 0.22);
+}
+
+.framing-matrix-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.framing-matrix {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-width: 320px;
+  width: 100%;
+}
+
+.framing-matrix-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(165, 137, 84, 0.3);
+  background: #ffffff;
+  color: #3b3225;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+  min-height: 48px;
+}
+
+.framing-matrix-cell .matrix-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.framing-matrix-cell .matrix-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.framing-matrix-cell:hover {
+  border-color: var(--gold-antique);
+  background: #fcf7ed;
+  transform: translateY(-1px);
+}
+
+.framing-matrix-cell.active {
+  border-color: var(--gold-antique);
+  background: linear-gradient(135deg, #2a4732 0%, #182a1d 100%);
+  color: #fcf8ee;
+  box-shadow: 0 3px 8px rgba(18, 33, 22, 0.22);
+}
+
+.framing-matrix-cell.active .matrix-icon {
+  color: var(--gold-light);
+}
+
+.framing-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.framing-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.framing-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(165, 137, 84, 0.35);
+  background: #ffffff;
+  color: #3b3225;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+}
+
+.framing-chip:hover {
+  border-color: var(--gold-antique);
+  background: #fcf8ee;
+}
+
+.framing-chip.active {
+  border-color: var(--gold-antique);
+  background: var(--gold-antique);
+  color: #1a221a;
+  font-weight: 700;
+}
+
+/* Suporte a imagem com modo contain (imagem inteira sem cortes) */
+.product-media.media-contain,
+.modal-product-media.media-contain,
+.table-thumb.media-contain {
+  background: #ffffff !important;
+}
+
+.product-media.media-contain img,
+.modal-product-media.media-contain img,
+.table-thumb.media-contain img {
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* Cursor interativo para clicar na prévia e ajustar o foco */
+.product-media.is-clickable-preview {
+  cursor: crosshair;
+  position: relative;
+}
+
+.product-media.is-clickable-preview::after {
+  content: '🎯 Toque para focar';
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(18, 33, 22, 0.78);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.product-media.is-clickable-preview:hover::after {
+  opacity: 1;
+}
+
 /* BARRA FIXA DE SALVAR NO RODAPÉ (DOCK TOTALMENTE SEGURO CONTRA OVERFLOW) */
 .admin-editor-sticky-bar {
   position: fixed;

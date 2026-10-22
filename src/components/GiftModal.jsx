@@ -126,9 +126,16 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
             </div>
 
             <div className="modal-product-summary">
-              <div className="modal-product-media">
+              <div className={`modal-product-media ${product?.imageFit === 'contain' ? 'media-contain' : ''}`}>
                 {imageUrl ? (
-                  <img src={imageUrl} alt={product.name} />
+                  <img
+                    src={imageUrl}
+                    alt={product.name}
+                    style={{
+                      objectPosition: product?.imagePosition || 'center',
+                      objectFit: product?.imageFit || 'cover',
+                    }}
+                  />
                 ) : (
                   <span>{product.icon || '🎁'}</span>
                 )}

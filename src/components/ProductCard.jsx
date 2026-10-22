@@ -42,15 +42,21 @@ export default function ProductCard({
     setImageFailed(false);
   }, [imageUrl]);
 
+  const isContain = product.imageFit === 'contain';
+
   return (
     <article className="product-card">
-      <div className="product-media">
+      <div className={`product-media ${isContain ? 'media-contain' : ''}`}>
         {imageUrl && !imageFailed ? (
           <img
             src={imageUrl}
             alt={product.name}
             loading="lazy"
             onError={() => setImageFailed(true)}
+            style={{
+              objectPosition: product.imagePosition || 'center',
+              objectFit: product.imageFit || 'cover',
+            }}
           />
         ) : (
           <span className="product-icon" aria-hidden="true">{product.icon || '🌿'}</span>

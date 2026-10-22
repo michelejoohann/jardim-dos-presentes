@@ -639,9 +639,17 @@ export default function AdminMigrationPanel({
                       <tr key={prod.id} className={!isEnabled ? 'row-disabled' : ''}>
                         <td className="product-cell-identity">
                           <div className="product-table-identity">
-                            <div className="table-thumb">
+                            <div className={`table-thumb ${prod.imageFit === 'contain' ? 'media-contain' : ''}`}>
                               {imageUrl ? (
-                                <img src={imageUrl} alt="" loading="lazy" />
+                                <img
+                                  src={imageUrl}
+                                  alt=""
+                                  loading="lazy"
+                                  style={{
+                                    objectPosition: prod.imagePosition || 'center',
+                                    objectFit: prod.imageFit || 'cover',
+                                  }}
+                                />
                               ) : (
                                 <span>🌿</span>
                               )}

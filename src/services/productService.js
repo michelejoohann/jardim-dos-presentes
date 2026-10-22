@@ -81,6 +81,8 @@ export async function saveProduct(rawData, existingId = null) {
     priceLabel,
     priority: rawData.priority?.trim() || 'alta',
     imageUrl: rawData.imageUrl?.trim() || '',
+    imagePosition: rawData.imagePosition?.trim() || 'center',
+    imageFit: rawData.imageFit?.trim() || 'cover',
     url: rawData.url?.trim() || '',
     store: rawData.store?.trim() || '',
     description: rawData.description?.trim() || '',
