@@ -629,6 +629,58 @@ export default function AdminMigrationPanel({
       {/* CONTEÚDO DA ABA 1: GERENCIAR PRESENTES */}
       {activeTab === 'products' && (
         <div className="admin-tab-content">
+          {/* BARRA DE AÇÕES RÁPIDAS: NOVO PRESENTE, TEMPLATE CSV E IMPORTAÇÃO */}
+          <div className="admin-actions-hero-bar">
+            <div className="admin-hero-actions-group">
+              <button
+                type="button"
+                className="primary-button admin-hero-action-btn"
+                onClick={() => setIsCreating(true)}
+                title="Cadastrar um novo presente manualmente"
+              >
+                ✨ + Novo Presente
+              </button>
+
+              <button
+                type="button"
+                className="secondary-button admin-hero-action-btn highlight-template"
+                onClick={handleDownloadCsvTemplate}
+                disabled={busy}
+                title="Baixar planilha modelo em CSV com todos os 21 campos oficiais para abrir no Excel"
+              >
+                📄 Baixar Modelo CSV / Excel
+              </button>
+
+              <label
+                className="secondary-button admin-hero-action-btn highlight-upload"
+                style={{ cursor: busy ? 'not-allowed' : 'pointer', margin: 0 }}
+                title="Enviar planilha CSV preenchida para sincronizar múltiplos presentes no Firestore"
+              >
+                <span>📤 Importar Planilha CSV</span>
+                <input
+                  type="file"
+                  accept=".csv,text/csv,text/plain"
+                  onChange={handleImportCsvFile}
+                  disabled={busy}
+                  style={{ display: 'none' }}
+                />
+              </label>
+
+              <button
+                type="button"
+                className="text-link-button admin-hero-action-link"
+                onClick={() => setActiveTab('backup')}
+                title="Ir para a aba completa de planilhas e backup estrutural"
+              >
+                📊 Aba Planilhas & Backup →
+              </button>
+            </div>
+
+            <div className="admin-hero-hint-pill">
+              <span>💡 Dica: Para ver a <strong>pré-visualização e o simulador de enquadramento da foto</strong>, clique em <strong>📐 Enquadramento</strong> ou <strong>✏️ Editar</strong> em qualquer item da tabela abaixo.</span>
+            </div>
+          </div>
+
           {/* BARRA DE FILTROS DA TABELA */}
           <div className="admin-filter-toolbar">
             <div className="admin-search-box">
@@ -718,7 +770,11 @@ export default function AdminMigrationPanel({
                       <tr key={prod.id} className={!isEnabled ? 'row-disabled' : ''}>
                         <td className="product-cell-identity">
                           <div className="product-table-identity">
-                            <div className={`table-thumb ${prod.imageFit === 'contain' ? 'media-contain' : ''}`}>
+                            <div
+                              className={`table-thumb ${prod.imageFit === 'contain' ? 'media-contain' : ''} is-clickable`}
+                              onClick={() => setEditingProduct(prod)}
+                              title="Clique para ver a pré-visualização e ajustar o enquadramento desta foto"
+                            >
                               {imageUrl ? (
                                 <img
                                   src={imageUrl}
@@ -732,6 +788,7 @@ export default function AdminMigrationPanel({
                               ) : (
                                 <span>🌿</span>
                               )}
+                              <span className="table-thumb-badge" aria-hidden="true" title="Ajustar enquadramento">📐</span>
                             </div>
                             <div className="product-table-info">
                               <strong>{prod.name}</strong>
@@ -791,6 +848,14 @@ export default function AdminMigrationPanel({
                               ↗ Loja
                             </a>
                           )}
+                          <button
+                            type="button"
+                            className="table-action-btn framing"
+                            onClick={() => setEditingProduct(prod)}
+                            title="Abrir simulador visual e ajustar enquadramento da foto"
+                          >
+                            📐 Foto
+                          </button>
                           <button
                             type="button"
                             className="table-action-btn edit"

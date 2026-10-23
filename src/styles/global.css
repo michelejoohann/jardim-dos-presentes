@@ -1800,6 +1800,124 @@ button, input, select, textarea {
   border-color: #ef4444;
 }
 
+.table-action-btn.framing {
+  color: #634d1f;
+  border-color: rgba(165, 137, 84, 0.45);
+  background: #fdfbf7;
+}
+
+.table-action-btn.framing:hover {
+  background: #f7eedb;
+  border-color: var(--gold-antique);
+  color: var(--green-deep);
+}
+
+/* THUMBNAIL CLICÁVEL COM BADGE DE ENQUADRAMENTO */
+.table-thumb.is-clickable {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.table-thumb.is-clickable:hover {
+  border-color: var(--gold-antique);
+  box-shadow: 0 0 0 2px var(--gold-antique);
+  transform: scale(1.08);
+}
+
+.table-thumb-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: rgba(22, 43, 29, 0.88);
+  color: var(--gold-light);
+  font-size: 0.62rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff;
+}
+
+/* BARRA DE AÇÕES RÁPIDAS NO TOPO DA TABELA */
+.admin-actions-hero-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(251, 248, 242, 0.95) 100%);
+  border: 1.5px solid var(--gold-antique);
+  border-radius: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(22, 43, 29, 0.05);
+}
+
+.admin-hero-actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-hero-action-btn {
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.admin-hero-action-btn.highlight-template {
+  background: #fdfaf3;
+  border: 1.5px solid var(--gold-antique);
+  color: var(--green-deep);
+}
+
+.admin-hero-action-btn.highlight-template:hover {
+  background: #f7eedb;
+  border-color: #927537;
+  transform: translateY(-1px);
+}
+
+.admin-hero-action-btn.highlight-upload {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #166534;
+}
+
+.admin-hero-action-btn.highlight-upload:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+  transform: translateY(-1px);
+}
+
+.admin-hero-action-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-antique);
+  margin-left: auto;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-hero-action-link:hover {
+  color: var(--wine-velvet);
+}
+
+.admin-hero-hint-pill {
+  padding: 8px 14px;
+  background: rgba(165, 137, 84, 0.08);
+  border-radius: 10px;
+  border-left: 3px solid var(--gold-antique);
+  font-size: 0.8rem;
+  color: #4a3e2e;
+  line-height: 1.4;
+}
+
 .table-action-icon {
   padding: 6px 10px;
   font-size: 0.78rem;
