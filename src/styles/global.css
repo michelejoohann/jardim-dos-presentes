@@ -1923,6 +1923,159 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
+   ABA DE PLANILHAS (EXCEL / CSV) & BACKUP DO BANCO
+   ========================================================================== */
+
+.admin-data-management-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+.admin-data-card {
+  background: #ffffff;
+  border: 1px solid var(--line-golden);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(22, 43, 29, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-data-card.highlight {
+  background: linear-gradient(135deg, #ffffff 0%, #faf8f3 100%);
+  border: 2px solid var(--gold-antique);
+  box-shadow: 0 8px 24px rgba(184, 134, 11, 0.12);
+  position: relative;
+}
+
+.admin-data-card-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.admin-data-card-icon {
+  font-size: 1.85rem;
+  line-height: 1;
+  padding: 12px;
+  background: rgba(34, 62, 43, 0.06);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-data-card.highlight .admin-data-card-icon {
+  background: rgba(184, 134, 11, 0.12);
+}
+
+.admin-data-card h3 {
+  margin: 0 0 6px;
+  color: var(--green-deep);
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.admin-data-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.admin-data-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-btn-csv-template {
+  border-color: var(--gold-antique) !important;
+  color: var(--green-deep) !important;
+  background: #fbf9f4 !important;
+  font-weight: 700 !important;
+}
+
+.admin-btn-csv-template:hover:not(:disabled) {
+  background: #f4ede1 !important;
+  border-color: var(--gold-rich) !important;
+}
+
+.admin-btn-csv-export {
+  border-color: var(--line-golden) !important;
+  color: var(--green-forest) !important;
+}
+
+.admin-btn-csv-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-forest) 100%);
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(22, 43, 29, 0.2);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.admin-btn-csv-upload:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 43, 29, 0.32);
+  filter: brightness(1.06);
+}
+
+.admin-data-card-columns {
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: rgba(244, 237, 225, 0.45);
+  border: 1px dashed var(--line-golden);
+  border-radius: 14px;
+  font-size: 0.85rem;
+}
+
+.admin-data-card-columns summary {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--green-forest);
+  outline: none;
+  user-select: none;
+}
+
+.admin-data-card-columns summary:hover {
+  color: var(--green-deep);
+}
+
+.admin-data-card-columns ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px 16px;
+  margin: 14px 0 0;
+  padding-left: 20px;
+}
+
+.admin-data-card-columns li {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.admin-data-card-columns li strong {
+  color: var(--green-deep);
+}
+
+/* ==========================================================================
    MODAL EDITOR DE PRESENTES (CRIAÇÃO & EDIÇÃO)
    ========================================================================== */
 

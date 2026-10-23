@@ -148,6 +148,7 @@ JardimDosPresentes/
 │   ├── firebase/
 │   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/
+│   │   ├── csvService.js             # Motor de importação, exportação e template padronizado Excel/CSV
 │   │   ├── giftSuggestions.js        # Motor de sugestões contextuais (histórias, prioridades, sonhos)
 │   │   ├── productService.js         # Serviço de persistência, alternância e exclusão no Firestore
 │   │   └── reservationService.js     # Serviço de reservas públicas e privadas no Firestore
@@ -246,7 +247,29 @@ Para garantir acessibilidade ergonômica total em smartphones e telas estreitas:
    - O componente `.admin-panel-login` utiliza layout vertical centrado com `max-width: 440px` e largura flexível `100%`, prevenindo colisões ou sobreposição de colunas em telas de qualquer tamanho.
 2. **Hierarquia Vertical Fluida**:
    - **Cabeçalho**: Selo heráldico circular MJ centralizado, acompanhado do kicker em borgonha e título com tipografia clássica serifada.
-   - **Formulário**: Inputs de e-mail e senha empilhados verticalmente com altura mínima de toque (`min-height: 48px`), preenchimento confortável e largura de 100%.
-   - **Ações**: Botão primário de submissão com gradiente botânico e botão secundário inferior para retorno seguro à vitrine pública.
+3. **Formulário**: Inputs de e-mail e senha empilhados verticalmente com altura mínima de toque (`min-height: 48px`), preenchimento confortável e largura de 100%.
+4. **Ações**: Botão primário de submissão com gradiente botânico e botão secundário inferior para retorno seguro à vitrine pública.
+
+---
+
+## 10. Importação e Exportação em Lote via Planilhas (Excel / CSV)
+
+Para permitir que a administradora gerencie o catálogo em escala sem depender de digitação manual item a item:
+
+1. **Template Padrão Pré-Formatado (`template-jardim-dos-presentes.csv`)**:
+   - Cabeçalho padronizado com **21 colunas canônicas** alinhadas aos campos do Firestore.
+   - Gerado com **BOM UTF-8 (`\uFEFF`)** e delimitador ponto-e-vírgula (`;`), garantindo que o Microsoft Excel (Windows e Mac), Google Planilhas e LibreOffice abram o arquivo diretamente em colunas estruturadas, sem corrupção de caracteres especiais em português (`ã`, `é`, `ç`).
+   - Contém linhas de exemplo realistas demonstrando formatação de categorias, enquadramento de foto, preços e valores múltiplos.
+
+2. **Parser Resiliente (`csvService.js`)**:
+   - **Autodetecção de Delimitador**: Inspeciona a linha de cabeçalho para identificar automaticamente `;`, `,` ou `\t`.
+   - **Mapeamento de Sinônimos**: Reconhece aliases naturais em português e inglês (ex: `Nome do Presente`, `Produto`, `Item`, `Title` -> `name`).
+   - **Sanitização de Preços**: Converte notações brasileiras (`R$ 159,90`, `159,90`) e internacionais (`159.90`) em números de ponto flutuante válidos, preservando o rótulo amigável em `priceLabel`.
+   - **Multi-linha e Aspas**: Compatível com RFC 4180 para campos com quebras de linha e aspas duplas escapadas (`""`).
+
+3. **Gravação Atômica em Lotes (`writeBatch`)**:
+   - Como o Cloud Firestore impõe um limite estrito de 500 operações por batch, o serviço divide as gravações em lotes seguros de 400 documentos (`CHUNK_SIZE = 400`).
+   - Se o campo `id` estiver preenchido, ele é preservado (atualização/merge); se estiver vazio, um slug único é gerado a partir do nome do presente.
+   - Aplica `serverTimestamp()` no campo `updatedAt` para garantir integridade temporal.
 
 

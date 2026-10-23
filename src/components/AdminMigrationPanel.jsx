@@ -5,6 +5,12 @@ import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
 import { deleteProduct, toggleProductEnabled } from '../services/productService.js';
 import ProductEditor from './ProductEditor.jsx';
+import {
+  downloadFile,
+  exportProductsToCsv,
+  generateCsvTemplate,
+  parseCsvToProducts,
+} from '../services/csvService.js';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
 
@@ -150,6 +156,79 @@ export default function AdminMigrationPanel({
     }
   }
 
+
+  function handleDownloadCsvTemplate() {
+    try {
+      const csvContent = generateCsvTemplate();
+      downloadFile(csvContent, 'template-jardim-dos-presentes.csv', 'text/csv;charset=utf-8;');
+      setMessage('📄 Template padrão em CSV baixado com sucesso! Preencha no Excel e importe quando desejar.');
+      setError('');
+    } catch (err) {
+      setError('Erro ao gerar template CSV: ' + err.message);
+    }
+  }
+
+  function handleExportCsv() {
+    try {
+      const csvContent = exportProductsToCsv(products);
+      const dateStr = new Date().toISOString().slice(0, 10);
+      downloadFile(csvContent, `jardim-dos-presentes-catalogo-${dateStr}.csv`, 'text/csv;charset=utf-8;');
+      setMessage(`📊 Planilha exportada com sucesso contendo ${products.length} presentes!`);
+      setError('');
+    } catch (err) {
+      setError('Erro ao exportar planilha CSV: ' + err.message);
+    }
+  }
+
+  async function handleImportCsvFile(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async e => {
+      try {
+        setBusy(true);
+        setError('');
+        setMessage('');
+        const content = e.target?.result;
+        const { products: importedList } = parseCsvToProducts(content);
+
+        const confirmed = window.confirm(
+          `Foram identificados ${importedList.length} presentes válidos na planilha CSV.\n\nDeseja sincronizar e gravar estes itens diretamente no Cloud Firestore?\n\n(Itens existentes com o mesmo ID serão atualizados e novos itens serão criados).`
+        );
+        if (!confirmed) return;
+
+        const BATCH_SIZE = 400;
+        let count = 0;
+        for (let start = 0; start < importedList.length; start += BATCH_SIZE) {
+          const chunk = importedList.slice(start, start + BATCH_SIZE);
+          const batch = writeBatch(db);
+          chunk.forEach(prod => {
+            if (!prod.id && !prod.name) return;
+            const pid = prod.id || String(prod.name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const ref = doc(db, 'products', pid);
+            batch.set(
+              ref,
+              {
+                ...prod,
+                updatedAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+            count += 1;
+          });
+          await batch.commit();
+        }
+        setMessage(`🎉 Sucesso! ${count} presentes da planilha CSV foram sincronizados diretamente com o Firestore.`);
+      } catch (err) {
+        setError('Falha ao importar planilha CSV: ' + (err?.message || 'Arquivo inválido.'));
+      } finally {
+        setBusy(false);
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
 
   function handleExportBackup() {
     try {
@@ -540,7 +619,7 @@ export default function AdminMigrationPanel({
           className={`admin-tab-btn ${activeTab === 'backup' ? 'active' : ''}`}
           onClick={() => setActiveTab('backup')}
         >
-          📁 Backup & Dados
+          📊 Planilhas & Backup
         </button>
       </div>
 
@@ -807,48 +886,131 @@ export default function AdminMigrationPanel({
         </div>
       )}
 
-      {/* CONTEÚDO DA ABA 3: BACKUP & DADOS */}
+      {/* CONTEÚDO DA ABA 3: PLANILHAS & BACKUP */}
       {activeTab === 'backup' && (
         <div className="admin-tab-content">
-          <div className="admin-migration-box">
-            <h3>📁 Backup & Carga Externa de Dados (100% Firestore)</h3>
-            <p>
-              Os presentes do seu Jardim são armazenados <strong>exclusivamente na base de dados (Cloud Firestore)</strong>, garantindo código limpo, seguro e desempenho máximo sem dados embutidos.
-            </p>
+          <div className="admin-data-management-grid">
+            {/* CARD 1: EXCEL / CSV EM LOTE */}
+            <div className="admin-data-card highlight">
+              <div className="admin-data-card-header">
+                <span className="admin-data-card-icon">📊</span>
+                <div>
+                  <h3>Importação & Exportação via Planilha (Excel / CSV)</h3>
+                  <p>
+                    Cadastre, edite ou sincronize múltiplos presentes de uma só vez usando o Microsoft Excel, Google Planilhas ou LibreOffice.
+                    O template padrão já vem com todos os 21 campos oficiais e exemplos práticos para você preencher com facilidade.
+                  </p>
+                </div>
+              </div>
 
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '16px' }}>
-              <button
-                type="button"
-                className="primary-button"
-                onClick={handleExportBackup}
-                disabled={busy || products.length === 0}
-                style={{ background: '#2d6a4f', borderColor: '#2d6a4f' }}
-              >
-                📥 Baixar Backup JSON ({products.length} presentes)
-              </button>
-
-              <label
-                className="secondary-button"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  cursor: busy ? 'not-allowed' : 'pointer',
-                  margin: 0,
-                }}
-              >
-                📤 Restaurar / Importar Arquivo JSON
-                <input
-                  type="file"
-                  accept=".json,application/json"
-                  onChange={handleImportBackupFile}
+              <div className="admin-data-actions-row">
+                <button
+                  type="button"
+                  className="secondary-button admin-btn-csv-template"
+                  onClick={handleDownloadCsvTemplate}
                   disabled={busy}
-                  style={{ display: 'none' }}
-                />
-              </label>
+                  title="Baixar planilha modelo em CSV pronta para abrir no Excel"
+                >
+                  📄 Baixar Template Padrão (CSV / Excel)
+                </button>
+
+                <button
+                  type="button"
+                  className="secondary-button admin-btn-csv-export"
+                  onClick={handleExportCsv}
+                  disabled={busy || products.length === 0}
+                  title="Exportar todos os presentes cadastrados em formato de planilha Excel"
+                >
+                  📊 Exportar Catálogo Atual em CSV ({products.length})
+                </button>
+
+                <label
+                  className="admin-btn-csv-upload"
+                  style={{ cursor: busy ? 'not-allowed' : 'pointer', margin: 0 }}
+                  title="Enviar planilha preenchida para gravar os presentes diretamente no Firestore"
+                >
+                  <span>📤 Enviar Planilha CSV para o Firestore</span>
+                  <input
+                    type="file"
+                    accept=".csv,text/csv,text/plain"
+                    onChange={handleImportCsvFile}
+                    disabled={busy}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
+
+              <details className="admin-data-card-columns">
+                <summary>ℹ️ Ver os 21 campos predefinidos suportados na planilha</summary>
+                <ul>
+                  <li><strong>Nome do Presente *</strong> (obrigatório)</li>
+                  <li><strong>Categoria</strong> (casa, tecnologia, moda, calcados, beleza, joias, livros, arte, jardim, pets)</li>
+                  <li><strong>Coleção</strong> (ex: Cantinho do Café, Magia da Fada, etc.)</li>
+                  <li><strong>Subcategoria</strong> (ex: Cozinha, Quarto, etc.)</li>
+                  <li><strong>Valor</strong> (ex: 159,90 ou 159.90)</li>
+                  <li><strong>Texto do Preço</strong> (ex: R$ 159,90 ou Sob Consulta)</li>
+                  <li><strong>Prioridade</strong> (alta, media, baixa)</li>
+                  <li><strong>Quantidade Desejada</strong> (ex: 1)</li>
+                  <li><strong>Link da Loja / Compra</strong> (URL da loja oficial)</li>
+                  <li><strong>Nome da Loja</strong> (ex: Amazon, Schutz, Shein)</li>
+                  <li><strong>URL da Imagem</strong> (link direto da foto)</li>
+                  <li><strong>Enquadramento da Foto</strong> (center, top, bottom, left, right)</li>
+                  <li><strong>Modo da Imagem</strong> (cover ou contain)</li>
+                  <li><strong>O Sonho</strong> (texto do sonho)</li>
+                  <li><strong>A História</strong> (história ou motivo do desejo)</li>
+                  <li><strong>Descrição</strong> (descrição acolhedora)</li>
+                  <li><strong>Significados</strong> (tags separadas por vírgula)</li>
+                  <li><strong>Tamanhos</strong> (separados por vírgula)</li>
+                  <li><strong>Observações</strong> (notas separadas por vírgula)</li>
+                  <li><strong>Visível no Site?</strong> (sim ou nao)</li>
+                  <li><strong>ID</strong> (opcional: deixe vazio para novo presente)</li>
+                </ul>
+              </details>
             </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '10px' }}>
-              Dica: Você pode guardar o arquivo JSON no seu computador como segurança e restaurá-lo a qualquer momento.
-            </p>
+
+            {/* CARD 2: BACKUP JSON COMPLETO */}
+            <div className="admin-data-card">
+              <div className="admin-data-card-header">
+                <span className="admin-data-card-icon">📁</span>
+                <div>
+                  <h3>Backup Estrutural do Banco (Formato JSON)</h3>
+                  <p>
+                    Exporta e restaura o snapshot completo de segurança do Cloud Firestore em formato de dados bruto (.json).
+                    Recomendado para guardar cópias de segurança integrais no seu computador.
+                  </p>
+                </div>
+              </div>
+
+              <div className="admin-data-actions-row">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={handleExportBackup}
+                  disabled={busy || products.length === 0}
+                >
+                  📥 Baixar Backup JSON ({products.length} presentes)
+                </button>
+
+                <label
+                  className="secondary-button"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    cursor: busy ? 'not-allowed' : 'pointer',
+                    margin: 0,
+                  }}
+                >
+                  📤 Restaurar Arquivo JSON
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    onChange={handleImportBackupFile}
+                    disabled={busy}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       )}

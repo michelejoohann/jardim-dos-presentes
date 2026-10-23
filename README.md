@@ -145,7 +145,10 @@ Acesso restrito à administradora com credenciais do Firebase Authentication:
 - Visualização de contatos (e-mail, nome ou marcação de Amigo Secreto).
 - Opção para liberar o presente de volta ao catálogo caso o convidado desista.
 
-### 3. Backup & Restauração JSON
+### 3. Planilhas (Excel / CSV) & Backup
+- **📄 Baixar Template Padrão (CSV / Excel)**: Gera um arquivo modelo `.csv` formatado especialmente para o Microsoft Excel e Google Planilhas (com cabeçalho UTF-8 BOM `\uFEFF` e delimitador `;`), trazendo todos os 21 campos oficiais e exemplos práticos para preenchimento sem esforço.
+- **📊 Exportar Catálogo Atual em CSV**: Exporta todo o acervo do Firestore diretamente para uma planilha Excel compatível, ideal para edições offline, relatórios de valores e controle gerencial.
+- **📤 Enviar Planilha CSV para o Firestore**: Importa planilhas CSV/Excel com validação inteligente de cabeçalhos sinônimos, detecção automática de delimitadores (`;`, `,` ou tabulação), conversão de preços brasileiros (`159,90`, `R$ 159,90`, `159.90`) e gravação atômica em lotes de 400 documentos (`writeBatch`), respeitando o limite de transação do Firestore.
 - **📥 Baixar Backup JSON**: Exporta todos os presentes cadastrados no Firestore diretamente para um arquivo `.json` no computador da administradora com 1 clique.
 - **📤 Restaurar / Importar Arquivo JSON**: Permite carregar qualquer arquivo `.json` local para sincronizar produtos no Firestore via lote atômico (`writeBatch`), **sem que nenhum dado precise ficar salvo no código da aplicação**.
 
