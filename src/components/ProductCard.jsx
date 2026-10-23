@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { resolveImageUrl } from '../services/productService.js';
 
 export default function ProductCard({
   product,
@@ -29,10 +30,7 @@ export default function ProductCard({
       ? 'status-reserved'
       : 'status-available';
 
-  const rawImageUrl = product.imageUrl || product.image;
-  const imageUrl = rawImageUrl?.startsWith('/') && !rawImageUrl.startsWith(import.meta.env.BASE_URL)
-    ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImageUrl}`
-    : rawImageUrl;
+  const imageUrl = resolveImageUrl(product.imageUrl || product.image);
   const [imageFailed, setImageFailed] = useState(false);
   const meanings = Array.isArray(product.meanings) ? product.meanings : [];
   const sizes = Array.isArray(product.sizes) ? product.sizes : [];

@@ -184,6 +184,8 @@ Cada documento na coleção `products` do Cloud Firestore possui a seguinte estr
 | `published` | `boolean` | Espelhamento de visibilidade para compatibilidade | `true` ou `false` |
 | `visible` | `boolean` | Espelhamento de visibilidade para compatibilidade | `true` ou `false` |
 | `imageUrl` | `string` | URL direta da fotografia principal | `"https://..."` |
+| `imagePosition` | `string` | Ponto focal do corte da foto (`center`, `top`, `bottom`, `left`, `right`, etc.) | `"top"`, `"center"` |
+| `imageFit` | `string` | Modo de corte da foto (`cover` para preencher ou `contain` para foto inteira) | `"cover"`, `"contain"` |
 | `url` | `string` | Link direto para a loja onde comprar | `"https://..."` |
 | `store` | `string` | Nome da loja fornecedora | `"SHEIN"`, `"Amazon"`, `"Ateliê"` |
 | `description` | `string` | Descrição técnica ou estética do item | `"Asas artesanais em organza furta-cor..."` |
@@ -272,5 +274,28 @@ Para permitir que a administradora gerencie o catálogo em escala sem depender d
    - Como o Cloud Firestore impõe um limite estrito de 500 operações por batch, o serviço divide as gravações em lotes seguros de 400 documentos (`CHUNK_SIZE = 400`).
    - Se o campo `id` estiver preenchido, ele é preservado (atualização/merge); se estiver vazio, um slug único é gerado a partir do nome do presente.
    - Aplica `serverTimestamp()` no campo `updatedAt` para garantir integridade temporal.
+
+---
+
+## 11. Motor de Enquadramento e Ponto Focal de Imagem
+
+Com a diversidade de proporções de fotografias provenientes de lojas parceiras (Amazon, Shein, Schutz, Tok&Stok), a aplicação incorpora um motor inteligente de renderização e enquadramento visual:
+
+1. **Modos de Exibição (`imageFit`)**:
+   - `cover` (Padrão): Preenche 100% da área do card (proporção 4:3), com recorte harmônico orientado pelo ponto focal.
+   - `contain` (Sem Cortes): Exibe a foto inteira sem cortar nenhuma borda, emoldurada com fundo suave e respiro de 8px.
+2. **Ponto Focal e Alinhamento (`imagePosition`)**:
+   - Matriz 3x3 de presets CSS (`left top`, `top`, `right top`, `left`, `center`, `right`, `left bottom`, `bottom`, `right bottom`) e suporte a porcentagens (`x% y%`).
+   - Permite que vestidos longos foquem no decote/gola (`top`), sapatos foquem no salto/tiras (`bottom`), e itens decorativos centralizem perfeitamente.
+3. **Simulador Visual com Modos de Prévia ao Vivo**:
+   - `Card (4:3)`: Simulação exata de como a vitrine renderiza o card para os visitantes no catálogo.
+   - `Foto Completa + Máscara`: Mostra a foto original na íntegra com a área de corte sombreada e o visor ativo iluminado por uma moldura dourada.
+   - `Modal (1:1)`: Exibe o formato quadrado do modal de detalhes e dedicatória.
+4. **Mira Tátil Interativa (Reticle) & Regra dos Terços**:
+   - Mira dourada botânica interativa que segue o ponto focal ativo e permite reorientar o enquadramento ao clicar em qualquer ponto da foto.
+   - Grade opcional com as linhas de 33% e 66% da regra dos terços para composição visual clássica.
+5. **Tratamento Centralizado de URLs (`resolveImageUrl`)**:
+   - Função pura e reutilizável em `src/services/productService.js` que unifica a resolução de caminhos locais e remotos, garantindo compatibilidade com o base URL do Vite e eliminando código duplicado nos componentes.
+
 
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { formatCurrencyBRL, saveProduct } from '../services/productService.js';
+import { formatCurrencyBRL, resolveImageUrl, saveProduct } from '../services/productService.js';
 import { generateGiftSuggestions } from '../services/giftSuggestions.js';
 
 const DEFAULT_CATEGORIES = [
@@ -43,7 +43,6 @@ export const POSITION_LABELS = {
 
 export default function ProductEditor({ product, onBack, onSaved, onNavigateHome }) {
   const isEditing = Boolean(product?.id);
-  const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
   const [formData, setFormData] = useState({
     name: product?.name || '',
@@ -226,10 +225,7 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
   }
 
   // Tratamento da imagem da prévia
-  const rawPreviewImage = formData.imageUrl;
-  const processedPreviewImage = rawPreviewImage?.startsWith('/') && !rawPreviewImage.startsWith(baseUrl)
-    ? `${baseUrl}${rawPreviewImage}`
-    : rawPreviewImage;
+  const processedPreviewImage = resolveImageUrl(formData.imageUrl);
 
   return (
     <div className="admin-editor-page" role="region" aria-label="Editor de Presente">

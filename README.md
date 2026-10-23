@@ -135,8 +135,14 @@ Acesso restrito à administradora com credenciais do Firebase Authentication:
   - Texto carinhoso para *"O sonho"*.
   - Narrativa para *"A história"*.
   - Tags de significados simbólicos sugeridos.
-- **✏️ Edição Dinâmica**: Atualização imediata de links de lojas, fotos, preços e dados do presente.
-- **📐 Enquadramento & Ponto Focal de Imagem**: Controle visual interativo com matriz 3x3 de ponto focal (topo, centro, base, cantos), atalhos inteligentes para peças verticais (vestuário, calçados de salto alto, luminárias) e seletor de modo de preenchimento (*Preencher Card / Cover* ou *Foto Inteira Sem Cortes / Contain*), com ajuste por clique direto na foto de prévia ao vivo.
+- **✨ Barra de Ações Rápidas no Topo**: Acesso imediato logo acima da tabela aos botões de **+ Novo Presente**, **Baixar Modelo CSV / Excel** e **Importar Planilha CSV**, sem necessidade de trocar de aba.
+- **📐 Simulador Visual de Enquadramento & Ponto Focal**: 
+  - Acessível com 1 clique pelo botão **📐 Foto** na tabela, ao clicar na miniatura ou na edição do item.
+  - **3 Modos de Visualização ao Vivo**: `Card (4:3)` (como o visitante vê no catálogo), `Foto Completa + Máscara` (foto inteira com a moldura de corte iluminada e fundo sombreado) e `Modal (1:1)` (formato quadrado do modal de detalhes).
+  - **Mira Visual Interativa (Reticle)**: Mira botânica com anel pulsante que rastreia o foco ativo e permite **clicar em qualquer região da foto** para reposicionar o corte instantaneamente.
+  - **Grade da Regra dos Terços**: Botão para alternar linhas-guia fotográficas (33% e 66%) para auxílio de composição.
+  - **Modo Cover vs Contain**: Opção de preencher todo o card com corte inteligente (*Cover*) ou exibir a foto inteira sem nenhum corte (*Contain*).
+- **✏️ Edição Dinâmica & Sugestões**: Atualização imediata de links de lojas, fotos, preços e dados, com motor de sugestões acolhedoras (*O Sonho*, *A História*, *Prioridade* e *Significados*).
 - **👁️ Controle de Visibilidade**: Botão rápido para alternar entre **Habilitado** (visível no catálogo) e **Desabilitado** (oculto no site, mas preservado no banco).
 - **🗑️ Exclusão Segura**: Remove o item do Firestore e limpa automaticamente eventuais registros de reserva vinculados.
 
@@ -145,7 +151,7 @@ Acesso restrito à administradora com credenciais do Firebase Authentication:
 - Visualização de contatos (e-mail, nome ou marcação de Amigo Secreto).
 - Opção para liberar o presente de volta ao catálogo caso o convidado desista.
 
-### 3. Planilhas (Excel / CSV) & Backup
+### 3. Planilhas (Excel / CSV) & Backup Estrutural
 - **📄 Baixar Template Padrão (CSV / Excel)**: Gera um arquivo modelo `.csv` formatado especialmente para o Microsoft Excel e Google Planilhas (com cabeçalho UTF-8 BOM `\uFEFF` e delimitador `;`), trazendo todos os 21 campos oficiais e exemplos práticos para preenchimento sem esforço.
 - **📊 Exportar Catálogo Atual em CSV**: Exporta todo o acervo do Firestore diretamente para uma planilha Excel compatível, ideal para edições offline, relatórios de valores e controle gerencial.
 - **📤 Enviar Planilha CSV para o Firestore**: Importa planilhas CSV/Excel com validação inteligente de cabeçalhos sinônimos, detecção automática de delimitadores (`;`, `,` ou tabulação), conversão de preços brasileiros (`159,90`, `R$ 159,90`, `159.90`) e gravação atômica em lotes de 400 documentos (`writeBatch`), respeitando o limite de transação do Firestore.

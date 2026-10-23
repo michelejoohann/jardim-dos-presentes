@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from '../firebase/config.js';
 import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
-import { deleteProduct, toggleProductEnabled } from '../services/productService.js';
+import { deleteProduct, resolveImageUrl, toggleProductEnabled } from '../services/productService.js';
 import ProductEditor from './ProductEditor.jsx';
 import {
   downloadFile,
@@ -233,15 +233,8 @@ export default function AdminMigrationPanel({
   function handleExportBackup() {
     try {
       const exportData = JSON.stringify(products, null, 2);
-      const blob = new Blob([exportData], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.href = url;
-      downloadAnchor.download = `jardim-dos-presentes-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      URL.revokeObjectURL(url);
+      const dateStr = new Date().toISOString().slice(0, 10);
+      downloadFile(exportData, `jardim-dos-presentes-backup-${dateStr}.json`, 'application/json;charset=utf-8;');
       setMessage(`📁 Backup exportado com sucesso contendo ${products.length} presentes!`);
     } catch (err) {
       setError('Não foi possível exportar o backup: ' + err.message);
@@ -759,10 +752,7 @@ export default function AdminMigrationPanel({
                     const res = reservationsByProductId[prod.id];
                     const effectiveStatus = res?.status || prod.status || 'available';
                     const isEnabled = prod.enabled !== false && prod.published !== false && prod.visible !== false;
-                    const rawImage = prod.imageUrl || prod.image;
-                    const imageUrl = rawImage?.startsWith('/') && !rawImage.startsWith(import.meta.env.BASE_URL)
-                      ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImage}`
-                      : rawImage;
+                    const imageUrl = resolveImageUrl(prod.imageUrl || prod.image);
 
                     const priorityLower = String(prod.priority || prod.prioridade || '').toLowerCase();
 

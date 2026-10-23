@@ -35,6 +35,23 @@ export function formatCurrencyBRL(value) {
 }
 
 /**
+ * Resolve e normaliza URLs de imagens para suporte transparente a assets locais e URLs remotas,
+ * garantindo compatibilidade com o base URL do Vite (ex: no GitHub Pages).
+ * @param {string} rawUrl - URL bruta ou caminho relativo da imagem.
+ * @param {string} [baseUrl] - Base URL da aplicação (opcional, padrão import.meta.env.BASE_URL).
+ * @returns {string} - URL tratada e pronta para a tag <img>.
+ */
+export function resolveImageUrl(rawUrl, baseUrl = import.meta.env.BASE_URL || '/') {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  const trimmed = rawUrl.trim();
+  const cleanBase = baseUrl.replace(/\/$/, '');
+  if (trimmed.startsWith('/') && !trimmed.startsWith(cleanBase)) {
+    return `${cleanBase}${trimmed}`;
+  }
+  return trimmed;
+}
+
+/**
  * Cria ou atualiza um presente diretamente na coleção `products` do Firestore.
  * @param {Object} rawData - Dados do presente preenchidos pelo formulário.
  * @param {string|null} existingId - Se informado, atualiza o documento existente.

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createReservation } from '../services/reservationService.js';
+import { resolveImageUrl } from '../services/productService.js';
 
 export default function GiftModal({ product, user, onClose, onReserved }) {
   const [intent, setIntent] = useState('reserved'); // 'reserved' (Vou comprar) ou 'received' (Já comprei)
@@ -68,10 +69,7 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
     }
   }
 
-  const rawImageUrl = product.imageUrl || product.image;
-  const imageUrl = rawImageUrl?.startsWith('/') && !rawImageUrl.startsWith(import.meta.env.BASE_URL)
-    ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${rawImageUrl}`
-    : rawImageUrl;
+  const imageUrl = resolveImageUrl(product?.imageUrl || product?.image);
 
   const modalElement = (
     <div className="modal-backdrop" onClick={busy ? undefined : onClose} role="dialog" aria-modal="true">
