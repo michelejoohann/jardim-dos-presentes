@@ -43,8 +43,8 @@ graph TB
         subgraph AdminUI ["Painel Gerencial Completo (?admin=true)"]
             AdminLogin["Login Centralizado e 100% Responsivo"]
             AdminPanel["Painel da Michèlé (AdminMigrationPanel)"]
-            ProductEditor["Criar / Editar com Sugestões (ProductEditorModal)"]
-            BackupTool["Backup & Restauração JSON Dinâmico"]
+            ProductEditor["Editor com Simulador de Enquadramento (ProductEditor)"]
+            BackupTool["Planilhas CSV/Excel & Backup JSON"]
         end
     end
 
@@ -180,21 +180,23 @@ JardimDosPresentes/
 │       └── deploy-pages.yml          # CI/CD: build Vite e deploy automático no GitHub Pages
 ├── docs/
 │   ├── ARCHITECTURE.md               # Detalhes de arquitetura e decisões técnicas completas
+│   ├── DATA_MANAGEMENT.md            # Guia completo de gestão de dados, planilhas CSV e backups
 │   ├── FIREBASE_SETUP.md             # Instruções de configuração do Firebase Console
-│   ├── INITIAL_MIGRATION.md          # Histórico da migração inicial
 │   └── PRODUCT_BACKLOG.md            # Histórico de requisitos e melhorias
 ├── public/
 │   ├── favicon.svg                   # Favicon oficial do Jardim
+│   ├── og-image.jpg                  # Imagem otimizada de compartilhamento social (<150KB)
 │   └── images/                       # Ilustrações botânicas vetoriais e logotipo MJ
 ├── src/
 │   ├── components/
-│   │   ├── AdminMigrationPanel.jsx   # Painel da Michèlé (CRUD, recados e ferramenta de backup)
+│   │   ├── AdminMigrationPanel.jsx   # Painel da Michèlé (CRUD, recados, planilhas e backup)
 │   │   ├── GiftModal.jsx             # Modal interativo de presente com dedicatória e anonimato
 │   │   ├── ProductCard.jsx           # Card editorial de presente (status, tags, sonho e links)
-│   │   └── ProductEditor.jsx         # Editor fluído em tela cheia com enquadramento de foto e sugestões
+│   │   └── ProductEditor.jsx         # Editor com simulador de enquadramento, retículo e sugestões
 │   ├── firebase/
 │   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/
+│   │   ├── csvService.js             # Motor de importação, exportação e template padronizado Excel/CSV
 │   │   ├── giftSuggestions.js        # Motor de sugestões acolhedoras (prioridade, sonho, história)
 │   │   ├── productService.js         # Persistência, edição, visibilidade e exclusão no Firestore
 │   │   └── reservationService.js     # Serviços atômicos de reserva pública e privada

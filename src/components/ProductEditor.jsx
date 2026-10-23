@@ -72,6 +72,33 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
   const [error, setError] = useState('');
   const [previewImageError, setPreviewImageError] = useState(false);
   const [appliedSuggestionNotice, setAppliedSuggestionNotice] = useState('');
+  const [framingViewMode, setFramingViewMode] = useState('card'); // 'card' | 'guides' | 'modal'
+  const [showGridRule, setShowGridRule] = useState(true);
+
+  // Coordenadas visuais da mira de ponto focal (em %)
+  const focalCoords = useMemo(() => {
+    const pos = formData.imagePosition || 'center';
+    switch (pos) {
+      case 'left top': return { x: 18, y: 18 };
+      case 'top':
+      case 'center top': return { x: 50, y: 15 };
+      case 'right top': return { x: 82, y: 18 };
+      case 'left': return { x: 18, y: 50 };
+      case 'center': return { x: 50, y: 50 };
+      case 'right': return { x: 82, y: 50 };
+      case 'left bottom': return { x: 18, y: 82 };
+      case 'bottom':
+      case 'center bottom': return { x: 50, y: 85 };
+      case 'right bottom': return { x: 82, y: 82 };
+      default: {
+        const parts = pos.split(' ');
+        if (parts.length === 2 && parts[0].endsWith('%') && parts[1].endsWith('%')) {
+          return { x: parseFloat(parts[0]), y: parseFloat(parts[1]) };
+        }
+        return { x: 50, y: 50 };
+      }
+    }
+  }, [formData.imagePosition]);
 
   // Sugestões geradas dinamicamente com base no nome do produto
   const activeSuggestions = useMemo(() => {
@@ -570,16 +597,21 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
                 </span>
               </label>
 
-              {/* SELEÇÃO DO ENQUADRAMENTO DA IMAGEM */}
+              {/* SELEÇÃO DO ENQUADRAMENTO DA IMAGEM COM SIMULADOR AO VIVO */}
               <div className="editor-framing-control">
                 <div className="framing-header">
-                  <span className="label-text">📐 Enquadramento da Imagem</span>
-                  <span className="framing-current-badge">
-                    {POSITION_LABELS[formData.imagePosition || 'center'] || '⏺️ Centro (Padrão)'}
+                  <div className="framing-title-group">
+                    <span className="label-text">📐 Enquadramento & Ponto Focal</span>
+                    <span className="framing-current-badge">
+                      {POSITION_LABELS[formData.imagePosition || 'center'] || '⏺️ Centro (Padrão)'}
+                    </span>
+                  </div>
+                  <span className="framing-mode-badge">
+                    {formData.imageFit === 'contain' ? '🔲 Sem Cortes' : '🖼️ Preenchido'}
                   </span>
                 </div>
                 <p className="editor-hint">
-                  Defina o ponto focal do corte ou selecione o modo sem cortes para a foto caber inteira.
+                  Ajuste onde a foto é centralizada ou selecione modo sem cortes para exibir a imagem por completo.
                 </p>
 
                 {/* MODO DE AJUSTE: COBRIR VS CONTER */}
@@ -602,6 +634,141 @@ export default function ProductEditor({ product, onBack, onSaved, onNavigateHome
                     >
                       🔲 Foto Inteira (Sem Cortes)
                     </button>
+                  </div>
+                </div>
+
+                {/* PALCO VISUAL DE PRÉ-VISUALIZAÇÃO DIRETA DO ENQUADRAMENTO */}
+                <div className="framing-stage-container">
+                  <div className="framing-stage-toolbar">
+                    <div className="framing-stage-tabs" role="tablist" aria-label="Modo de visualização do enquadramento">
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={framingViewMode === 'card'}
+                        className={`framing-tab-btn ${framingViewMode === 'card' ? 'active' : ''}`}
+                        onClick={() => setFramingViewMode('card')}
+                        title="Visualizar recorte exato do card no catálogo (proporção 4:3)"
+                      >
+                        🖼️ Card (4:3)
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={framingViewMode === 'guides'}
+                        className={`framing-tab-btn ${framingViewMode === 'guides' ? 'active' : ''}`}
+                        onClick={() => setFramingViewMode('guides')}
+                        title="Visualizar a foto completa com máscara do corte ativo"
+                      >
+                        🔍 Foto Completa + Máscara
+                      </button>
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={framingViewMode === 'modal'}
+                        className={`framing-tab-btn ${framingViewMode === 'modal' ? 'active' : ''}`}
+                        onClick={() => setFramingViewMode('modal')}
+                        title="Visualizar formato do modal de presentear (1:1)"
+                      >
+                        ✨ Modal (1:1)
+                      </button>
+                    </div>
+
+                    {framingViewMode === 'card' && (
+                      <button
+                        type="button"
+                        className={`framing-grid-toggle ${showGridRule ? 'active' : ''}`}
+                        onClick={() => setShowGridRule(prev => !prev)}
+                        title="Alternar grade de composição (Regra dos Terços)"
+                      >
+                        {showGridRule ? '📐 Grade Ativa' : '📐 Grade Oculta'}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* ÁREA DA FOTO INTERATIVA COM MIRA E RETÍCULO */}
+                  <div
+                    className={`framing-stage-viewport view-${framingViewMode} ${formData.imageFit === 'contain' ? 'is-contain' : ''}`}
+                    onClick={handlePreviewMediaClick}
+                    title="Toque ou clique em qualquer ponto da imagem para mover o ponto focal"
+                  >
+                    {processedPreviewImage && !previewImageError ? (
+                      <>
+                        {framingViewMode === 'guides' ? (
+                          <div className="framing-full-with-guides">
+                            <img
+                              src={processedPreviewImage}
+                              alt="Foto completa"
+                              className="framing-guide-full-img"
+                              onError={() => setPreviewImageError(true)}
+                            />
+                            {/* Máscara com janela de abertura proporcional */}
+                            <div
+                              className={`framing-guide-mask pos-${(formData.imagePosition || 'center').replace(' ', '-')}`}
+                              aria-hidden="true"
+                            >
+                              <div className="framing-guide-aperture">
+                                <span className="framing-aperture-label">Área Visível no Card (4:3)</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="framing-cropped-view">
+                            <img
+                              src={processedPreviewImage}
+                              alt="Prévia de enquadramento"
+                              className="framing-stage-img"
+                              style={{
+                                objectPosition: formData.imagePosition || 'center',
+                                objectFit: formData.imageFit || 'cover',
+                              }}
+                              onError={() => setPreviewImageError(true)}
+                            />
+
+                            {/* GRADE DE REGRA DOS TERÇOS */}
+                            {showGridRule && framingViewMode === 'card' && (
+                              <div className="framing-thirds-grid" aria-hidden="true">
+                                <span className="grid-line line-v1" />
+                                <span className="grid-line line-v2" />
+                                <span className="grid-line line-h1" />
+                                <span className="grid-line line-h2" />
+                              </div>
+                            )}
+
+                            {/* MIRA VISUAL DE PONTO FOCAL (RETICLE) */}
+                            {formData.imageFit !== 'contain' && (
+                              <div
+                                className="framing-reticle"
+                                style={{
+                                  left: `${focalCoords.x}%`,
+                                  top: `${focalCoords.y}%`,
+                                }}
+                                aria-hidden="true"
+                              >
+                                <div className="reticle-pulse" />
+                                <div className="reticle-dot" />
+                                <div className="reticle-crosshair-h" />
+                                <div className="reticle-crosshair-v" />
+                                <span className="reticle-badge">
+                                  {POSITION_LABELS[formData.imagePosition || 'center'] || 'Centro'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="framing-stage-empty">
+                        <span className="empty-icon">🌿</span>
+                        <p>Insira a URL de uma imagem para pré-visualizar o corte ao vivo.</p>
+                      </div>
+                    )}
+
+                    <div className="framing-stage-footer-hint">
+                      <span>🎯 Toque na foto para focar</span>
+                      <span className="framing-active-css">
+                        object-position: <code>{formData.imagePosition || 'center'}</code>
+                      </span>
+                    </div>
                   </div>
                 </div>
 

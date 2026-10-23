@@ -46,8 +46,8 @@ graph TB
         subgraph AdminUI ["Painel Administrativo (?admin=true)"]
             AdminLogin["Tela de Login Responsiva"]
             AdminPanel["Gestão Geral (AdminMigrationPanel)"]
-            ProductEditor["Criar / Editar com Sugestões (ProductEditorModal)"]
-            BackupTool["Backup & Restauração JSON Dinâmico"]
+            ProductEditor["Editor com Simulador de Enquadramento (ProductEditor)"]
+            BackupTool["Planilhas CSV/Excel & Backup JSON Dinâmico"]
         end
     end
 
@@ -133,18 +133,19 @@ JardimDosPresentes/
 │       └── deploy-pages.yml          # CI/CD: build e deploy automático no GitHub Pages
 ├── docs/
 │   ├── ARCHITECTURE.md               # Este documento de arquitetura e decisões técnicas
+│   ├── DATA_MANAGEMENT.md            # Guia completo de gestão de dados, planilhas CSV e backups
 │   ├── FIREBASE_SETUP.md             # Guia de configuração do Firebase Console
-│   ├── INITIAL_MIGRATION.md          # Histórico da migração inicial
 │   └── PRODUCT_BACKLOG.md            # Histórico de requisitos e melhorias
 ├── public/
 │   ├── favicon.svg                   # Ícone oficial do site
+│   ├── og-image.jpg                  # Imagem otimizada de compartilhamento social (<150KB)
 │   └── images/                       # Ilustrações botânicas vetoriais e logotipo MJ
 ├── src/
 │   ├── components/
-│   │   ├── AdminMigrationPanel.jsx   # Painel de gestão da Michèlé (CRUD, recados e backup)
+│   │   ├── AdminMigrationPanel.jsx   # Painel de gestão da Michèlé (CRUD, recados, planilhas e backup)
 │   │   ├── GiftModal.jsx             # Modal interativo de presente com dedicatória
 │   │   ├── ProductCard.jsx           # Card editorial de presente (status, tags, sonho e links)
-│   │   └── ProductEditorModal.jsx    # Modal de criação/edição com motor de sugestões
+│   │   └── ProductEditor.jsx         # Editor com simulador de enquadramento, retículo e sugestões
 │   ├── firebase/
 │   │   └── config.js                 # Inicialização do Firebase (Auth, Firestore, Storage)
 │   ├── services/

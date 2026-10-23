@@ -3280,6 +3280,357 @@ html, body {
   font-weight: 700;
 }
 
+/* ==========================================================================
+   PALCO VISUAL DE ENQUADRAMENTO E RETÍCULO DE PONTO FOCAL
+   ========================================================================== */
+
+.framing-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.framing-mode-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(165, 137, 84, 0.15);
+  color: var(--green-deep);
+  border: 1px solid rgba(165, 137, 84, 0.3);
+}
+
+.framing-stage-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border: 1.5px solid var(--gold-antique);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 4px 14px rgba(24, 42, 28, 0.06);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.framing-stage-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(165, 137, 84, 0.2);
+}
+
+.framing-stage-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.framing-tab-btn {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(165, 137, 84, 0.25);
+  background: #faf8f3;
+  color: #4a3e2e;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+}
+
+.framing-tab-btn:hover {
+  background: #f4ede1;
+  border-color: var(--gold-antique);
+}
+
+.framing-tab-btn.active {
+  background: linear-gradient(135deg, #2a4732 0%, #1a2c1f 100%);
+  color: #fdfaf3;
+  border-color: var(--gold-antique);
+  box-shadow: 0 2px 6px rgba(18, 33, 22, 0.2);
+}
+
+.framing-grid-toggle {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(165, 137, 84, 0.25);
+  background: #ffffff;
+  color: #5a4b37;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+}
+
+.framing-grid-toggle.active {
+  background: #f7eedb;
+  color: #2b3e2a;
+  border-color: var(--gold-antique);
+}
+
+.framing-stage-viewport {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f7f4ee;
+  border: 1px solid rgba(165, 137, 84, 0.25);
+  cursor: crosshair;
+  user-select: none;
+  touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+}
+
+.framing-stage-viewport.view-card {
+  aspect-ratio: 4 / 3;
+  max-height: 290px;
+}
+
+.framing-stage-viewport.view-modal {
+  aspect-ratio: 1 / 1;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.framing-stage-viewport.view-guides {
+  min-height: 220px;
+  max-height: 320px;
+}
+
+.framing-stage-viewport.is-contain {
+  background: #ffffff !important;
+}
+
+.framing-cropped-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.framing-stage-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: object-position 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.framing-stage-viewport.is-contain .framing-stage-img {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Grade Regra dos Terços */
+.framing-thirds-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.framing-thirds-grid .grid-line {
+  position: absolute;
+  background: rgba(212, 175, 55, 0.45);
+}
+
+.framing-thirds-grid .line-v1 { left: 33.333%; top: 0; bottom: 0; width: 1px; }
+.framing-thirds-grid .line-v2 { left: 66.666%; top: 0; bottom: 0; width: 1px; }
+.framing-thirds-grid .line-h1 { top: 33.333%; left: 0; right: 0; height: 1px; }
+.framing-thirds-grid .line-h2 { top: 66.666%; left: 0; right: 0; height: 1px; }
+
+/* Mira Visual de Ponto Focal (Reticle) */
+.framing-reticle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  pointer-events: none;
+  transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1), top 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reticle-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold-light);
+  animation: reticlePulse 2s infinite ease-out;
+  opacity: 0.75;
+}
+
+@keyframes reticlePulse {
+  0% { transform: scale(0.8); opacity: 0.85; }
+  50% { transform: scale(1.15); opacity: 0.35; }
+  100% { transform: scale(0.8); opacity: 0.85; }
+}
+
+.reticle-dot {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: var(--gold-antique);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.9), 0 0 2px #000;
+  border: 2px solid #ffffff;
+}
+
+.reticle-crosshair-h {
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  right: -8px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  transform: translateY(-50%);
+}
+
+.reticle-crosshair-v {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  bottom: -8px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+}
+
+.reticle-badge {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 33, 22, 0.88);
+  backdrop-filter: blur(4px);
+  color: #fdfaf3;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-antique);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Modo Guias e Foto Completa */
+.framing-full-with-guides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #141c16;
+}
+
+.framing-guide-full-img {
+  max-width: 100%;
+  max-height: 270px;
+  object-fit: contain;
+  display: block;
+}
+
+.framing-guide-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(10, 15, 12, 0.55);
+}
+
+.framing-guide-mask.pos-top,
+.framing-guide-mask.pos-left-top,
+.framing-guide-mask.pos-right-top {
+  align-items: flex-start;
+}
+
+.framing-guide-mask.pos-bottom,
+.framing-guide-mask.pos-left-bottom,
+.framing-guide-mask.pos-right-bottom {
+  align-items: flex-end;
+}
+
+.framing-guide-mask.pos-left {
+  justify-content: flex-start;
+}
+
+.framing-guide-mask.pos-right {
+  justify-content: flex-end;
+}
+
+.framing-guide-aperture {
+  width: 90%;
+  aspect-ratio: 4 / 3;
+  max-height: 85%;
+  border: 2px solid var(--gold-antique);
+  box-shadow: 0 0 0 9999px rgba(10, 15, 12, 0.52), 0 0 12px rgba(212, 175, 55, 0.6);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.framing-aperture-label {
+  background: rgba(18, 33, 22, 0.85);
+  color: var(--gold-light);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+/* Rodapé do simulador com dicas táteis */
+.framing-stage-footer-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(18, 33, 22, 0.85) 100%);
+  padding: 18px 10px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fdfaf3;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.framing-stage-footer-hint code {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--gold-light);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.framing-stage-empty {
+  padding: 36px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.framing-stage-empty .empty-icon {
+  font-size: 1.8rem;
+  opacity: 0.5;
+}
+
 /* Suporte a imagem com modo contain (imagem inteira sem cortes) */
 .product-media.media-contain,
 .modal-product-media.media-contain,
