@@ -1895,6 +1895,36 @@ button, input, select, textarea {
   transform: translateY(-1px);
 }
 
+.admin-hero-action-btn.highlight-hide-all {
+  background: #fff8f8;
+  border: 1.5px solid #fca5a5;
+  color: #991b1b;
+}
+
+.admin-hero-action-btn.highlight-hide-all:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.admin-hero-action-btn.highlight-show-all {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #166534;
+}
+
+.admin-hero-action-btn.highlight-show-all:hover:not(:disabled) {
+  background: #dcfce7;
+  border-color: #22c55e;
+  transform: translateY(-1px);
+}
+
+.admin-hero-action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
 .admin-hero-action-link {
   font-size: 0.82rem;
   font-weight: 700;

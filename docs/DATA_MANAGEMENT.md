@@ -69,3 +69,14 @@ No editor de presentes (`src/components/ProductEditor.jsx`), a administradora di
   - `Foto Completa + Máscara`: Mostra a foto original integral com uma abertura iluminada indicando a área visível vs a área descartada no corte.
   - `Modal (1:1)`: Exibe o formato quadrado do modal de detalhes.
 - **Mira Visual e Grade de Terços**: Uma mira tátil acompanha o ponto focal escolhido e permite clicar diretamente em qualquer ponto da foto para reorientar o enquadramento.
+
+---
+
+## 👁️ 4. Controle Geral de Visibilidade da Vitrine (1 Clique)
+
+No painel administrativo (na barra de ações rápidas da aba **Gerenciar Presentes** e no card dedicado da aba **Planilhas & Backup**), a administradora dispõe de controle em lote instantâneo:
+
+- **Ocultar Todos da Vitrine**: Desabilita todos os presentes ativos para os visitantes com 1 clique através de transações otimizadas no Cloud Firestore (`batchUpdateProductsVisibility` em lotes de até 400 documentos). Os produtos permanecem intactos no banco de dados e no painel admin.
+- **Habilitar Todos na Vitrine**: Reexibe todos os presentes na vitrine pública com 1 clique quando desejar reabrir o catálogo.
+- **Vitrine Acolhedora em Espera**: Quando todos os presentes estão ocultos, os visitantes visualizam uma mensagem acolhedora informando que o Jardim está sendo preparado com carinho.
+

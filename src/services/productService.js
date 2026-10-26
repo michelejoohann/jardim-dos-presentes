@@ -5,6 +5,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '../firebase/config.js';
 
@@ -163,4 +164,39 @@ export async function deleteProduct(productId) {
   } catch (err) {
     console.warn('Aviso: Não foi possível limpar registros de reserva atrelados:', err);
   }
+}
+
+/**
+ * Altera em lote a visibilidade (habilitado/desabilitado) dos produtos fornecidos no Cloud Firestore.
+ * Divide em batches de até 400 documentos para respeitar com folga o limite de 500 do Firestore.
+ * @param {Array<Object>} products - Lista de produtos para atualizar.
+ * @param {boolean} targetStatus - true para habilitar na vitrine, false para desabilitar/ocultar.
+ * @returns {Promise<number>} - Quantidade de produtos atualizados com sucesso.
+ */
+export async function batchUpdateProductsVisibility(products = [], targetStatus = true) {
+  if (!Array.isArray(products) || products.length === 0) return 0;
+
+  const BATCH_SIZE = 400;
+  let updatedCount = 0;
+
+  for (let start = 0; start < products.length; start += BATCH_SIZE) {
+    const chunk = products.slice(start, start + BATCH_SIZE);
+    const batch = writeBatch(db);
+
+    chunk.forEach(prod => {
+      if (!prod.id) return;
+      const productRef = doc(db, 'products', prod.id);
+      batch.update(productRef, {
+        enabled: targetStatus,
+        published: targetStatus,
+        visible: targetStatus,
+        updatedAt: serverTimestamp(),
+      });
+      updatedCount += 1;
+    });
+
+    await batch.commit();
+  }
+
+  return updatedCount;
 }

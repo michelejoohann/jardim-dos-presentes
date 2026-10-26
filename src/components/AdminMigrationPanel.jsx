@@ -3,7 +3,12 @@ import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from '../firebase/config.js';
 import { doc, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { cancelReservation, subscribeToPrivateReservations } from '../services/reservationService.js';
-import { deleteProduct, resolveImageUrl, toggleProductEnabled } from '../services/productService.js';
+import {
+  batchUpdateProductsVisibility,
+  deleteProduct,
+  resolveImageUrl,
+  toggleProductEnabled,
+} from '../services/productService.js';
 import ProductEditor from './ProductEditor.jsx';
 import {
   downloadFile,
@@ -339,6 +344,48 @@ export default function AdminMigrationPanel({
     }
   }
 
+  async function handleBatchVisibility(targetStatus) {
+    const countToChange = targetStatus ? totalDisabled : totalEnabled;
+    if (countToChange === 0) {
+      alert(
+        targetStatus
+          ? 'Todos os presentes já estão habilitados na vitrine do site.'
+          : 'Todos os presentes já estão ocultos da vitrine do site.'
+      );
+      return;
+    }
+
+    const confirmPrompt = targetStatus
+      ? `🌿 Deseja tornar todos os presentes (${products.length}) visíveis na vitrine do site para os visitantes?`
+      : `⚠️ Deseja ocultar todos os ${countToChange} presentes ativos da vitrine do site?\n\nEles continuarão salvos com segurança no banco de dados, mas ficarão invisíveis para os visitantes.\n\nVocê poderá reexibi-los a qualquer momento clicando em "Habilitar Todos".`;
+
+    const confirmed = window.confirm(confirmPrompt);
+    if (!confirmed) return;
+
+    setBusy(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const targetProducts = products.filter(p => {
+        const isCurrentlyEnabled = p.enabled !== false && p.published !== false && p.visible !== false;
+        return targetStatus ? !isCurrentlyEnabled : isCurrentlyEnabled;
+      });
+
+      const updated = await batchUpdateProductsVisibility(targetProducts, targetStatus);
+      setMessage(
+        targetStatus
+          ? `🎉 Sucesso! ${updated} presentes foram HABILITADOS e estão visíveis na vitrine do site.`
+          : `🔒 Sucesso! ${updated} presentes foram OCULTADOS da vitrine do site (continuam salvos no banco).`
+      );
+    } catch (err) {
+      console.error(err);
+      setError(`Não foi possível alterar a visibilidade em lote: ${err.message}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const productsById = useMemo(() => {
     return products.reduce((acc, item) => {
       acc[item.id] = item;
@@ -658,6 +705,26 @@ export default function AdminMigrationPanel({
                   style={{ display: 'none' }}
                 />
               </label>
+
+              <button
+                type="button"
+                className="secondary-button admin-hero-action-btn highlight-hide-all"
+                onClick={() => handleBatchVisibility(false)}
+                disabled={busy || totalEnabled === 0}
+                title="Ocultar todos os presentes ativos da vitrine do site com 1 clique (continuam salvos no banco de dados)"
+              >
+                ⚪ Ocultar Todos ({totalEnabled})
+              </button>
+
+              <button
+                type="button"
+                className="secondary-button admin-hero-action-btn highlight-show-all"
+                onClick={() => handleBatchVisibility(true)}
+                disabled={busy || totalDisabled === 0}
+                title="Habilitar todos os presentes na vitrine do site para os visitantes com 1 clique"
+              >
+                🟢 Habilitar Todos ({totalDisabled})
+              </button>
 
               <button
                 type="button"
@@ -1064,6 +1131,43 @@ export default function AdminMigrationPanel({
                     style={{ display: 'none' }}
                   />
                 </label>
+              </div>
+            </div>
+
+            {/* CARD 3: CONTROLE GERAL DE VISIBILIDADE DA VITRINE */}
+            <div className="admin-data-card">
+              <div className="admin-data-card-header">
+                <span className="admin-data-card-icon">👁️</span>
+                <div>
+                  <h3>Controle Geral de Visibilidade da Vitrine</h3>
+                  <p>
+                    Oculte ou reexiba todos os presentes da vitrine pública de uma só vez com 1 clique, sem precisar
+                    editar planilhas ou código. Atualmente há <strong>{totalEnabled}</strong> presentes visíveis no site
+                    e <strong>{totalDisabled}</strong> desabilitados (ocultos).
+                  </p>
+                </div>
+              </div>
+
+              <div className="admin-data-actions-row">
+                <button
+                  type="button"
+                  className="secondary-button admin-hero-action-btn highlight-hide-all"
+                  onClick={() => handleBatchVisibility(false)}
+                  disabled={busy || totalEnabled === 0}
+                  title="Ocultar todos os presentes da vitrine pública"
+                >
+                  ⚪ Ocultar Todos da Vitrine ({totalEnabled})
+                </button>
+
+                <button
+                  type="button"
+                  className="secondary-button admin-hero-action-btn highlight-show-all"
+                  onClick={() => handleBatchVisibility(true)}
+                  disabled={busy || totalDisabled === 0}
+                  title="Habilitar todos os presentes na vitrine pública"
+                >
+                  🟢 Habilitar Todos na Vitrine ({totalDisabled})
+                </button>
               </div>
             </div>
           </div>

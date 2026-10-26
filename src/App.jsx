@@ -875,7 +875,13 @@ export default function App() {
           ))}
         </section>
 
-        {!loading && visibleProducts.length === 0 && <p className="empty-state">Nenhum presente encontrado com esses filtros.</p>}
+        {!loading && visibleProducts.length === 0 && (
+          <p className="empty-state">
+            {search || selectedCategories.length > 0 || priorityFilter !== 'all'
+              ? 'Nenhum presente encontrado com esses filtros.'
+              : 'O Jardim dos Presentes está sendo preparado com muito carinho. Volte em breve para conferir as novidades! 🌿'}
+          </p>
+        )}
       </main>
 
       {/* Rodapé Especial com a Logo Michèlé Joohann */}
