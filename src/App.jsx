@@ -3,10 +3,13 @@ import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './firebase/config.js';
 import ProductCard from './components/ProductCard.jsx';
+import WelcomeModal from './components/WelcomeModal.jsx';
 import { cancelReservation, subscribeToPublicReservations } from './services/reservationService.js';
 
 const AdminMigrationPanel = lazy(() => import('./components/AdminMigrationPanel.jsx'));
 const GiftModal = lazy(() => import('./components/GiftModal.jsx'));
+
+const WELCOME_STORAGE_KEY = 'jardim_welcome_seen_v2';
 
 const categoryLabels = {
   casa: '🏡 Casa',
@@ -63,6 +66,19 @@ export default function App() {
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [welcomeModalOpen, setWelcomeModalOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const hash = window.location.hash;
+    if (hash === '#admin' || hash.startsWith('#admin/')) return false;
+    const params = new URLSearchParams(window.location.search);
+    const adminParam = params.get('admin') || params.get('page');
+    if (adminParam === 'true' || adminParam === '' || adminParam === 'admin') return false;
+    try {
+      return !window.localStorage.getItem(WELCOME_STORAGE_KEY);
+    } catch {
+      return true;
+    }
+  });
   const [currentRoute, setCurrentRoute] = useState(() => {
     if (typeof window === 'undefined') return 'catalog';
     const hash = window.location.hash;
@@ -142,6 +158,15 @@ export default function App() {
       isClosingModalByPopstateRef.current = false;
     };
   }, [Boolean(giftingProduct)]);
+
+  function handleCloseWelcomeModal() {
+    setWelcomeModalOpen(false);
+    try {
+      window.localStorage.setItem(WELCOME_STORAGE_KEY, 'true');
+    } catch {
+      // Ignora erro caso armazenamento esteja bloqueado
+    }
+  }
 
   // Intercepta o botão "Voltar" no celular quando a gaveta de filtros mobile estiver aberta,
   // recolhendo a gaveta em vez de sair do site.
@@ -572,12 +597,22 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Sobre */}
+                {/* Sobre e Guia */}
                 <div className="mobile-drawer-section">
-                  <span className="mobile-drawer-label">Sobre</span>
+                  <span className="mobile-drawer-label">Sobre & Como Usar</span>
                   <p className="mobile-drawer-note">
                     <strong>O Jardim dos Presentes</strong> de Michèlé Joohann é uma curadoria de desejos e memórias especiais, onde cada presente é cultivado com carinho, significado e história.
                   </p>
+                  <button
+                    type="button"
+                    className="mobile-tag-btn welcome-reopen-drawer-btn"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setWelcomeModalOpen(true);
+                    }}
+                  >
+                    ✨ Abrir Boas-Vindas & Tour do Jardim
+                  </button>
                 </div>
 
                 {/* Contato */}
@@ -598,6 +633,7 @@ export default function App() {
           <div className="nav-item-dropdown">
             <button
               type="button"
+              data-tour="colecoes"
               className={`top-nav-link ${selectedCategories.length > 0 ? 'active' : ''}`}
               onClick={() => setOpenSubmenu(prev => prev === 'colecoes' ? null : 'colecoes')}
               aria-expanded={openSubmenu === 'colecoes'}
@@ -639,6 +675,7 @@ export default function App() {
           <div className="nav-item-dropdown">
             <button
               type="button"
+              data-tour="ordenacao"
               className={`top-nav-link ${priorityFilter !== 'all' || sort !== 'priority' ? 'active' : ''}`}
               onClick={() => setOpenSubmenu(prev => prev === 'ordenacao' ? null : 'ordenacao')}
               aria-expanded={openSubmenu === 'ordenacao'}
@@ -720,6 +757,21 @@ export default function App() {
             )}
           </div>
 
+          {/* Botão Guia do Jardim */}
+          <div className="nav-item-dropdown">
+            <button
+              type="button"
+              className={`top-nav-link ${welcomeModalOpen ? 'active' : ''}`}
+              onClick={() => {
+                setOpenSubmenu(null);
+                setWelcomeModalOpen(true);
+              }}
+              title="Ver boas-vindas e tour guiado do Jardim"
+            >
+              Guia do Jardim ✨
+            </button>
+          </div>
+
           {/* Menu Sobre */}
           <div className="nav-item-dropdown">
             <button
@@ -788,6 +840,7 @@ export default function App() {
             <>
               <button
                 type="button"
+                data-tour="mobile-filter"
                 className={`top-action-icon-btn top-action-filter-btn ${activeFilterCount > 0 ? 'has-active-filters' : ''} ${mobileMenuOpen ? 'menu-open' : ''}`}
                 title="Filtrar presentes e coleções"
                 aria-label="Abrir filtros e coleções"
@@ -806,6 +859,7 @@ export default function App() {
 
               <button
                 type="button"
+                data-tour="search"
                 className="top-action-icon-btn"
                 title="Buscar presentes"
                 aria-label="Abrir busca"
@@ -814,6 +868,20 @@ export default function App() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                className={`top-action-icon-btn top-action-guide-btn ${welcomeModalOpen ? 'active' : ''}`}
+                title="Guia de Boas-Vindas do Jardim"
+                aria-label="Abrir guia de boas-vindas e instruções"
+                onClick={() => setWelcomeModalOpen(true)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
                 </svg>
               </button>
             </>
@@ -897,6 +965,13 @@ export default function App() {
         <p className="footer-title">O Jardim dos Presentes</p>
         <p className="footer-subtitle">Curadoria feita com carinho por Michèlé Joohann</p>
       </footer>
+
+      {welcomeModalOpen && (
+        <WelcomeModal
+          baseUrl={baseUrl}
+          onClose={handleCloseWelcomeModal}
+        />
+      )}
 
       {giftingProduct && (
         <Suspense fallback={null}>
