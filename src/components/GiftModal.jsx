@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { createLoveMessage } from '../services/gardenConfigService.js';
 import { createReservation } from '../services/reservationService.js';
 import { resolveImageUrl } from '../services/productService.js';
 
-export default function GiftModal({ product, user, onClose, onReserved }) {
+export default function GiftModal({ product, user, gardenSettings, onClose, onReserved }) {
   const [intent, setIntent] = useState('reserved'); // 'reserved' (Vou comprar) ou 'received' (Já comprei)
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [name, setName] = useState('');
@@ -58,6 +59,24 @@ export default function GiftModal({ product, user, onClose, onReserved }) {
         isAnonymous,
         visitorUid: user.uid,
       });
+
+      if (message.trim()) {
+        try {
+          const autoApprove = gardenSettings?.autoApproveMessages !== false;
+          const publicWall = gardenSettings?.publicWallVisible !== false;
+          await createLoveMessage({
+            authorUid: user.uid,
+            authorName: name.trim(),
+            isAnonymous,
+            message: message.trim(),
+            giftName: product.name || '',
+            productId: product.id || '',
+            visible: publicWall && autoApprove,
+          });
+        } catch (msgErr) {
+          console.warn('Recado salvo na reserva privada, mas não espelhado no mural:', msgErr);
+        }
+      }
 
       setSuccess(true);
       if (onReserved) onReserved(product.id, intent);

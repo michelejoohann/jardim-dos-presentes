@@ -4,11 +4,18 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './firebase/config.js';
 import ProductCard from './components/ProductCard.jsx';
 import WelcomeModal from './components/WelcomeModal.jsx';
+import GardenSpecialSections from './components/GardenSpecialSections.jsx';
 import { cancelReservation, subscribeToPublicReservations } from './services/reservationService.js';
+import {
+  DEFAULT_GARDEN_SETTINGS,
+  subscribeToGardenSettings,
+  subscribeToLoveMessages,
+} from './services/gardenConfigService.js';
 
 const AdminMigrationPanel = lazy(() => import('./components/AdminMigrationPanel.jsx'));
 const GiftModal = lazy(() => import('./components/GiftModal.jsx'));
 
+const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
 const WELCOME_STORAGE_KEY = 'jardim_welcome_seen_v2';
 
 const categoryLabels = {
@@ -62,6 +69,9 @@ export default function App() {
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [sort, setSort] = useState('priority');
   const [publicReservations, setPublicReservations] = useState({});
+  const [gardenSettings, setGardenSettings] = useState(DEFAULT_GARDEN_SETTINGS);
+  const [loveMessages, setLoveMessages] = useState([]);
+  const [adminInitialTab, setAdminInitialTab] = useState('products');
   const [giftingProduct, setGiftingProduct] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -89,7 +99,10 @@ export default function App() {
     return 'catalog';
   });
 
-  function navigateTo(route) {
+  function navigateTo(route, tab = 'products') {
+    if (route === 'admin' && tab) {
+      setAdminInitialTab(tab);
+    }
     setCurrentRoute(route);
     if (typeof window !== 'undefined') {
       if (route === 'admin') {
@@ -258,11 +271,23 @@ export default function App() {
       }
     );
 
+    const unsubscribeSettings = subscribeToGardenSettings(settings => {
+      if (!active) return;
+      setGardenSettings(settings);
+    });
+
+    const unsubscribeLoveMessages = subscribeToLoveMessages(messages => {
+      if (!active) return;
+      setLoveMessages(messages);
+    });
+
     return () => {
       active = false;
       unsubscribeAuth();
       unsubscribeProducts();
       unsubscribeReservations();
+      unsubscribeSettings();
+      unsubscribeLoveMessages();
     };
   }, []);
 
@@ -421,6 +446,9 @@ export default function App() {
               onNavigateHome={() => navigateTo('catalog')}
               onClose={() => navigateTo('catalog')}
               products={firestoreProducts}
+              gardenSettings={gardenSettings}
+              loveMessages={loveMessages}
+              initialTab={adminInitialTab}
             />
           </Suspense>
         </main>
@@ -613,6 +641,32 @@ export default function App() {
                   >
                     ✨ Abrir Boas-Vindas & Tour do Jardim
                   </button>
+                  <div className="mobile-drawer-tags" style={{ marginTop: '10px' }}>
+                    {gardenSettings.pixEnabled !== false && Boolean(gardenSettings.pixKey?.trim()) && (
+                      <button
+                        type="button"
+                        className="mobile-tag-btn"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        💎 Mimo via PIX
+                      </button>
+                    )}
+                    {gardenSettings.messagesSectionEnabled !== false && (
+                      <button
+                        type="button"
+                        className="mobile-tag-btn"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          document.getElementById('secao-mensagens')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        💌 Mensagens de Carinho
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Contato */}
@@ -771,6 +825,39 @@ export default function App() {
               Guia do Jardim ✨
             </button>
           </div>
+
+          {/* Atalhos rápidos para PIX e Mensagens de Carinho */}
+          {gardenSettings.pixEnabled !== false && Boolean(gardenSettings.pixKey?.trim()) && (
+            <div className="nav-item-dropdown">
+              <button
+                type="button"
+                className="top-nav-link"
+                onClick={() => {
+                  setOpenSubmenu(null);
+                  document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                title="Ir para a seção de Mimo via PIX"
+              >
+                PIX 💎
+              </button>
+            </div>
+          )}
+
+          {gardenSettings.messagesSectionEnabled !== false && (
+            <div className="nav-item-dropdown">
+              <button
+                type="button"
+                className="top-nav-link"
+                onClick={() => {
+                  setOpenSubmenu(null);
+                  document.getElementById('secao-mensagens')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                title="Deixar ou ler Mensagens de Carinho"
+              >
+                Recados 💌
+              </button>
+            </div>
+          )}
 
           {/* Menu Sobre */}
           <div className="nav-item-dropdown">
@@ -950,6 +1037,16 @@ export default function App() {
               : 'O Jardim dos Presentes está sendo preparado com muito carinho. Volte em breve para conferir as novidades! 🌿'}
           </p>
         )}
+
+        <GardenSpecialSections
+          settings={gardenSettings}
+          loveMessages={loveMessages}
+          messages={loveMessages}
+          user={user}
+          isAdmin={user?.uid === ADMIN_UID}
+          baseUrl={baseUrl}
+          onNavigateAdminSettings={() => navigateTo('admin', 'settings')}
+        />
       </main>
 
       {/* Rodapé Especial com a Logo Michèlé Joohann */}
@@ -978,6 +1075,7 @@ export default function App() {
           <GiftModal
             product={giftingProduct}
             user={user}
+            gardenSettings={gardenSettings}
             onClose={() => setGiftingProduct(null)}
           />
         </Suspense>

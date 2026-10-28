@@ -245,28 +245,76 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
 
     const tourElement = (
       <div className="tour-overlay-root" role="dialog" aria-modal="true" aria-label={currentStep.title}>
-        {/* Camada clicável para fechar/pular se clicar fora */}
-        <div className="tour-click-catcher" onClick={onClose} aria-hidden="true" />
-
-        {/* Recorte Iluminado (Spotlight) ao redor do elemento real da página */}
-        {spotlightRect && (
-          <div
-            className="tour-spotlight-ring"
-            style={{
-              top: `${spotlightRect.top}px`,
-              left: `${spotlightRect.left}px`,
-              width: `${spotlightRect.width}px`,
-              height: `${spotlightRect.height}px`,
-            }}
-            aria-hidden="true"
-          />
+        {/* Camada escura ao redor do recorte (4 painéis sem usar box-shadow 9999px que falha em GPUs mobile One UI) */}
+        {spotlightRect ? (
+          <>
+            <div
+              className="tour-dim-panel"
+              style={{
+                top: 0,
+                left: 0,
+                right: 0,
+                height: `${Math.max(0, spotlightRect.top)}px`,
+              }}
+              onClick={onClose}
+              aria-hidden="true"
+            />
+            <div
+              className="tour-dim-panel"
+              style={{
+                top: `${ Math.max(0, spotlightRect.top + spotlightRect.height) }px`,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+              onClick={onClose}
+              aria-hidden="true"
+            />
+            <div
+              className="tour-dim-panel"
+              style={{
+                top: `${Math.max(0, spotlightRect.top)}px`,
+                left: 0,
+                width: `${Math.max(0, spotlightRect.left)}px`,
+                height: `${Math.max(0, spotlightRect.height)}px`,
+              }}
+              onClick={onClose}
+              aria-hidden="true"
+            />
+            <div
+              className="tour-dim-panel"
+              style={{
+                top: `${Math.max(0, spotlightRect.top)}px`,
+                left: `${Math.max(0, spotlightRect.left + spotlightRect.width)}px`,
+                right: 0,
+                height: `${Math.max(0, spotlightRect.height)}px`,
+              }}
+              onClick={onClose}
+              aria-hidden="true"
+            />
+            <div
+              className="tour-spotlight-ring"
+              style={{
+                top: `${spotlightRect.top}px`,
+                left: `${spotlightRect.left}px`,
+                width: `${spotlightRect.width}px`,
+                height: `${spotlightRect.height}px`,
+              }}
+              aria-hidden="true"
+            />
+          </>
+        ) : (
+          <div className="tour-dim-panel tour-dim-full" onClick={onClose} aria-hidden="true" />
         )}
 
-        {/* Tooltip Contextual Estilo Herbário Vitoriano */}
+        {/* Tooltip Contextual Estilo Herbário Vitoriano (100% opaco em todos os dispositivos) */}
         <div
           ref={tooltipRef}
           className={`tour-tooltip-card placement-${tooltipPlacement}`}
-          style={tooltipStyle}
+          style={{
+            ...tooltipStyle,
+            backgroundColor: '#fbf8f1',
+          }}
           onClick={e => e.stopPropagation()}
         >
           {tooltipPlacement !== 'center' && (
@@ -350,7 +398,11 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
       aria-modal="true"
       aria-labelledby="welcome-modal-title"
     >
-      <div className="modal-card welcome-modal-card" onClick={event => event.stopPropagation()}>
+      <div
+        className="modal-card welcome-modal-card"
+        style={{ backgroundColor: '#fbf8f1' }}
+        onClick={event => event.stopPropagation()}
+      >
         <button
           type="button"
           className="modal-close-button welcome-close-button"
@@ -362,8 +414,8 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
         </button>
 
         {/* Container rolável que envolve tanto o texto quanto a moldura de heras conectadas */}
-        <div className="welcome-modal-scroll">
-          <div className="welcome-modal-inner">
+        <div className="welcome-modal-scroll" style={{ backgroundColor: '#fbf8f1' }}>
+          <div className="welcome-modal-inner" style={{ backgroundColor: '#fbf8f1' }}>
             {/* Partículas luminosas mágicas ao redor */}
             <div className="welcome-magic-sparkles" aria-hidden="true">
               <span className="magic-sparkle s1" />

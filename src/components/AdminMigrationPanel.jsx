@@ -16,6 +16,13 @@ import {
   generateCsvTemplate,
   parseCsvToProducts,
 } from '../services/csvService.js';
+import {
+  DEFAULT_GARDEN_SETTINGS,
+  createLoveMessage,
+  deleteLoveMessage,
+  saveGardenSettings,
+  toggleLoveMessageVisibility,
+} from '../services/gardenConfigService.js';
 
 const ADMIN_UID = '7G4v3hEMtaVzI8MUDsXjVCNXGJz1';
 
@@ -100,6 +107,9 @@ export default function AdminMigrationPanel({
   onClose,
   onNavigateHome,
   products = [],
+  gardenSettings = DEFAULT_GARDEN_SETTINGS,
+  loveMessages = [],
+  initialTab = 'products',
 }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -109,8 +119,29 @@ export default function AdminMigrationPanel({
   const [reservations, setReservations] = useState([]);
   const [reservationsLoading, setReservationsLoading] = useState(true);
 
-  // Controle de abas: 'products' | 'messages' | 'backup'
-  const [activeTab, setActiveTab] = useState('products');
+  // Controle de abas: 'products' | 'messages' | 'settings' | 'backup'
+  const [activeTab, setActiveTab] = useState(initialTab || 'products');
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
+  // Estado editável para Configurações de PIX e Mensagens de Carinho
+  const [settingsForm, setSettingsForm] = useState(() => ({
+    ...DEFAULT_GARDEN_SETTINGS,
+    ...(gardenSettings || {}),
+  }));
+
+  useEffect(() => {
+    if (gardenSettings) {
+      setSettingsForm(prev => ({
+        ...prev,
+        ...gardenSettings,
+      }));
+    }
+  }, [gardenSettings]);
 
   // Estado do modal de criar / editar presente
   const [editingProduct, setEditingProduct] = useState(null);
@@ -444,6 +475,107 @@ export default function AdminMigrationPanel({
     return products.filter(p => p.enabled === false || p.published === false || p.visible === false).length;
   }, [products]);
 
+  const loveMessagesById = useMemo(() => {
+    return loveMessages.reduce((acc, msg) => {
+      acc[msg.id] = msg;
+      return acc;
+    }, {});
+  }, [loveMessages]);
+
+  async function handleSaveSettings(event, customNotice = '✨ Configurações de PIX e Mural de Carinho salvas com sucesso!') {
+    if (event?.preventDefault) event.preventDefault();
+    setBusy(true);
+    setError('');
+    setMessage('');
+    try {
+      await saveGardenSettings(settingsForm, user?.uid || ADMIN_UID);
+      setMessage(customNotice);
+    } catch (err) {
+      setError('Não foi possível salvar as configurações: ' + (err?.message || 'Erro inesperado.'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleQuickSettingToggle(field, value, labelMsg) {
+    const nextForm = {
+      ...settingsForm,
+      [field]: value,
+    };
+    setSettingsForm(nextForm);
+    setBusy(true);
+    setError('');
+    setMessage('');
+    try {
+      await saveGardenSettings(nextForm, user?.uid || ADMIN_UID);
+      setMessage(labelMsg);
+    } catch (err) {
+      setError('Não foi possível atualizar a configuração: ' + (err?.message || 'Erro inesperado.'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleToggleLoveMessage(msg) {
+    const nextPublic = msg.isPublic === false;
+    try {
+      await toggleLoveMessageVisibility(msg.id, nextPublic);
+      setMessage(
+        nextPublic
+          ? `🟢 A mensagem de "${msg.isAnonymous ? 'Amigo(a) Secreto(a)' : msg.authorName}" agora está VISÍVEL para todos na página.`
+          : `⚪ A mensagem de "${msg.isAnonymous ? 'Amigo(a) Secreto(a)' : msg.authorName}" agora está OCULTA da página (visível só para você).`
+      );
+    } catch (err) {
+      setError('Erro ao alterar visibilidade da mensagem: ' + err.message);
+    }
+  }
+
+  async function handleDeleteLoveMsg(msg) {
+    const confirmed = window.confirm(
+      `Deseja remover esta mensagem de "${msg.isAnonymous ? 'Amigo(a) Secreto(a)' : msg.authorName}" do mural?`
+    );
+    if (!confirmed) return;
+    try {
+      await deleteLoveMessage(msg.id);
+      setMessage('Mensagem removida do mural com sucesso.');
+    } catch (err) {
+      setError('Erro ao excluir mensagem: ' + err.message);
+    }
+  }
+
+  async function handleToggleGiftMessageOnWall(res, product) {
+    const wallDocId = `gift_${res.id}`;
+    const existingWallMsg = loveMessagesById[wallDocId];
+
+    try {
+      if (existingWallMsg) {
+        const nextPublic = existingWallMsg.isPublic === false;
+        await toggleLoveMessageVisibility(wallDocId, nextPublic);
+        setMessage(
+          nextPublic
+            ? '🟢 Recado do presente publicado no Mural de Carinho da página!'
+            : '⚪ Recado do presente ocultado do Mural público (continua salvo aqui para você).'
+        );
+      } else {
+        await createLoveMessage(
+          {
+            authorUid: user?.uid || ADMIN_UID,
+            authorName: res.name || 'Pessoa querida',
+            isAnonymous: Boolean(res.isAnonymous),
+            message: res.message,
+            giftName: product?.name || res.productId,
+            sentPix: false,
+            isPublic: true,
+          },
+          wallDocId
+        );
+        setMessage('🟢 Recado do presente publicado no Mural de Carinho da página!');
+      }
+    } catch (err) {
+      setError('Não foi possível atualizar o recado no mural: ' + err.message);
+    }
+  }
+
   const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
   // Se estiver criando ou editando um presente, exibe a tela de edição fluída (sem modal)
@@ -652,7 +784,14 @@ export default function AdminMigrationPanel({
           className={`admin-tab-btn ${activeTab === 'messages' ? 'active' : ''}`}
           onClick={() => setActiveTab('messages')}
         >
-          💌 Mensagens & Recados ({reservations.length})
+          💌 Mensagens & Recados ({reservations.length + loveMessages.length})
+        </button>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('settings')}
+        >
+          💎 PIX & Mural de Carinho
         </button>
         <button
           type="button"
@@ -944,9 +1083,128 @@ export default function AdminMigrationPanel({
       {/* CONTEÚDO DA ABA 2: MENSAGENS E RECADOS */}
       {activeTab === 'messages' && (
         <div className="admin-tab-content">
-          <div className="admin-gifts-header">
-            <h3>💌 Mensagens e Presentes Recebidos ({reservations.length})</h3>
-            <p>Veja quem marcou ou comprou presentes e leia os recados especiais deixados para você:</p>
+          {/* BARRA DE CONTROLE RÁPIDO DE VISIBILIDADE DO MURAL */}
+          <div className="admin-wall-quick-bar">
+            <div className="admin-wall-quick-info">
+              <span className="admin-wall-quick-icon">💌</span>
+              <div>
+                <h4>Visibilidade do Mural de Carinho na Página</h4>
+                <p>
+                  Escolha se as mensagens deixadas pelos convidados ficam visíveis na página pública para todos lerem ou se ficam privadas apenas para você neste painel.
+                </p>
+              </div>
+            </div>
+            <div className="admin-wall-quick-actions">
+              <button
+                type="button"
+                disabled={busy}
+                className={`badge-visibility-toggle ${settingsForm.publicWallVisible !== false ? 'is-enabled' : 'is-disabled'}`}
+                onClick={() =>
+                  handleQuickSettingToggle(
+                    'publicWallVisible',
+                    settingsForm.publicWallVisible === false,
+                    settingsForm.publicWallVisible === false
+                      ? '🟢 O Mural de Carinho agora está VISÍVEL na página para todos!'
+                      : '🔒 O Mural de Carinho agora está PRIVADO (visível apenas para você no painel).'
+                  )
+                }
+              >
+                {settingsForm.publicWallVisible !== false
+                  ? '🟢 Mural Visível para Todos na Página'
+                  : '🔒 Mural Privado (Só para mim)'}
+              </button>
+
+              <button
+                type="button"
+                className="secondary-button"
+                style={{ padding: '8px 14px', fontSize: '0.82rem' }}
+                onClick={() => setActiveTab('settings')}
+              >
+                ⚙️ Configurar Seção & PIX →
+              </button>
+            </div>
+          </div>
+
+          {/* SEÇÃO 1: MURAL DE MENSAGENS DE CARINHO (AVULSAS E DO MURAL) */}
+          <div className="admin-gifts-header" style={{ marginTop: '20px' }}>
+            <h3>🌸 Cartinhas da Seção &ldquo;Mensagens de Carinho&rdquo; ({loveMessages.length})</h3>
+            <p>
+              Mensagens deixadas diretamente na seção de carinho da página (ou sincronizadas dos presentes). Você pode escolher individualmente quais aparecem no mural público:
+            </p>
+          </div>
+
+          {loveMessages.length === 0 ? (
+            <p className="empty-state" style={{ padding: '20px 0' }}>
+              Nenhuma mensagem avulsa deixada no mural ainda. Assim que alguém escrever um recadinho na página, ele aparecerá aqui! 💌
+            </p>
+          ) : (
+            <div className="admin-gifts-list">
+              {loveMessages.map(msg => {
+                const dateStr = msg.createdAt?.toDate
+                  ? msg.createdAt.toDate().toLocaleDateString('pt-BR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : 'Recentemente';
+                const isMsgPublic = msg.isPublic !== false;
+
+                return (
+                  <article key={msg.id} className="admin-gift-card">
+                    <div className="admin-gift-card-header">
+                      <div>
+                        <div className="admin-msg-badges-row">
+                          <span className={`gift-tag ${isMsgPublic ? 'available' : 'reserved'}`}>
+                            {isMsgPublic ? '🟢 Visível no Mural Público' : '🔒 Privada (Só para você)'}
+                          </span>
+                          {msg.sentPix && (
+                            <span className="gift-tag done">💎 Enviou Mimo via PIX</span>
+                          )}
+                          {msg.giftName && (
+                            <span className="gift-tag reserved">🎁 Presente: {msg.giftName}</span>
+                          )}
+                        </div>
+                        <h4>
+                          {msg.isAnonymous ? '🕵️ Amigo(a) Secreto(a) (Anônimo)' : (msg.authorName || 'Pessoa querida')}
+                        </h4>
+                        <span className="donor-date">{dateStr}</span>
+                      </div>
+
+                      <div className="admin-msg-card-actions">
+                        <button
+                          type="button"
+                          className={`badge-visibility-toggle ${isMsgPublic ? 'is-enabled' : 'is-disabled'}`}
+                          onClick={() => handleToggleLoveMessage(msg)}
+                          title={isMsgPublic ? 'Ocultar esta mensagem da página pública' : 'Tornar esta mensagem visível na página para todos'}
+                        >
+                          {isMsgPublic ? '🟢 Visível na página' : '⚪ Oculta da página'}
+                        </button>
+                        <button
+                          type="button"
+                          className="table-action-btn delete"
+                          onClick={() => handleDeleteLoveMsg(msg)}
+                          title="Excluir esta mensagem"
+                        >
+                          🗑️ Excluir
+                        </button>
+                      </div>
+                    </div>
+
+                    <blockquote className="admin-gift-message">
+                      “{msg.message}”
+                    </blockquote>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          {/* SEÇÃO 2: PRESENTES MARCADOS E VOTOS DOS PRESENTES */}
+          <div className="admin-gifts-header" style={{ marginTop: '36px' }}>
+            <h3>🎁 Presentes Marcados & Recados de Presentes ({reservations.length})</h3>
+            <p>Veja quem marcou ou comprou presentes da lista e os votos enviados junto com a escolha:</p>
           </div>
 
           {reservationsLoading && <p className="notice">Carregando mensagens com carinho…</p>}
@@ -964,6 +1222,8 @@ export default function AdminMigrationPanel({
                 const dateStr = res.createdAt?.toDate
                   ? res.createdAt.toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
                   : 'Recentemente';
+                const wallDoc = loveMessagesById[`gift_${res.id}`];
+                const isPublishedOnWall = wallDoc ? wallDoc.isPublic !== false : false;
 
                 return (
                   <article key={res.id} className="admin-gift-card">
@@ -975,14 +1235,26 @@ export default function AdminMigrationPanel({
                         <h4>{product?.name || res.productId}</h4>
                         {product?.priceLabel && <span className="gift-price">{product.priceLabel}</span>}
                       </div>
-                      <button
-                        type="button"
-                        className="text-link-button"
-                        onClick={() => handleCancelGift(res.productId, product?.name || res.productId)}
-                        title="Liberar presente de volta ao catálogo"
-                      >
-                        Liberar item ↺
-                      </button>
+                      <div className="admin-msg-card-actions">
+                        {res.message && (
+                          <button
+                            type="button"
+                            className={`badge-visibility-toggle ${isPublishedOnWall ? 'is-enabled' : 'is-disabled'}`}
+                            onClick={() => handleToggleGiftMessageOnWall(res, product)}
+                            title="Exibir ou ocultar este recado no Mural de Carinho da página"
+                          >
+                            {isPublishedOnWall ? '🟢 No Mural Público' : '⚪ Exibir no Mural'}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="text-link-button"
+                          onClick={() => handleCancelGift(res.productId, product?.name || res.productId)}
+                          title="Liberar presente de volta ao catálogo"
+                        >
+                          Liberar item ↺
+                        </button>
+                      </div>
                     </div>
 
                     <div className="admin-gift-donor">
@@ -1005,6 +1277,255 @@ export default function AdminMigrationPanel({
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* CONTEÚDO DA ABA 3: PIX & MURAL DE CARINHO (CONFIGURAÇÕES FÁCEIS) */}
+      {activeTab === 'settings' && (
+        <div className="admin-tab-content">
+          <form className="admin-settings-grid" onSubmit={handleSaveSettings}>
+            {/* CARD 1: CONFIGURAÇÃO DA SEÇÃO DE PIX */}
+            <div className="admin-data-card highlight">
+              <div className="admin-data-card-header">
+                <span className="admin-data-card-icon">💎</span>
+                <div>
+                  <h3>Configuração da Seção de PIX</h3>
+                  <p>
+                    Configure facilmente sua chave PIX para que os convidados possam copiar com 1 clique e enviar um mimo livre diretamente para você.
+                  </p>
+                </div>
+              </div>
+
+              <div className="admin-settings-toggles-list">
+                <label className="admin-setting-switch-row">
+                  <input
+                    type="checkbox"
+                    checked={settingsForm.pixEnabled !== false}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixEnabled: e.target.checked }))
+                    }
+                  />
+                  <div className="admin-setting-switch-text">
+                    <strong>Exibir seção de PIX na página pública</strong>
+                    <span>Quando ativado, a seção &ldquo;Mimo Livre via PIX&rdquo; aparece no Jardim com botão de copiar chave.</span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="admin-settings-fields-grid">
+                <label className="admin-setting-field">
+                  <span>Tipo de Chave PIX</span>
+                  <select
+                    value={settingsForm.pixKeyType || 'Chave PIX'}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixKeyType: e.target.value }))
+                    }
+                  >
+                    <option value="E-mail">📧 E-mail</option>
+                    <option value="Celular / WhatsApp">📱 Celular / WhatsApp</option>
+                    <option value="CPF">🪪 CPF</option>
+                    <option value="Chave Aleatória">🔑 Chave Aleatória</option>
+                    <option value="PIX Copia e Cola">📋 Código PIX Copia e Cola</option>
+                  </select>
+                </label>
+
+                <label className="admin-setting-field">
+                  <span>Sua Chave PIX *</span>
+                  <input
+                    type="text"
+                    value={settingsForm.pixKey || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixKey: e.target.value }))
+                    }
+                    placeholder="Ex: michelejoohann@gmail.com, celular ou chave aleatória"
+                  />
+                </label>
+
+                <label className="admin-setting-field">
+                  <span>Nome do Favorecido (Titular)</span>
+                  <input
+                    type="text"
+                    value={settingsForm.pixHolderName || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixHolderName: e.target.value }))
+                    }
+                    placeholder="Ex: Michèlé Joohann"
+                  />
+                </label>
+
+                <label className="admin-setting-field">
+                  <span>Instituição / Banco (Opcional)</span>
+                  <input
+                    type="text"
+                    value={settingsForm.pixBank || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixBank: e.target.value }))
+                    }
+                    placeholder="Ex: Nubank, Itaú, Inter..."
+                  />
+                </label>
+
+                <label className="admin-setting-field full-width">
+                  <span>Título da Seção de PIX</span>
+                  <input
+                    type="text"
+                    value={settingsForm.pixTitle || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixTitle: e.target.value }))
+                    }
+                    placeholder="Ex: Mimo Livre via PIX"
+                  />
+                </label>
+
+                <label className="admin-setting-field full-width">
+                  <span>Texto de convite da seção de PIX</span>
+                  <textarea
+                    rows={3}
+                    value={settingsForm.pixDescription || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixDescription: e.target.value }))
+                    }
+                    placeholder="Caso prefira presentear com qualquer valor livre para ajudar a florir este jardim, sinta-se à vontade para enviar um mimo via PIX."
+                  />
+                </label>
+
+                <label className="admin-setting-field full-width">
+                  <span>URL da Imagem do QR Code PIX (Opcional)</span>
+                  <input
+                    type="url"
+                    value={settingsForm.pixQrCodeUrl || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, pixQrCodeUrl: e.target.value }))
+                    }
+                    placeholder="https://... (deixe em branco para exibir apenas a chave com botão de copiar)"
+                  />
+                </label>
+              </div>
+
+              <div className="admin-data-actions-row">
+                <button
+                  type="submit"
+                  className="primary-button"
+                  disabled={busy}
+                >
+                  {busy ? 'Salvando…' : '💾 Salvar Configurações de PIX'}
+                </button>
+              </div>
+            </div>
+
+            {/* CARD 2: CONFIGURAÇÃO DA SEÇÃO DE MENSAGENS DE CARINHO */}
+            <div className="admin-data-card highlight">
+              <div className="admin-data-card-header">
+                <span className="admin-data-card-icon">💌</span>
+                <div>
+                  <h3>Configuração da Seção &ldquo;Mensagens de Carinho&rdquo;</h3>
+                  <p>
+                    Defina se você quer deixar o mural de mensagens visível na página para todos os visitantes ou se prefere que os recados fiquem visíveis apenas para você no painel administrativo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="admin-settings-toggles-list">
+                <label className="admin-setting-switch-row">
+                  <input
+                    type="checkbox"
+                    checked={settingsForm.messagesSectionEnabled !== false}
+                    onChange={e =>
+                      setSettingsForm(prev => ({
+                        ...prev,
+                        messagesSectionEnabled: e.target.checked,
+                      }))
+                    }
+                  />
+                  <div className="admin-setting-switch-text">
+                    <strong>Exibir seção para envio de Mensagens de Carinho na página</strong>
+                    <span>Permite que qualquer pessoa querida deixe uma cartinha de afeto para você no Jardim.</span>
+                  </div>
+                </label>
+
+                <label className="admin-setting-switch-row">
+                  <input
+                    type="checkbox"
+                    checked={settingsForm.publicWallVisible !== false}
+                    onChange={e =>
+                      setSettingsForm(prev => ({
+                        ...prev,
+                        publicWallVisible: e.target.checked,
+                      }))
+                    }
+                  />
+                  <div className="admin-setting-switch-text">
+                    <strong>Deixar as mensagens visíveis na página para todos (Mural Público)</strong>
+                    <span>
+                      Se marcado, os visitantes poderão ler o Mural de Carinho na página. Se desmarcado, os visitantes ainda poderão enviar recados pelo formulário, mas somente você lerá aqui no painel.
+                    </span>
+                  </div>
+                </label>
+
+                <label className="admin-setting-switch-row">
+                  <input
+                    type="checkbox"
+                    checked={settingsForm.autoApproveMessages !== false}
+                    onChange={e =>
+                      setSettingsForm(prev => ({
+                        ...prev,
+                        autoApproveMessages: e.target.checked,
+                      }))
+                    }
+                  />
+                  <div className="admin-setting-switch-text">
+                    <strong>Publicar novas mensagens automaticamente no mural</strong>
+                    <span>
+                      Se desmarcado, novas mensagens chegam ocultas por padrão e só aparecem no mural público quando você clicar em &ldquo;Visível na página&rdquo; na aba Mensagens.
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="admin-settings-fields-grid">
+                <label className="admin-setting-field full-width">
+                  <span>Título da Seção de Mensagens</span>
+                  <input
+                    type="text"
+                    value={settingsForm.messagesTitle || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, messagesTitle: e.target.value }))
+                    }
+                    placeholder="Ex: Mensagens de Carinho"
+                  />
+                </label>
+
+                <label className="admin-setting-field full-width">
+                  <span>Subtítulo / Convite da Seção</span>
+                  <textarea
+                    rows={3}
+                    value={settingsForm.messagesSubtitle || ''}
+                    onChange={e =>
+                      setSettingsForm(prev => ({ ...prev, messagesSubtitle: e.target.value }))
+                    }
+                    placeholder="Deixe um recadinho especial, votos de felicidade ou uma palavra de afeto..."
+                  />
+                </label>
+              </div>
+
+              <div className="admin-data-actions-row">
+                <button
+                  type="submit"
+                  className="primary-button"
+                  disabled={busy}
+                >
+                  {busy ? 'Salvando…' : '💾 Salvar Configurações de Mensagens'}
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => setActiveTab('messages')}
+                >
+                  💌 Ver Recados Recebidos ({loveMessages.length})
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       )}
 
