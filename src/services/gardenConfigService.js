@@ -22,7 +22,7 @@ export const DEFAULT_GARDEN_SETTINGS = {
     'Deixe uma cartinha, votos de felicidade ou uma mensagem especial para florescer neste Jardim.',
 
   // Configurações da seção de PIX
-  pixEnabled: false,
+  pixEnabled: true,
   pixKey: '',
   pixKeyType: 'E-mail',
   pixHolderName: 'Michèlé Joohann',

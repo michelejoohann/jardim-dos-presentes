@@ -22,9 +22,9 @@ export default function GardenSpecialSections({
   const [copiedPix, setCopiedPix] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const pixEnabled = Boolean(settings?.pixEnabled);
+  const pixEnabled = settings?.pixEnabled !== false;
   const hasPixData = Boolean(settings?.pixKey?.trim() || settings?.pixQrCodeUrl?.trim());
-  const showPixSection = (pixEnabled && hasPixData) || isAdmin;
+  const showPixSection = pixEnabled || isAdmin;
 
   const messagesSectionEnabled = settings?.messagesSectionEnabled !== false;
   const publicWallVisible = settings?.publicWallVisible !== false;
@@ -145,7 +145,7 @@ export default function GardenSpecialSections({
               </div>
             )}
 
-            <div className="special-section-header">
+            <div className="special-section-header" data-tour="secao-pix">
               <span className="section-kicker">✨ Gesto Livre de Carinho ✨</span>
               <h2 id="pix-section-title">{settings?.pixTitle || 'Mimo Livre via PIX'}</h2>
               <p className="special-section-subtitle">

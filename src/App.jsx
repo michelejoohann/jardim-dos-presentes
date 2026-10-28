@@ -642,7 +642,7 @@ export default function App() {
                     ✨ Abrir Boas-Vindas & Tour do Jardim
                   </button>
                   <div className="mobile-drawer-tags" style={{ marginTop: '10px' }}>
-                    {gardenSettings.pixEnabled !== false && Boolean(gardenSettings.pixKey?.trim()) && (
+                    {gardenSettings.pixEnabled !== false && (
                       <button
                         type="button"
                         className="mobile-tag-btn"
@@ -827,10 +827,11 @@ export default function App() {
           </div>
 
           {/* Atalhos rápidos para PIX e Mensagens de Carinho */}
-          {gardenSettings.pixEnabled !== false && Boolean(gardenSettings.pixKey?.trim()) && (
+          {gardenSettings.pixEnabled !== false && (
             <div className="nav-item-dropdown">
               <button
                 type="button"
+                data-tour="pix"
                 className="top-nav-link"
                 onClick={() => {
                   setOpenSubmenu(null);

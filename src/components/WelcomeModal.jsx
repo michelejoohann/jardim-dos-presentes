@@ -7,7 +7,7 @@ const TOUR_STEPS = [
   {
     id: 'colecoes',
     icon: '🌿',
-    badge: 'Passo 1 de 5 • Canteiros',
+    badge: 'Passo 1 de 6 • Canteiros',
     title: 'Filtros e Coleções',
     desktopSelector: '[data-tour="colecoes"]',
     mobileSelector: '[data-tour="mobile-filter"]',
@@ -17,7 +17,7 @@ const TOUR_STEPS = [
   {
     id: 'ordenacao',
     icon: '✨',
-    badge: 'Passo 2 de 5 • Organização',
+    badge: 'Passo 2 de 6 • Organização',
     title: 'Ordenação e Prioridades',
     desktopSelector: '[data-tour="ordenacao"]',
     mobileSelector: '[data-tour="mobile-filter"]',
@@ -27,7 +27,7 @@ const TOUR_STEPS = [
   {
     id: 'busca',
     icon: '🔍',
-    badge: 'Passo 3 de 5 • Pesquisa',
+    badge: 'Passo 3 de 6 • Pesquisa',
     title: 'Busca Instantânea',
     desktopSelector: '[data-tour="search"]',
     mobileSelector: '[data-tour="search"]',
@@ -37,7 +37,7 @@ const TOUR_STEPS = [
   {
     id: 'presentear',
     icon: '🎁',
-    badge: 'Passo 4 de 5 • Gesto de Carinho',
+    badge: 'Passo 4 de 6 • Gesto de Carinho',
     title: 'Marcação de Presentes e Lojas',
     desktopSelector: '.product-card .product-footer, .product-card',
     mobileSelector: '.product-card .product-footer, .product-card',
@@ -45,9 +45,19 @@ const TOUR_STEPS = [
       'Use "Ver na loja ↗" para abrir a loja sugerida. Em "Presentear", marque "⏳ Vou comprar" (para reservar) ou "🌸 Já comprei", podendo assinar seu nome ou enviar como amigo secreto com uma mensagem!',
   },
   {
+    id: 'pix',
+    icon: '💎',
+    badge: 'Passo 5 de 6 • Mimo Livre',
+    title: 'Presentear via PIX',
+    desktopSelector: '[data-tour="secao-pix"], #secao-pix, [data-tour="pix"]',
+    mobileSelector: '[data-tour="secao-pix"], #secao-pix, [data-tour="pix"]',
+    description:
+      'Prefere presentear com qualquer valor livre para ajudar a florir este jardim? Na seção de PIX (ou pelo atalho "PIX 💎" no menu), você pode copiar a chave com 1 clique ou usar o QR Code!',
+  },
+  {
     id: 'recados',
     icon: '💌',
-    badge: 'Passo 5 de 5 • Cartinhas & Afeto',
+    badge: 'Passo 6 de 6 • Cartinhas & Afeto',
     title: 'Recados e Mensagens de Carinho',
     desktopSelector: '[data-tour="secao-recados"], #secao-mensagens',
     mobileSelector: '[data-tour="secao-recados"], #secao-mensagens',
@@ -137,7 +147,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     }
 
     const rect = targetEl.getBoundingClientRect();
-    const pad = currentStep.id === 'presentear' || currentStep.id === 'recados' ? 10 : 8;
+    const pad = currentStep.id === 'presentear' || currentStep.id === 'pix' || currentStep.id === 'recados' ? 10 : 8;
     const spRect = {
       top: rect.top - pad,
       left: rect.left - pad,
@@ -193,7 +203,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     const targetEl = findVisibleTarget(currentStep);
 
     if (targetEl) {
-      if (currentStep.id === 'presentear' || currentStep.id === 'recados') {
+      if (currentStep.id === 'presentear' || currentStep.id === 'pix' || currentStep.id === 'recados') {
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -499,7 +509,8 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
             <p className="welcome-tour-teaser">
               Preparamos um <strong>tour rápido e interativo</strong> diretamente na página para mostrar onde ficam os{' '}
               <strong>filtros de coleções</strong>, a <strong>ordenação por prioridades</strong>, a{' '}
-              <strong>marcação dos presentes</strong> e o espaço de <strong>recados de carinho</strong>.
+              <strong>marcação dos presentes</strong>, a opção de <strong>mimo via PIX</strong> e o espaço de{' '}
+              <strong>recados de carinho</strong>.
             </p>
 
             <div className="welcome-modal-footer">
