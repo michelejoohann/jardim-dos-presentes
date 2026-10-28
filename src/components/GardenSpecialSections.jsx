@@ -276,7 +276,7 @@ export default function GardenSpecialSections({
               </div>
             )}
 
-            <div className="special-section-header">
+            <div className="special-section-header" data-tour="secao-recados">
               <span className="section-kicker">💌 Cartinhas do Jardim 💌</span>
               <h2 id="messages-section-title">{settings?.messagesTitle || 'Mensagens de Carinho'}</h2>
               <p className="special-section-subtitle">

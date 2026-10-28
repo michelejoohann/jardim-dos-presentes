@@ -7,7 +7,7 @@ const TOUR_STEPS = [
   {
     id: 'colecoes',
     icon: '🌿',
-    badge: 'Passo 1 de 4 • Canteiros',
+    badge: 'Passo 1 de 5 • Canteiros',
     title: 'Filtros e Coleções',
     desktopSelector: '[data-tour="colecoes"]',
     mobileSelector: '[data-tour="mobile-filter"]',
@@ -17,7 +17,7 @@ const TOUR_STEPS = [
   {
     id: 'ordenacao',
     icon: '✨',
-    badge: 'Passo 2 de 4 • Organização',
+    badge: 'Passo 2 de 5 • Organização',
     title: 'Ordenação e Prioridades',
     desktopSelector: '[data-tour="ordenacao"]',
     mobileSelector: '[data-tour="mobile-filter"]',
@@ -27,7 +27,7 @@ const TOUR_STEPS = [
   {
     id: 'busca',
     icon: '🔍',
-    badge: 'Passo 3 de 4 • Pesquisa',
+    badge: 'Passo 3 de 5 • Pesquisa',
     title: 'Busca Instantânea',
     desktopSelector: '[data-tour="search"]',
     mobileSelector: '[data-tour="search"]',
@@ -37,12 +37,22 @@ const TOUR_STEPS = [
   {
     id: 'presentear',
     icon: '🎁',
-    badge: 'Passo 4 de 4 • Gesto de Carinho',
+    badge: 'Passo 4 de 5 • Gesto de Carinho',
     title: 'Marcação de Presentes e Lojas',
     desktopSelector: '.product-card .product-footer, .product-card',
     mobileSelector: '.product-card .product-footer, .product-card',
     description:
       'Use "Ver na loja ↗" para abrir a loja sugerida. Em "Presentear", marque "⏳ Vou comprar" (para reservar) ou "🌸 Já comprei", podendo assinar seu nome ou enviar como amigo secreto com uma mensagem!',
+  },
+  {
+    id: 'recados',
+    icon: '💌',
+    badge: 'Passo 5 de 5 • Cartinhas & Afeto',
+    title: 'Recados e Mensagens de Carinho',
+    desktopSelector: '[data-tour="secao-recados"], #secao-mensagens',
+    mobileSelector: '[data-tour="secao-recados"], #secao-mensagens',
+    description:
+      'Quer deixar votos especiais ou palavras de afeto? Nesta seção ao final da página (ou pelo atalho "Recados 💌" no menu), você pode enviar uma mensagem de carinho diretamente para a Michèlé Joohann!',
   },
 ];
 
@@ -127,7 +137,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     }
 
     const rect = targetEl.getBoundingClientRect();
-    const pad = currentStep.id === 'presentear' ? 10 : 8;
+    const pad = currentStep.id === 'presentear' || currentStep.id === 'recados' ? 10 : 8;
     const spRect = {
       top: rect.top - pad,
       left: rect.left - pad,
@@ -183,7 +193,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     const targetEl = findVisibleTarget(currentStep);
 
     if (targetEl) {
-      if (currentStep.id === 'presentear') {
+      if (currentStep.id === 'presentear' || currentStep.id === 'recados') {
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -488,8 +498,8 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
 
             <p className="welcome-tour-teaser">
               Preparamos um <strong>tour rápido e interativo</strong> diretamente na página para mostrar onde ficam os{' '}
-              <strong>filtros de coleções</strong>, a <strong>ordenação por prioridades</strong> e como funciona a{' '}
-              <strong>marcação dos presentes</strong>.
+              <strong>filtros de coleções</strong>, a <strong>ordenação por prioridades</strong>, a{' '}
+              <strong>marcação dos presentes</strong> e o espaço de <strong>recados de carinho</strong>.
             </p>
 
             <div className="welcome-modal-footer">
