@@ -5,6 +5,8 @@ import {
 } from '../services/gardenConfigService.js';
 import { resolveImageUrl } from '../services/productService.js';
 
+const IVY_SEGMENTS = [0, 1, 2, 3, 4, 5, 6, 7];
+
 export default function GardenSpecialSections({
   settings,
   loveMessages = [],
@@ -111,18 +113,30 @@ export default function GardenSpecialSections({
          ==================================================================== */}
       {showPixSection && (
         <section id="secao-pix" className="special-botanical-section pix-section" aria-labelledby="pix-section-title">
-          <img
-            src={`${baseUrl}/images/ivy-vine.png`}
-            alt=""
-            className="special-section-ivy special-section-ivy-left"
-            aria-hidden="true"
-          />
-          <img
-            src={`${baseUrl}/images/ivy-vine.png`}
-            alt=""
-            className="special-section-ivy special-section-ivy-right"
-            aria-hidden="true"
-          />
+          <div className="welcome-ivy-frame special-section-ivy-frame" aria-hidden="true">
+            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-left">
+              {IVY_SEGMENTS.map(idx => (
+                <img
+                  key={`pix-left-ivy-${idx}`}
+                  src={`${baseUrl}/images/ivy-vine.png`}
+                  alt=""
+                  className="welcome-ivy-watercolor-segment"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-right">
+              {IVY_SEGMENTS.map(idx => (
+                <img
+                  key={`pix-right-ivy-${idx}`}
+                  src={`${baseUrl}/images/ivy-vine.png`}
+                  alt=""
+                  className="welcome-ivy-watercolor-segment"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          </div>
 
           <div className="special-section-inner">
             {isAdmin && (!pixEnabled || !hasPixData) && (
@@ -242,18 +256,30 @@ export default function GardenSpecialSections({
           className="special-botanical-section love-messages-section"
           aria-labelledby="messages-section-title"
         >
-          <img
-            src={`${baseUrl}/images/ivy-vine.png`}
-            alt=""
-            className="special-section-ivy special-section-ivy-left"
-            aria-hidden="true"
-          />
-          <img
-            src={`${baseUrl}/images/ivy-vine.png`}
-            alt=""
-            className="special-section-ivy special-section-ivy-right"
-            aria-hidden="true"
-          />
+          <div className="welcome-ivy-frame special-section-ivy-frame" aria-hidden="true">
+            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-left">
+              {IVY_SEGMENTS.map(idx => (
+                <img
+                  key={`msg-left-ivy-${idx}`}
+                  src={`${baseUrl}/images/ivy-vine.png`}
+                  alt=""
+                  className="welcome-ivy-watercolor-segment"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-right">
+              {IVY_SEGMENTS.map(idx => (
+                <img
+                  key={`msg-right-ivy-${idx}`}
+                  src={`${baseUrl}/images/ivy-vine.png`}
+                  alt=""
+                  className="welcome-ivy-watercolor-segment"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          </div>
 
           <div className="special-section-inner">
             {isAdmin && (

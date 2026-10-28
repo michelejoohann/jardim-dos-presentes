@@ -7000,35 +7000,20 @@ body {
 
 .special-botanical-section {
   position: relative;
-  background: linear-gradient(180deg, #fdfbf7 0%, #f7f2e7 100%);
+  background-color: #fbf8f1;
   border: 1.5px solid rgba(173, 147, 99, 0.48);
   border-radius: 26px;
-  padding: clamp(26px, 4.5vw, 44px) clamp(28px, 5vw, 56px);
+  padding: clamp(28px, 4.5vw, 44px) clamp(68px, 9.5vw, 94px);
   box-shadow:
     0 16px 40px rgba(23, 49, 31, 0.08),
     inset 0 0 0 1px rgba(255, 255, 255, 0.75);
   overflow: hidden;
 }
 
-.special-section-ivy {
-  position: absolute;
-  top: 12px;
-  width: clamp(36px, 4.5vw, 54px);
-  height: auto;
-  max-height: calc(100% - 24px);
-  object-fit: contain;
-  opacity: 0.72;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.special-section-ivy-left {
-  left: 6px;
-}
-
-.special-section-ivy-right {
-  right: 6px;
-  transform: scaleX(-1);
+.special-section-ivy-frame .welcome-ivy-branch-wrap {
+  clip-path: none !important;
+  animation: none !important;
+  opacity: 0.92;
 }
 
 .special-section-inner {
@@ -7847,6 +7832,10 @@ body {
 }
 
 @media (max-width: 767px) {
+  .special-botanical-section {
+    padding: 20px 48px !important;
+  }
+
   .pix-showcase-grid.has-qr,
   .love-form-top-row,
   .admin-settings-fields-grid {
@@ -7876,6 +7865,12 @@ body {
   .admin-wall-quick-actions button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 374px) {
+  .special-botanical-section {
+    padding: 16px 36px !important;
   }
 }
 
