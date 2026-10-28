@@ -497,6 +497,75 @@ export default function AdminMigrationPanel({
     }
   }
 
+  function handleQrCodeFileUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Por favor, selecione um arquivo de imagem válido (PNG, JPG, WebP).');
+      event.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const rawDataUrl = e.target?.result;
+      if (typeof rawDataUrl !== 'string') return;
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const MAX_SIDE = 520;
+          let width = img.naturalWidth || img.width || 400;
+          let height = img.naturalHeight || img.height || 400;
+
+          if (width > MAX_SIDE || height > MAX_SIDE) {
+            if (width >= height) {
+              height = Math.round((height * MAX_SIDE) / width);
+              width = MAX_SIDE;
+            } else {
+              width = Math.round((width * MAX_SIDE) / height);
+              height = MAX_SIDE;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+
+          let optimizedDataUrl = canvas.toDataURL('image/webp', 0.9);
+          if (optimizedDataUrl.length > 650000) {
+            optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          }
+
+          setSettingsForm(prev => ({
+            ...prev,
+            pixQrCodeUrl: optimizedDataUrl,
+          }));
+          setMessage('📷 Imagem do QR Code carregada! Clique em "Salvar Configurações de PIX" para publicar.');
+          setError('');
+        } catch {
+          setSettingsForm(prev => ({
+            ...prev,
+            pixQrCodeUrl: rawDataUrl,
+          }));
+          setMessage('📷 Imagem do QR Code carregada! Clique em "Salvar Configurações de PIX" para publicar.');
+          setError('');
+        }
+      };
+      img.onerror = () => {
+        setError('Não foi possível ler a imagem selecionada. Tente outro arquivo.');
+      };
+      img.src = rawDataUrl;
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  }
+
   async function handleQuickSettingToggle(field, value, labelMsg) {
     const nextForm = {
       ...settingsForm,
@@ -1389,17 +1458,64 @@ export default function AdminMigrationPanel({
                   />
                 </label>
 
-                <label className="admin-setting-field full-width">
-                  <span>URL da Imagem do QR Code PIX (Opcional)</span>
-                  <input
-                    type="url"
-                    value={settingsForm.pixQrCodeUrl || ''}
-                    onChange={e =>
-                      setSettingsForm(prev => ({ ...prev, pixQrCodeUrl: e.target.value }))
-                    }
-                    placeholder="https://... (deixe em branco para exibir apenas a chave com botão de copiar)"
-                  />
-                </label>
+                <div className="admin-setting-field full-width">
+                  <span>Imagem do QR Code PIX (Opcional — envie do seu computador)</span>
+                  <div className="admin-qr-upload-box">
+                    {settingsForm.pixQrCodeUrl ? (
+                      <div className="admin-qr-preview-wrap">
+                        <div className="admin-qr-preview-thumb">
+                          <img
+                            src={resolveImageUrl(settingsForm.pixQrCodeUrl)}
+                            alt="Prévia do QR Code PIX"
+                          />
+                        </div>
+                        <div className="admin-qr-preview-actions">
+                          <p className="admin-qr-status-text">
+                            ✅ QR Code carregado e pronto para exibição na seção de PIX.
+                          </p>
+                          <div className="admin-qr-buttons-row">
+                            <label className="secondary-button admin-qr-upload-btn">
+                              <span>📤 Trocar Imagem do Computador</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleQrCodeFileUpload}
+                                disabled={busy}
+                                style={{ display: 'none' }}
+                              />
+                            </label>
+                            <button
+                              type="button"
+                              className="table-action-btn delete"
+                              onClick={() =>
+                                setSettingsForm(prev => ({ ...prev, pixQrCodeUrl: '' }))
+                              }
+                              disabled={busy}
+                            >
+                              🗑️ Remover QR Code
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="admin-qr-empty-upload">
+                        <label className="secondary-button admin-qr-upload-btn">
+                          <span>📤 Escolher Imagem do QR Code no Computador</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleQrCodeFileUpload}
+                            disabled={busy}
+                            style={{ display: 'none' }}
+                          />
+                        </label>
+                        <small className="admin-qr-upload-hint">
+                          Formatos aceitos: PNG, JPG ou WebP. Deixe sem imagem caso prefira exibir apenas a chave PIX com botão de copiar.
+                        </small>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="admin-data-actions-row">
