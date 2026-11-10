@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   createLoveMessage,
   toggleLoveMessageVisibility,
@@ -22,7 +22,7 @@ export default function GardenSpecialSections({
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [copiedPix, setCopiedPix] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [bookActiveTab, setBookActiveTab] = useState('pix'); // 'pix' | 'message'
 
   const pixEnabled = settings?.pixEnabled !== false;
   const hasPixData = Boolean(settings?.pixKey?.trim() || settings?.pixQrCodeUrl?.trim());
@@ -35,6 +35,17 @@ export default function GardenSpecialSections({
   const allMessages = loveMessages.length > 0 ? loveMessages : messages;
   const visibleMessages = allMessages.filter(m => m.visible !== false && m.isPublic !== false);
 
+  useEffect(() => {
+    function handleGuestbookTab(event) {
+      const tab = event?.detail;
+      if (tab === 'pix' || tab === 'message') {
+        setBookActiveTab(tab);
+      }
+    }
+    window.addEventListener('garden:guestbook-tab', handleGuestbookTab);
+    return () => window.removeEventListener('garden:guestbook-tab', handleGuestbookTab);
+  }, []);
+
   async function handleCopyPix() {
     const keyToCopy = String(settings?.pixKey || '').trim();
     if (!keyToCopy) return;
@@ -43,7 +54,6 @@ export default function GardenSpecialSections({
       setCopiedPix(true);
       setTimeout(() => setCopiedPix(false), 3200);
     } catch {
-      // Fallback para navegadores antigos
       const textarea = document.createElement('textarea');
       textarea.value = keyToCopy;
       document.body.appendChild(textarea);
@@ -106,357 +116,337 @@ export default function GardenSpecialSections({
     return null;
   }
 
+  const pixDescriptionText =
+    settings?.pixDescription ||
+    'Caso prefira presentear com qualquer valor livre para ajudar a florir este jardim, sinta-se à vontade para enviar um mimo via PIX.';
+
+  const messagesSubtitleText =
+    settings?.messagesSubtitle ||
+    'Deixe uma cartinha, votos de felicidade ou uma mensagem especial para florescer neste Jardim.';
+
   return (
     <div className="garden-special-sections">
-      {/* ====================================================================
-          SEÇÃO 1: MIMO LIVRE VIA PIX
-         ==================================================================== */}
-      {showPixSection && (
-        <section id="secao-pix" className="special-botanical-section pix-section" aria-labelledby="pix-section-title">
-          <div className="welcome-ivy-frame special-section-ivy-frame" aria-hidden="true">
-            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-left">
-              {IVY_SEGMENTS.map(idx => (
-                <img
-                  key={`pix-left-ivy-${idx}`}
-                  src={`${baseUrl}/images/ivy-vine.png`}
-                  alt=""
-                  className="welcome-ivy-watercolor-segment"
-                  loading="lazy"
-                />
-              ))}
-            </div>
-            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-right">
-              {IVY_SEGMENTS.map(idx => (
-                <img
-                  key={`pix-right-ivy-${idx}`}
-                  src={`${baseUrl}/images/ivy-vine.png`}
-                  alt=""
-                  className="welcome-ivy-watercolor-segment"
-                  loading="lazy"
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="special-section-inner">
-            {isAdmin && (!pixEnabled || !hasPixData) && (
-              <div className="admin-section-preview-banner">
-                <span>
-                  🔒 <strong>Visível apenas para você (Admin):</strong>{' '}
-                  {!pixEnabled
-                    ? 'A seção de PIX está desativada para visitantes.'
-                    : 'Configure sua chave PIX no painel para exibir esta seção aos convidados.'}
-                </span>
-                {onNavigateAdminSettings && (
-                  <button
-                    type="button"
-                    className="admin-preview-action-btn"
-                    onClick={onNavigateAdminSettings}
-                  >
-                    ⚙️ Configurar PIX no Painel
-                  </button>
-                )}
-              </div>
-            )}
-
-            <div className="special-section-header" data-tour="secao-pix">
-              <span className="section-kicker">✨ Gesto Livre de Carinho ✨</span>
-              <h2 id="pix-section-title">{settings?.pixTitle || 'Mimo Livre via PIX'}</h2>
-              <p className="special-section-subtitle">
-                {settings?.pixDescription ||
-                  'Caso prefira presentear com qualquer valor livre para ajudar a florir este jardim, sinta-se à vontade para enviar um mimo via PIX.'}
-              </p>
-            </div>
-
-            {hasPixData ? (
-              <div className={`pix-showcase-grid ${qrCodeImageUrl ? 'has-qr' : 'no-qr'}`}>
-                <div className="pix-key-card">
-                  <div className="pix-meta-badges">
-                    {settings?.pixKeyType && (
-                      <span className="pix-meta-pill">
-                        🔑 Tipo: <strong>{settings.pixKeyType}</strong>
-                      </span>
-                    )}
-                    {settings?.pixHolderName && (
-                      <span className="pix-meta-pill">
-                        🌿 Titular: <strong>{settings.pixHolderName}</strong>
-                      </span>
-                    )}
-                    {settings?.pixBank && (
-                      <span className="pix-meta-pill">
-                        🏛️ Instituição: <strong>{settings.pixBank}</strong>
-                      </span>
-                    )}
-                  </div>
-
-                  {settings?.pixKey && (
-                    <div className="pix-copy-box">
-                      <div className="pix-key-display">
-                        <span className="pix-key-label">Chave PIX ou Copia e Cola</span>
-                        <code className="pix-key-value">{settings.pixKey}</code>
-                      </div>
-                      <button
-                        type="button"
-                        className={`pix-copy-btn ${copiedPix ? 'copied' : ''}`}
-                        onClick={handleCopyPix}
-                      >
-                        {copiedPix ? '✓ Chave Copiada!' : '📋 Copiar Chave PIX'}
-                      </button>
-                    </div>
-                  )}
-
-                  {messagesSectionEnabled && (
-                    <div className="pix-message-cta">
-                      <button
-                        type="button"
-                        className="text-link-button pix-leave-note-link"
-                        onClick={() => {
-                          setShowForm(true);
-                          setSubmitSuccess(false);
-                          document.getElementById('secao-mensagens')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                      >
-                        💌 Enviou um mimo via PIX? Clique aqui para deixar uma mensagem de carinho para a Michèlé →
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {qrCodeImageUrl && (
-                  <div className="pix-qr-card">
-                    <div className="pix-qr-frame">
-                      <img src={qrCodeImageUrl} alt="QR Code PIX" loading="lazy" />
-                    </div>
-                    <span className="pix-qr-caption">Aponte a câmera do aplicativo do seu banco</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              isAdmin && (
-                <div className="pix-empty-admin-box">
-                  <p>Nenhuma chave PIX foi preenchida ainda.</p>
-                  {onNavigateAdminSettings && (
-                    <button type="button" className="primary-button" onClick={onNavigateAdminSettings}>
-                      Cadastrar Chave PIX Agora
-                    </button>
-                  )}
-                </div>
-              )
-            )}
-          </div>
-        </section>
+      {isAdmin && (!pixEnabled || !hasPixData) && (
+        <div className="admin-section-preview-banner">
+          <span>
+            🔒 <strong>Visível para você (Admin):</strong>{' '}
+            {!pixEnabled
+              ? 'A seção de PIX está desativada para visitantes.'
+              : 'Configure sua chave PIX no painel para exibir aos convidados.'}
+          </span>
+          {onNavigateAdminSettings && (
+            <button type="button" className="admin-preview-action-btn" onClick={onNavigateAdminSettings}>
+              ⚙️ Configurar PIX e Mural
+            </button>
+          )}
+        </div>
       )}
 
       {/* ====================================================================
-          SEÇÃO 2: MENSAGENS DE CARINHO & MURAL DE RECADOS
+          LIVRO DE VISITAS & OFERENDAS DO JARDIM (OPÇÃO 2 DEFINITIVA)
          ==================================================================== */}
-      {messagesSectionEnabled && (
-        <section
-          id="secao-mensagens"
-          className="special-botanical-section love-messages-section"
-          aria-labelledby="messages-section-title"
-        >
-          <div className="welcome-ivy-frame special-section-ivy-frame" aria-hidden="true">
-            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-left">
-              {IVY_SEGMENTS.map(idx => (
-                <img
-                  key={`msg-left-ivy-${idx}`}
-                  src={`${baseUrl}/images/ivy-vine.png`}
-                  alt=""
-                  className="welcome-ivy-watercolor-segment"
-                  loading="lazy"
-                />
-              ))}
-            </div>
-            <div className="welcome-ivy-branch-wrap welcome-ivy-branch-right">
-              {IVY_SEGMENTS.map(idx => (
-                <img
-                  key={`msg-right-ivy-${idx}`}
-                  src={`${baseUrl}/images/ivy-vine.png`}
-                  alt=""
-                  className="welcome-ivy-watercolor-segment"
-                  loading="lazy"
-                />
-              ))}
-            </div>
+      <section
+        id="secao-pix"
+        className="product-card herbarium-guestbook-card"
+        aria-label="Mimo Livre via PIX e Mensagens de Carinho"
+      >
+        <div id="secao-mensagens" className="guestbook-scroll-anchor" aria-hidden="true" />
+
+        <div className="welcome-ivy-frame special-section-ivy-frame" aria-hidden="true">
+          <div className="welcome-ivy-branch-wrap welcome-ivy-branch-left">
+            {IVY_SEGMENTS.map(idx => (
+              <img
+                key={`book-left-ivy-${idx}`}
+                src={`${baseUrl}/images/ivy-vine.png`}
+                alt=""
+                className="welcome-ivy-watercolor-segment"
+                loading="lazy"
+              />
+            ))}
           </div>
+          <div className="welcome-ivy-branch-wrap welcome-ivy-branch-right">
+            {IVY_SEGMENTS.map(idx => (
+              <img
+                key={`book-right-ivy-${idx}`}
+                src={`${baseUrl}/images/ivy-vine.png`}
+                alt=""
+                className="welcome-ivy-watercolor-segment"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
 
-          <div className="special-section-inner">
-            {isAdmin && (
-              <div className="admin-section-preview-banner">
-                <span>
-                  💌 <strong>Modo do Mural:</strong>{' '}
-                  {publicWallVisible
-                    ? 'As mensagens aprovadas estão VISÍVEIS na página para todos os visitantes.'
-                    : 'O mural está PRIVADO (visitantes podem enviar mensagens, mas somente você as lê no painel).'}
-                </span>
-                {onNavigateAdminSettings && (
-                  <button
-                    type="button"
-                    className="admin-preview-action-btn"
-                    onClick={onNavigateAdminSettings}
-                  >
-                    ⚙️ Gerenciar Visibilidade
-                  </button>
-                )}
-              </div>
-            )}
+        <div className="herbarium-guestbook-inner">
+          {/* Cabeçalho Nobre do Livro */}
+          <div className="herbarium-guestbook-header">
+            <img
+              src={`${baseUrl}/images/logo-michele-joohann.png`}
+              alt="Michèlé Joohann"
+              className="herbarium-guestbook-crest"
+              width="58"
+              height="58"
+              loading="lazy"
+            />
+            <p className="collection-name">LIVRO DE OURO DO HERBÁRIO</p>
+            <h2>Mimo Livre & Mensagens de Carinho</h2>
+            <p className="herbarium-guestbook-subtitle">
+              Envie um mimo de valor livre para ajudar a florir este jardim ou deixe uma cartinha especial para a Michèlé Joohann.
+            </p>
 
-            <div className="special-section-header" data-tour="secao-recados">
-              <span className="section-kicker">💌 Cartinhas do Jardim 💌</span>
-              <h2 id="messages-section-title">{settings?.messagesTitle || 'Mensagens de Carinho'}</h2>
-              <p className="special-section-subtitle">
-                {settings?.messagesSubtitle ||
-                  'Deixe uma cartinha, votos de felicidade ou uma mensagem especial para florescer neste Jardim.'}
-              </p>
-
-              {!showForm && !submitSuccess && (
+            {/* Abas Táteis (visíveis no mobile para alternar sem rolagem longa) */}
+            {showPixSection && messagesSectionEnabled && (
+              <div className="herbarium-guestbook-tabs" role="tablist">
                 <button
                   type="button"
-                  className="primary-button open-love-form-btn"
-                  onClick={() => setShowForm(true)}
+                  role="tab"
+                  aria-selected={bookActiveTab === 'pix'}
+                  className={`guestbook-tab-btn ${bookActiveTab === 'pix' ? 'active' : ''}`}
+                  onClick={() => setBookActiveTab('pix')}
                 >
-                  ✍️ Escrever uma Mensagem de Carinho
+                  💎 Mimo via PIX
                 </button>
-              )}
-            </div>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={bookActiveTab === 'message'}
+                  className={`guestbook-tab-btn ${bookActiveTab === 'message' ? 'active' : ''}`}
+                  onClick={() => setBookActiveTab('message')}
+                >
+                  💌 Deixar Cartinha
+                </button>
+              </div>
+            )}
+          </div>
 
-            {/* Formulário de Envio de Mensagem de Carinho */}
-            {(showForm || submitSuccess || !publicWallVisible || visibleMessages.length === 0) && (
-              <div className="love-form-container">
-                {submitSuccess ? (
-                  <div className="love-form-success">
-                    <div className="love-success-icon">🌸</div>
-                    <h3>Sua mensagem foi entregue com muito carinho!</h3>
-                    <p>
-                      {publicWallVisible && autoApprove
-                        ? 'Muito obrigada pelo afeto! Sua cartinha já está florescendo no mural abaixo.'
-                        : 'Muito obrigada pelo afeto! Sua cartinha foi enviada diretamente para a Michèlé.'}
-                    </p>
-                    <button
-                      type="button"
-                      className="secondary-button"
-                      onClick={() => {
-                        setSubmitSuccess(false);
-                        setShowForm(false);
-                      }}
-                    >
-                      Escrever outra mensagem
-                    </button>
-                  </div>
-                ) : (
-                  <form className="love-message-form" onSubmit={handleSubmitMessage}>
-                    <div className="love-form-field">
-                      <label htmlFor="love-author-name">Seu nome ou apelido *</label>
-                      <input
-                        id="love-author-name"
-                        type="text"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        placeholder="Ex: Tia Maria, Família Silva, Pedro & Ana…"
-                        required
-                        autoComplete="name"
-                      />
-                    </div>
+          {/* Páginas Abertas do Livro (Lado a Lado no Desktop, Abas no Mobile) */}
+          <div className="herbarium-guestbook-spread">
+            {/* PÁGINA ESQUERDA: MIMO LIVRE VIA PIX */}
+            {showPixSection && (
+              <div
+                data-tour="secao-pix"
+                className={`guestbook-page guestbook-page-left ${
+                  bookActiveTab === 'pix' || !messagesSectionEnabled ? 'is-active-tab' : 'is-hidden-mobile-tab'
+                }`}
+              >
+                <div className="guestbook-page-heading">
+                  <span className="status-badge status-available guestbook-inline-badge">Mimo Livre 💎</span>
+                  <h3>{settings?.pixTitle || 'Mimo Livre via PIX'}</h3>
+                  <p>“{pixDescriptionText}”</p>
+                </div>
 
-                    <div className="love-form-field">
-                      <label htmlFor="love-message-textarea">Sua mensagem de carinho para Michèlé Joohann *</label>
-                      <textarea
-                        id="love-message-textarea"
-                        value={messageText}
-                        onChange={e => setMessageText(e.target.value)}
-                        placeholder="Escreva votos, memórias ou palavras de carinho para a Michèlé Joohann…"
-                        rows={3}
-                        required
-                      />
-                    </div>
-
-                    {submitError && (
-                      <p className="notice error" role="alert">
-                        {submitError}
-                      </p>
+                {hasPixData ? (
+                  <div className="guestbook-pix-content">
+                    {qrCodeImageUrl && (
+                      <div className="guestbook-qr-box">
+                        <div className="herbarium-qr-pedestal guestbook-qr-pedestal">
+                          <img src={qrCodeImageUrl} alt="QR Code PIX" loading="lazy" />
+                        </div>
+                        <span className="guestbook-qr-caption">Aponte a câmera do aplicativo do seu banco</span>
+                      </div>
                     )}
 
-                    <div className="love-form-actions">
-                      {showForm && visibleMessages.length > 0 && publicWallVisible && (
+                    <div className="herbarium-pix-editorial-meta">
+                      {settings?.pixHolderName && (
+                        <p className="herbarium-pix-holder">
+                          <strong>{settings.pixHolderName}</strong>
+                        </p>
+                      )}
+                      <p className="herbarium-pix-bank-line">
+                        {[settings?.pixBank, settings?.pixKeyType ? `Chave ${settings.pixKeyType}` : null]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </p>
+
+                      {settings?.pixKey && (
+                        <div className="herbarium-pix-key-pill">
+                          <span className="herbarium-pix-key-label">Chave PIX ou Copia e Cola</span>
+                          <code className="herbarium-pix-key-code">{settings.pixKey}</code>
+                        </div>
+                      )}
+                    </div>
+
+                    {settings?.pixKey && (
+                      <div className="product-footer herbarium-plate-footer">
                         <button
                           type="button"
-                          className="secondary-button"
-                          onClick={() => setShowForm(false)}
-                          disabled={submitting}
+                          className={`gift-action-button herbarium-full-btn ${copiedPix ? 'copied' : ''}`}
+                          onClick={handleCopyPix}
                         >
-                          Cancelar
+                          {copiedPix ? '✓ Chave PIX Copiada!' : '📋 Copiar Chave PIX'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  isAdmin && (
+                    <div className="pix-empty-admin-box">
+                      <p>Nenhuma chave PIX foi preenchida ainda.</p>
+                      {onNavigateAdminSettings && (
+                        <button type="button" className="gift-action-button" onClick={onNavigateAdminSettings}>
+                          Cadastrar Chave PIX Agora
                         </button>
                       )}
-                      <button type="submit" className="primary-button" disabled={submitting}>
-                        {submitting ? 'Enviando com carinho…' : 'Enviar Mensagem de Carinho 💌'}
-                      </button>
                     </div>
-                  </form>
+                  )
                 )}
               </div>
             )}
 
-            {/* Mural Público de Mensagens (exibido apenas quando publicWallVisible === true) */}
-            {publicWallVisible && visibleMessages.length > 0 && (
-              <div className="love-wall-grid" aria-live="polite">
-                {visibleMessages.map(msg => {
-                  const dateStr = msg.createdAt?.toDate
-                    ? msg.createdAt.toDate().toLocaleDateString('pt-BR', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })
-                    : 'Recentemente';
+            {/* Costura Central Dourada do Livro (Desktop) */}
+            {showPixSection && messagesSectionEnabled && (
+              <div className="guestbook-spine-divider" aria-hidden="true">
+                <span className="spine-line" />
+                <span className="spine-leaf">🌿</span>
+                <span className="spine-line" />
+              </div>
+            )}
 
-                  return (
-                    <article key={msg.id} className="love-wall-card">
-                      <div className="love-wall-card-top">
-                        <div className="love-author-info">
-                          <span className="love-author-avatar" aria-hidden="true">
-                            {msg.isAnonymous ? '🕵️' : '🌸'}
-                          </span>
-                          <div>
-                            <strong className="love-author-name">
-                              {msg.isAnonymous ? 'Amigo(a) Secreto(a)' : msg.authorName || 'Visitante Querido(a)'}
-                            </strong>
-                            <span className="love-message-date">{dateStr}</span>
-                          </div>
-                        </div>
+            {/* PÁGINA DIREITA: CARTINHA DE CARINHO */}
+            {messagesSectionEnabled && (
+              <div
+                data-tour="secao-recados"
+                className={`guestbook-page guestbook-page-right ${
+                  bookActiveTab === 'message' || !showPixSection ? 'is-active-tab' : 'is-hidden-mobile-tab'
+                }`}
+              >
+                <div className="guestbook-page-heading">
+                  <span className="status-badge status-received guestbook-inline-badge">Cartinhas de Afeto 💌</span>
+                  <h3>{settings?.messagesTitle || 'Mensagens de Carinho'}</h3>
+                  <p>“{messagesSubtitleText}”</p>
+                </div>
 
-                        {isAdmin && (
-                          <button
-                            type="button"
-                            className="love-admin-hide-btn"
-                            onClick={() => handleQuickHideMessage(msg)}
-                            title="Ocultar esta mensagem da página pública (ela continuará salva no seu painel)"
-                          >
-                            ⚪ Ocultar
-                          </button>
-                        )}
+                <div className="herbarium-plate-form-wrap">
+                  {submitSuccess ? (
+                    <div className="herbarium-love-success">
+                      <div className="love-success-icon">🌸</div>
+                      <h3>Sua cartinha foi entregue com muito carinho!</h3>
+                      <p>
+                        {publicWallVisible && autoApprove
+                          ? 'Muito obrigada pelo afeto! Sua mensagem já está florescendo no mural abaixo.'
+                          : 'Muito obrigada pelo afeto! Sua cartinha foi enviada diretamente para a Michèlé.'}
+                      </p>
+                      <button
+                        type="button"
+                        className="store-link-button"
+                        onClick={() => setSubmitSuccess(false)}
+                      >
+                        ✍️ Escrever outra mensagem
+                      </button>
+                    </div>
+                  ) : (
+                    <form className="herbarium-love-form" onSubmit={handleSubmitMessage}>
+                      <div className="herbarium-field">
+                        <label htmlFor="love-author-name">Seu nome ou apelido *</label>
+                        <input
+                          id="love-author-name"
+                          type="text"
+                          value={name}
+                          onChange={e => setName(e.target.value)}
+                          placeholder="Ex: Tia Maria, Família Silva, Pedro & Ana…"
+                          required
+                          autoComplete="name"
+                        />
                       </div>
 
-                      {(msg.giftName || msg.isPixNote) && (
-                        <div className="love-wall-badges">
-                          {msg.giftName && (
-                            <span className="love-gift-badge">🎁 {msg.giftName}</span>
-                          )}
-                          {msg.isPixNote && (
-                            <span className="love-pix-badge">✨ Mimo via PIX</span>
-                          )}
-                        </div>
+                      <div className="herbarium-field">
+                        <label htmlFor="love-message-textarea">Sua mensagem de carinho para Michèlé Joohann *</label>
+                        <textarea
+                          id="love-message-textarea"
+                          value={messageText}
+                          onChange={e => setMessageText(e.target.value)}
+                          placeholder="Escreva votos, memórias ou palavras de carinho para a Michèlé Joohann…"
+                          rows={4}
+                          required
+                        />
+                      </div>
+
+                      {submitError && (
+                        <p className="notice error" role="alert">
+                          {submitError}
+                        </p>
                       )}
 
-                      <blockquote className="love-wall-quote">“{msg.message}”</blockquote>
-                    </article>
-                  );
-                })}
+                      <div className="product-footer herbarium-plate-footer">
+                        <div className="product-footer-actions" style={{ width: '100%' }}>
+                          <button
+                            type="submit"
+                            className="gift-action-button herbarium-full-btn"
+                            disabled={submitting}
+                          >
+                            {submitting ? 'Enviando com carinho…' : '💌 Enviar Mensagem de Carinho'}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  )}
+                </div>
               </div>
             )}
           </div>
-        </section>
+        </div>
+      </section>
+
+      {/* Mural Público de Cartinhas (exibido quando publicWallVisible === true e há mensagens) */}
+      {publicWallVisible && visibleMessages.length > 0 && (
+        <div className="herbarium-wall-section" aria-live="polite">
+          <div className="herbarium-wall-divider">
+            <span className="ornament-line" />
+            <span className="ornament-icon">🌸 Mural de Afeto ({visibleMessages.length}) 🌸</span>
+            <span className="ornament-line" />
+          </div>
+
+          <div className="herbarium-wall-grid">
+            {visibleMessages.map(msg => {
+              const dateStr = msg.createdAt?.toDate
+                ? msg.createdAt.toDate().toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })
+                : 'Recentemente';
+
+              return (
+                <article key={msg.id} className="product-card herbarium-postcard">
+                  <div className="herbarium-postcard-top">
+                    <div className="love-author-info">
+                      <span className="love-author-avatar" aria-hidden="true">
+                        {msg.isAnonymous ? '🕵️' : '🌸'}
+                      </span>
+                      <div>
+                        <strong className="love-author-name">
+                          {msg.isAnonymous ? 'Amigo(a) Secreto(a)' : msg.authorName || 'Visitante Querido(a)'}
+                        </strong>
+                        <span className="love-message-date">{dateStr}</span>
+                      </div>
+                    </div>
+
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        className="love-admin-hide-btn"
+                        onClick={() => handleQuickHideMessage(msg)}
+                        title="Ocultar esta mensagem da página pública"
+                      >
+                        ⚪ Ocultar
+                      </button>
+                    )}
+                  </div>
+
+                  {(msg.giftName || msg.isPixNote) && (
+                    <div className="love-wall-badges">
+                      {msg.giftName && <span className="love-gift-badge">🎁 {msg.giftName}</span>}
+                      {msg.isPixNote && <span className="love-pix-badge">✨ Mimo via PIX</span>}
+                    </div>
+                  )}
+
+                  <blockquote className="love-wall-quote">“{msg.message}”</blockquote>
+                </article>
+              );
+            })}
+          </div>
+        </div>
       )}
     </div>
   );
 }
-

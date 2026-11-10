@@ -200,21 +200,30 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
   useEffect(() => {
     if (stage !== 'tour') return;
     const currentStep = TOUR_STEPS[stepIndex];
-    const targetEl = findVisibleTarget(currentStep);
 
-    if (targetEl) {
-      if (currentStep.id === 'presentear' || currentStep.id === 'pix' || currentStep.id === 'recados') {
-        if (window.innerWidth < 768) {
-          const rect = targetEl.getBoundingClientRect();
-          const targetTop = Math.max(0, window.scrollY + rect.top - 84);
-          window.scrollTo({ top: targetTop, behavior: 'smooth' });
-        } else {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+    if (currentStep.id === 'pix') {
+      window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'pix' }));
+    } else if (currentStep.id === 'recados') {
+      window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'message' }));
     }
+
+    const scrollTimer = setTimeout(() => {
+      const targetEl = findVisibleTarget(currentStep);
+      if (targetEl) {
+        if (currentStep.id === 'presentear' || currentStep.id === 'pix' || currentStep.id === 'recados') {
+          if (window.innerWidth < 768) {
+            const rect = targetEl.getBoundingClientRect();
+            const targetTop = Math.max(0, window.scrollY + rect.top - 84);
+            window.scrollTo({ top: targetTop, behavior: 'smooth' });
+          } else {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+      updateTourPosition();
+    }, 30);
 
     // Atualiza posições imediatamente e durante a animação de scroll
     updateTourPosition();
@@ -224,6 +233,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     const t4 = setTimeout(updateTourPosition, 900);
 
     return () => {
+      clearTimeout(scrollTimer);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);

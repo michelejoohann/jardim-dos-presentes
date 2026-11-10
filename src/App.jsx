@@ -648,6 +648,7 @@ export default function App() {
                         className="mobile-tag-btn"
                         onClick={() => {
                           setMobileMenuOpen(false);
+                          window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'pix' }));
                           document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                       >
@@ -660,7 +661,8 @@ export default function App() {
                         className="mobile-tag-btn"
                         onClick={() => {
                           setMobileMenuOpen(false);
-                          document.getElementById('secao-mensagens')?.scrollIntoView({ behavior: 'smooth' });
+                          window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'message' }));
+                          document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                       >
                         💌 Mensagens de Carinho
@@ -835,6 +837,7 @@ export default function App() {
                 className="top-nav-link"
                 onClick={() => {
                   setOpenSubmenu(null);
+                  window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'pix' }));
                   document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 title="Ir para a seção de Mimo via PIX"
@@ -851,7 +854,8 @@ export default function App() {
                 className="top-nav-link"
                 onClick={() => {
                   setOpenSubmenu(null);
-                  document.getElementById('secao-mensagens')?.scrollIntoView({ behavior: 'smooth' });
+                  window.dispatchEvent(new CustomEvent('garden:guestbook-tab', { detail: 'message' }));
+                  document.getElementById('secao-pix')?.scrollIntoView({ behavior: 'smooth' });
                 }}
                 title="Deixar ou ler Mensagens de Carinho"
               >
