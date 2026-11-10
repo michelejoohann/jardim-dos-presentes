@@ -8740,7 +8740,8 @@ body {
 
 .herbarium-guestbook-card .special-section-ivy-frame .welcome-ivy-branch-wrap {
   width: 34px;
-  opacity: 0.68;
+  filter: grayscale(92%) sepia(10%) contrast(0.94);
+  opacity: 0.24 !important;
 }
 
 .herbarium-guestbook-inner {
@@ -8993,7 +8994,8 @@ body {
 
   .herbarium-guestbook-card .special-section-ivy-frame .welcome-ivy-branch-wrap {
     width: 26px !important;
-    opacity: 0.65 !important;
+    filter: grayscale(92%) sepia(10%) contrast(0.94);
+    opacity: 0.24 !important;
   }
 
   .herbarium-guestbook-header h2 {
@@ -9039,12 +9041,19 @@ body {
 
 @media (max-width: 420px) {
   .herbarium-guestbook-card {
-    padding: 16px 24px !important;
+    padding: 18px 28px !important;
+  }
+
+  .herbarium-guestbook-card .special-section-ivy-frame .welcome-ivy-branch-left {
+    left: -2px !important;
+  }
+
+  .herbarium-guestbook-card .special-section-ivy-frame .welcome-ivy-branch-right {
+    right: -2px !important;
   }
 
   .herbarium-guestbook-card .special-section-ivy-frame .welcome-ivy-branch-wrap {
-    width: 22px !important;
-    opacity: 0.62 !important;
+    width: 20px !important;
   }
 
   .herbarium-guestbook-crest {
@@ -9075,3 +9084,5 @@ body {
     letter-spacing: 0.06em;
   }
 }
+
+
