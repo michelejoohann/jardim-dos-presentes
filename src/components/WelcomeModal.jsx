@@ -159,7 +159,7 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const margin = 14;
+    const margin = vw <= 380 ? 10 : 14;
     const maxTooltipWidth = Math.min(360, vw - margin * 2);
     const estimatedHeight = tooltipRef.current?.offsetHeight || 235;
 
@@ -178,9 +178,9 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     // Calcula posição vertical segura
     let top;
     if (placement === 'bottom') {
-      top = Math.min(vh - estimatedHeight - margin, Math.max(margin, spRect.top + spRect.height + 14));
+      top = Math.min(vh - estimatedHeight - margin, Math.max(margin, spRect.top + spRect.height + 12));
     } else {
-      top = Math.max(margin, spRect.top - estimatedHeight - 14);
+      top = Math.max(margin, spRect.top - estimatedHeight - 12);
     }
 
     // Posição da setinha apontando para o centro do alvo
@@ -204,7 +204,13 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
 
     if (targetEl) {
       if (currentStep.id === 'presentear' || currentStep.id === 'pix' || currentStep.id === 'recados') {
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (window.innerWidth < 768) {
+          const rect = targetEl.getBoundingClientRect();
+          const targetTop = Math.max(0, window.scrollY + rect.top - 84);
+          window.scrollTo({ top: targetTop, behavior: 'smooth' });
+        } else {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -215,11 +221,13 @@ export default function WelcomeModal({ onClose, initialStage = 'welcome', baseUr
     const t1 = setTimeout(updateTourPosition, 120);
     const t2 = setTimeout(updateTourPosition, 350);
     const t3 = setTimeout(updateTourPosition, 600);
+    const t4 = setTimeout(updateTourPosition, 900);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t4);
     };
   }, [stage, stepIndex, updateTourPosition]);
 
