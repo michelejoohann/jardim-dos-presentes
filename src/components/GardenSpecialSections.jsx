@@ -5,7 +5,7 @@ import {
 } from '../services/gardenConfigService.js';
 import { resolveImageUrl } from '../services/productService.js';
 
-const IVY_SEGMENTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const IVY_SEGMENTS = Array.from({ length: 28 }, (_, idx) => idx);
 
 export default function GardenSpecialSections({
   settings,
@@ -253,7 +253,14 @@ export default function GardenSpecialSections({
                         </p>
                       )}
                       <p className="herbarium-pix-bank-line">
-                        {[settings?.pixBank, settings?.pixKeyType ? `Chave ${settings.pixKeyType}` : null]
+                        {[
+                          settings?.pixBank,
+                          settings?.pixKeyType
+                            ? /^chave\b/i.test(String(settings.pixKeyType).trim())
+                              ? String(settings.pixKeyType).trim()
+                              : `Chave ${String(settings.pixKeyType).trim()}`
+                            : null,
+                        ]
                           .filter(Boolean)
                           .join(' · ')}
                       </p>
